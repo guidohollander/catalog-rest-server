@@ -31,6 +31,24 @@ export function validateBasicAuth(request: NextRequest): boolean {
   console.log('Request Method:', request.method);
   console.log('Request Pathname:', request.nextUrl.pathname);
 
+  // Comprehensive logging for debugging Vercel SSO interference
+  console.log('VERCEL SSO DEBUGGING:');
+  
+  // Log Vercel-specific headers
+  const vercelHeaders = [
+    'x-vercel-id',
+    'x-vercel-deployment-url',
+    'x-vercel-trace',
+    'x-vercel-proxied-for'
+  ];
+
+  vercelHeaders.forEach(header => {
+    const value = request.headers.get(header);
+    if (value) {
+      console.log(`${header}: ${value}`);
+    }
+  });
+
   // Hardcoded credentials for testing
   const HARDCODED_USERNAME = 'service_catalog_api';
   const HARDCODED_PASSWORD = 'service_catalog_api_remote';
@@ -86,7 +104,8 @@ export function basicAuthMiddleware(request: NextRequest) {
   // Validate Basic Auth
   if (!validateBasicAuth(request)) {
     console.log('Authentication Failed for route:', request.nextUrl.pathname);
-    // Return a 401 Unauthorized response with WWW-Authenticate header
+    
+    // Attempt to bypass Vercel SSO
     return new NextResponse(
       JSON.stringify({ 
         error: 'Unauthorized', 
@@ -99,6 +118,10 @@ export function basicAuthMiddleware(request: NextRequest) {
           environment: {
             nodeEnv: process.env.NODE_ENV,
             vercelEnv: process.env.VERCEL_ENV
+          },
+          vercelHeaders: {
+            id: request.headers.get('x-vercel-id'),
+            deploymentUrl: request.headers.get('x-vercel-deployment-url')
           }
         }
       }), 
@@ -106,7 +129,9 @@ export function basicAuthMiddleware(request: NextRequest) {
         status: 401, 
         headers: { 
           'Content-Type': 'application/json',
-          'WWW-Authenticate': 'Basic realm="Secure Area"'
+          'WWW-Authenticate': 'Basic realm="Secure Area"',
+          // Attempt to prevent Vercel SSO redirect
+          'X-Vercel-Bypass-SSO': 'true'
         } 
       }
     );

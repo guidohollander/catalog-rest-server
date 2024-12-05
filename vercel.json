@@ -1,11 +1,22 @@
 {
   "version": 2,
-  "buildCommand": "next build",
-  "devCommand": "next dev",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "regions": ["arn1"],
+  "builds": [
+    {
+      "src": "next.config.js",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "headers": {
+        "WWW-Authenticate": "Basic realm=\"Secure Area\""
+      }
+    }
+  ],
   "env": {
+    "BASIC_AUTH_USERNAME": "service_catalog_api",
+    "BASIC_AUTH_PASSWORD": "service_catalog_api_remote",
     "NODE_ENV": "production"
   }
 }
