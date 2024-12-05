@@ -8,5 +8,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '' // Remove authentication matcher
+  matcher: '/' // Use root path if you want to match all routes
 };
