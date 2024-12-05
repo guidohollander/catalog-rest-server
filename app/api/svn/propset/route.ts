@@ -18,14 +18,14 @@ export async function POST(request: NextRequest) {
 
     // Generate a unique file name for the temporary file
     const fMod = `ext_mod_${crypto.randomBytes(8).toString('hex')}`;
-    const fullPath = path.join(process.cwd(), fMod);
+    const fullPath = path.join('/tmp', fMod);
 
     // Write the external definitions to a temporary file
     fs.writeFileSync(fullPath, body.req.externals);
 
     try {
       // Prepare the SVN command
-      const svnCommand = `svnmucc propsetf svn:externals ${fMod} -m "${body.req.key}" ${body.req.url} --username ${svn_username} --password ${svn_password}`;
+      const svnCommand = `svnmucc propsetf svn:externals ${fullPath} -m "${body.req.key}" ${body.req.url} --username ${svn_username} --password ${svn_password}`;
       console.log(svnCommand);
 
       // Execute the SVN command synchronously
