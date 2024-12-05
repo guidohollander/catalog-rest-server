@@ -1,16 +1,6 @@
 {
   "version": 2,
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "headers": {
-        "WWW-Authenticate": "Basic realm=\"Secure Area\""
-      }
-    }
-  ],
   "env": {
-    "BASIC_AUTH_USERNAME": "service_catalog_api",
-    "BASIC_AUTH_PASSWORD": "service_catalog_api_remote",
     "NODE_ENV": "production"
   }
 }
