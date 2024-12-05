@@ -1,20 +1,11 @@
 {
   "version": 2,
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/:path*",
-      "headers": [
-        {
-          "key": "WWW-Authenticate",
-          "value": "Basic realm=\"Secure Area\""
-        }
-      ]
+      "src": "/api/(.*)",
+      "headers": {
+        "WWW-Authenticate": "Basic realm=\"Secure Area\""
+      }
     }
   ],
   "env": {
