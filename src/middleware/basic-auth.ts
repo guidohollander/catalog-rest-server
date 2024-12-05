@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function validateBasicAuth(request: NextRequest): boolean {
+  // Log ALL headers for debugging
+  const allHeaders = Object.fromEntries(request.headers.entries());
+  console.log('ALL HEADERS:', JSON.stringify(allHeaders, null, 2));
+
   // Get the Authorization header
   const authHeader = request.headers.get('authorization');
   
+  console.log('FULL DEBUG INFO:');
   console.log('Authorization Header:', authHeader);
   console.log('REST_API_USERNAME:', process.env.REST_API_USERNAME);
   console.log('REST_API_PASSWORD:', process.env.REST_API_PASSWORD);
@@ -48,13 +53,14 @@ export function basicAuthMiddleware(request: NextRequest) {
 
   // Validate Basic Auth
   if (!validateBasicAuth(request)) {
-    console.log('Authentication Failed');
+    console.log('Authentication Failed for route:', request.nextUrl.pathname);
     // Return a 401 Unauthorized response with WWW-Authenticate header
     return new NextResponse(
       JSON.stringify({ 
         error: 'Unauthorized', 
         status: 'error',
         details: {
+          route: request.nextUrl.pathname,
           username: process.env.REST_API_USERNAME,
           passwordSet: !!process.env.REST_API_PASSWORD
         }
