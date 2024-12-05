@@ -31,10 +31,14 @@ export function validateBasicAuth(request: NextRequest): boolean {
   console.log('Request Method:', request.method);
   console.log('Request Pathname:', request.nextUrl.pathname);
 
+  // Hardcoded credentials for testing
+  const HARDCODED_USERNAME = 'service_catalog_api';
+  const HARDCODED_PASSWORD = 'service_catalog_api_remote';
+
   // Get the Authorization header
   const authHeader = request.headers.get('authorization');
   
-  console.log('AUTHENTICATION DEBUG:');
+  console.log('HARDCODED AUTH DEBUG:');
   console.log('Authorization Header:', authHeader);
   console.log('REST_API_USERNAME from env:', process.env.REST_API_USERNAME);
   console.log('REST_API_PASSWORD from env:', process.env.REST_API_PASSWORD ? '[REDACTED]' : 'NOT SET');
@@ -57,11 +61,13 @@ export function validateBasicAuth(request: NextRequest): boolean {
 
   console.log('Decoded Username:', username);
   console.log('Decoded Password:', password ? '[REDACTED]' : 'NO PASSWORD');
+  console.log('Hardcoded Username:', HARDCODED_USERNAME);
+  console.log('Hardcoded Password:', HARDCODED_PASSWORD ? '[REDACTED]' : 'NO PASSWORD');
 
-  // Compare with environment variables
+  // Compare with hardcoded credentials
   const isValid = (
-    username === process.env.REST_API_USERNAME && 
-    password === process.env.REST_API_PASSWORD
+    username === HARDCODED_USERNAME && 
+    password === HARDCODED_PASSWORD
   );
 
   console.log('Authentication Result:', isValid);
@@ -87,6 +93,7 @@ export function basicAuthMiddleware(request: NextRequest) {
         status: 'error',
         details: {
           route: request.nextUrl.pathname,
+          hardcodedUsername: 'service_catalog_api',
           username: process.env.REST_API_USERNAME,
           passwordSet: !!process.env.REST_API_PASSWORD,
           environment: {
