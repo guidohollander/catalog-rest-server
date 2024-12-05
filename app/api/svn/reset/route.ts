@@ -26,16 +26,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return new Promise((resolve, reject) => {
       // Generate a temporary file name to use for SVN modification
       const fMod = `ext_mod_${crypto.randomBytes(8).toString("hex")}`;
-      fs.writeFileSync(fMod, "");
+      const fullPath = path.join('/tmp', fMod);
+      fs.writeFileSync(fullPath, "");
 
       // Construct the SVN command to add a .no-op file to the target URL
-      const svnCommand = `svnmucc put ${fMod} -m "reset" ${from_url}.no-op --username ${svn_username} --password ${svn_password}`;
+      const svnCommand = `svnmucc put ${fullPath} -m "reset" ${from_url}.no-op --username ${svn_username} --password ${svn_password}`;
       console.log(svnCommand);
 
       // Execute the SVN command asynchronously
       exec(svnCommand, (error, stdout, stderr) => {
         // Clean up the temporary file after command execution
-        fs.unlinkSync(fMod);
+        fs.unlinkSync(fullPath);
 
         // Send immediate response to the client
         resolve(
