@@ -3,10 +3,15 @@ import type { NextRequest } from 'next/server';
 import { basicAuthMiddleware } from './src/middleware/basic-auth';
 
 export function middleware(request: NextRequest) {
-  // Apply Basic Authentication middleware to protect routes
-  return basicAuthMiddleware(request);
+  // Only apply Basic Authentication to API routes
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    return basicAuthMiddleware(request);
+  }
+  
+  // Allow other routes to pass through
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: '/' // Use root path if you want to match all routes
+  matcher: '/api/:path*'
 };
