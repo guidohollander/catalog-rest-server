@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export function validateBasicAuth(request: NextRequest): boolean {
   // Log ALL headers for debugging
-  const allHeaders = Object.fromEntries(request.headers.entries());
+  const allHeaders: Record<string, string> = {};
+  request.headers.forEach((value, key) => {
+    allHeaders[key] = value;
+  });
+
   console.log('ALL HEADERS:', JSON.stringify(allHeaders, null, 2));
+  console.log('Request URL:', request.url);
+  console.log('Request Method:', request.method);
+  console.log('Request Pathname:', request.nextUrl.pathname);
 
   // Get the Authorization header
   const authHeader = request.headers.get('authorization');
@@ -62,7 +69,8 @@ export function basicAuthMiddleware(request: NextRequest) {
         details: {
           route: request.nextUrl.pathname,
           username: process.env.REST_API_USERNAME,
-          passwordSet: !!process.env.REST_API_PASSWORD
+          passwordSet: !!process.env.REST_API_PASSWORD,
+          headers: Object.fromEntries(request.headers.entries())
         }
       }), 
       { 
