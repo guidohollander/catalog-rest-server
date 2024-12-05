@@ -85,3 +85,5 @@ next-env.d.ts
 # Sensitive configs
 app_config.production.json
 app_config.staging.json
+
+.vercel

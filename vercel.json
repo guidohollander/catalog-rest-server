@@ -7,5 +7,8 @@
   "regions": ["arn1"],
   "env": {
     "NODE_ENV": "production"
+  },
+  "protection": {
+    "apiKey": true
   }
 }
