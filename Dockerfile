@@ -1,6 +1,12 @@
 # Use Node.js LTS image
 FROM node:20-slim
 
+# Install system dependencies including SVN
+RUN apt-get update && \
+    apt-get install -y subversion && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set working directory
 WORKDIR /app
 
