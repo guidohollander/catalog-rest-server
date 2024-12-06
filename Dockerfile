@@ -26,8 +26,8 @@ RUN npm run build || (echo "Build failed. Showing .next directory contents:" && 
 
 # Set up the standalone build
 RUN cp -r .next/standalone/* ./
-RUN mkdir -p .next/static
-RUN cp -r .next/static/* .next/static/
+RUN mkdir -p public
+RUN cp -r .next/static public/
 RUN rm -rf .next/standalone
 
 # Start the application
