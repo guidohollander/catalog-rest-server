@@ -32,12 +32,12 @@ RUN echo "=== Building Next.js application ===" && \
     echo "\nStarting build..." && \
     npm run build && \
     echo "\nBuild complete. Checking directories:" && \
-    echo "\n.next directory:" && \
+    echo "\n.next directory contents:" && \
     ls -la .next/ && \
     echo "\nStandalone directory structure:" && \
     tree .next/standalone && \
-    echo "\nFull .next directory structure:" && \
-    tree .next
+    echo "\nChecking for server.js:" && \
+    find .next/standalone -name "server.js"
 
 # Production stage
 FROM node:20-slim AS runner
@@ -74,10 +74,12 @@ RUN echo "=== Verifying Next.js build ===" && \
     echo "Contents of app directory:" && \
     tree . && \
     echo "\nChecking server.js:" && \
-    ls -la server.js
+    ls -la server.js || echo "server.js not found" && \
+    echo "\nChecking all .js files:" && \
+    find . -name "*.js"
 
 # Expose port 3000
 EXPOSE 3000
 
-# Start the application
-CMD ["node", "server.js"]
+# Start the application using next start
+CMD ["npm", "start"]
