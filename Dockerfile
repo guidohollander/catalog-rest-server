@@ -26,14 +26,18 @@ COPY . .
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Debug: List contents before build
-RUN ls -la
-
-# Explicitly build the application
-RUN npm run build
-
-# Debug: List contents after build
-RUN ls -la .next
+# Verbose build logging
+RUN echo "=== Build Environment ===" && \
+    echo "Node version: $(node --version)" && \
+    echo "NPM version: $(npm --version)" && \
+    echo "Current directory contents:" && \
+    ls -la && \
+    echo "=== Starting Next.js Build ===" && \
+    npm run build && \
+    echo "=== Build Complete ===" && \
+    echo "Build directory contents:" && \
+    ls -la .next && \
+    cat .next/BUILD_ID || echo "No BUILD_ID found"
 
 # Production stage
 FROM node:20-slim AS production
@@ -54,8 +58,29 @@ COPY --from=builder /app/public ./public
 # Install only production dependencies
 RUN npm ci --only=production
 
-# Create a startup script
-RUN echo '#!/bin/bash\nset -e\n\necho "=== Starting Next.js Production Server ==="\necho "Current directory: $(pwd)"\n\nif [ ! -d ".next" ]; then\n    echo "ERROR: No .next build directory found!"\n    exit 1\nfi\n\nif [ ! -f ".next/BUILD_ID" ]; then\n    echo "ERROR: No BUILD_ID found in .next directory!"\n    exit 1\nfi\n\necho "Build directory contents:"\nls -la .next\n\nnpx next start -p ${PORT}' > /app/start.sh && chmod +x /app/start.sh
+# Create a comprehensive startup script
+RUN echo '#!/bin/bash\nset -e\n\n\
+echo "=== Next.js Production Server Startup ==="\n\
+echo "Current directory: $(pwd)"\n\
+echo "Node version: $(node --version)"\n\
+echo "NPM version: $(npm --version)"\n\
+\n\
+if [ ! -d ".next" ]; then\n\
+    echo "ERROR: No .next build directory found!"\n\
+    exit 1\n\
+fi\n\
+\n\
+echo "Build directory contents:"\n\
+ls -la .next\n\
+\n\
+if [ ! -f ".next/BUILD_ID" ]; then\n\
+    echo "WARNING: No BUILD_ID found in .next directory!"\n\
+    echo "Attempting to generate standalone build..."\n\
+    npx next build\n\
+fi\n\
+\n\
+echo "Starting Next.js production server..."\n\
+npx next start -p ${PORT}' > /app/start.sh && chmod +x /app/start.sh
 
 # Expose port 3000
 EXPOSE 3000
