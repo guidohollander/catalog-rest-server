@@ -34,10 +34,10 @@ RUN echo "=== Building Next.js application ===" && \
     echo "\nBuild complete. Checking directories:" && \
     echo "\n.next directory:" && \
     ls -la .next/ && \
-    echo "\n.next/standalone directory:" && \
-    ls -la .next/standalone/ && \
-    echo "\nFull directory tree:" && \
-    tree .next/standalone/
+    echo "\nStandalone directory structure:" && \
+    tree .next/standalone && \
+    echo "\nFull .next directory structure:" && \
+    tree .next
 
 # Production stage
 FROM node:20-slim AS runner
@@ -65,10 +65,7 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Copy standalone build and required files
-COPY --from=builder /app/.next/standalone/app ./app
-COPY --from=builder /app/.next/standalone/node_modules ./node_modules
-COPY --from=builder /app/.next/standalone/package.json ./package.json
-COPY --from=builder /app/.next/standalone/server.js ./server.js
+COPY --from=builder /app/.next/standalone/ ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
@@ -77,9 +74,7 @@ RUN echo "=== Verifying Next.js build ===" && \
     echo "Contents of app directory:" && \
     tree . && \
     echo "\nChecking server.js:" && \
-    ls -la server.js && \
-    echo "\nChecking node_modules:" && \
-    ls -la node_modules
+    ls -la server.js
 
 # Expose port 3000
 EXPOSE 3000
