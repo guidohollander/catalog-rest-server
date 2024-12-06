@@ -30,9 +30,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN echo "=== Building Next.js application ===" && \
     npm run build && \
     echo "\n=== Verifying build contents ===" && \
-    ls -la .next && \
-    test -d .next/standalone && \
-    echo "Build successful with standalone output"
+    echo "Standalone directory contents:" && \
+    ls -la .next/standalone && \
+    echo "\nFull .next directory contents:" && \
+    ls -la .next
 
 # Production stage
 FROM node:20-slim AS production
@@ -78,11 +79,36 @@ RUN echo "=== Verifying Next.js Production Build ===" && \
     echo "\nChecking for server.js:" && \
     ls -la server.js || echo "server.js not found"
 
+# Extensive debugging
+RUN echo "=== Debugging Production Image ===" && \
+    echo "Current directory contents:" && \
+    pwd && \
+    ls -la && \
+    echo "\nChecking standalone directory contents:" && \
+    ls -la .next/standalone || echo "No standalone directory found" && \
+    echo "\nSearching for server.js:" && \
+    find . -name "server.js" || echo "No server.js found" && \
+    echo "\nAll .js files:" && \
+    find . -name "*.js"
+
 # Expose port 3000
 EXPOSE 3000
 
-# Use node to start the standalone server
-CMD ["node", "server.js"]
+# Use a shell script to start the server with debugging
+RUN echo '#!/bin/sh\n\
+echo "Current directory: $(pwd)"\n\
+echo "Directory contents:"\n\
+ls -la\n\
+echo "Attempting to start server..."\n\
+node server.js || {\n\
+    echo "Failed to start server. Debugging information:"\n\
+    find . -name "*.js"\n\
+    exit 1\n\
+}' > /start.sh && \
+    chmod +x /start.sh
+
+# Default command
+CMD ["/start.sh"]
 
 # Development stage
 FROM base AS development
