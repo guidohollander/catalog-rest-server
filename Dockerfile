@@ -26,8 +26,14 @@ COPY . .
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Debug: List contents before build
+RUN ls -la
+
 # Explicitly build the application
 RUN npm run build
+
+# Debug: List contents after build
+RUN ls -la .next
 
 # Production stage
 FROM node:20-slim AS production
@@ -49,28 +55,13 @@ COPY --from=builder /app/public ./public
 RUN npm ci --only=production
 
 # Create a startup script
-RUN echo '#!/bin/bash\n\
-set -e\n\
-\n\
-echo "=== Starting Next.js Production Server ==="\n\
-echo "Current directory: $(pwd)"\n\
-\n\
-# Verify build exists\n\
-if [ ! -d ".next" ]; then\n\
-    echo "ERROR: No .next build directory found!"\n\
-    exit 1\n\
-fi\n\
-\n\
-# Start the production server\n\
-echo "Starting Next.js production server..."\n\
-npx next start -p ${PORT}' > /start.sh && \
-    chmod +x /start.sh
+RUN echo '#!/bin/bash\nset -e\n\necho "=== Starting Next.js Production Server ==="\necho "Current directory: $(pwd)"\n\nif [ ! -d ".next" ]; then\n    echo "ERROR: No .next build directory found!"\n    exit 1\nfi\n\nif [ ! -f ".next/BUILD_ID" ]; then\n    echo "ERROR: No BUILD_ID found in .next directory!"\n    exit 1\nfi\n\necho "Build directory contents:"\nls -la .next\n\nnpx next start -p ${PORT}' > /app/start.sh && chmod +x /app/start.sh
 
 # Expose port 3000
 EXPOSE 3000
 
-# Use the startup script
-CMD ["/start.sh"]
+# Use the startup script as the entrypoint
+ENTRYPOINT ["/app/start.sh"]
 
 # Development stage
 FROM base AS development
