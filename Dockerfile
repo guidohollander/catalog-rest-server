@@ -22,7 +22,9 @@ RUN npm ci
 # Build stage
 FROM base AS builder
 COPY . .
-RUN npm run build
+ENV NODE_ENV=production
+RUN npm run build \
+    && ls -la .next/
 
 # Production stage
 FROM node:20-slim AS runner
@@ -45,14 +47,17 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Set environment to production
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Copy necessary files from builder
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/.next ./.next/
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+
+# Verify Next.js build exists
+RUN ls -la .next/
 
 # Expose port 3000
 EXPOSE 3000
