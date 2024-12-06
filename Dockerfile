@@ -24,9 +24,10 @@ ENV NODE_OPTIONS="--max_old_space_size=8192"
 # Build the application
 RUN npm run build || (echo "Build failed. Showing .next directory contents:" && ls -la .next && cat .next/build-manifest.json)
 
-# Copy standalone build and dependencies
+# Set up the standalone build
 RUN cp -r .next/standalone/* ./
-RUN cp -r .next/static ./.next/static
+RUN mkdir -p .next/static
+RUN cp -r .next/static/* .next/static/
 RUN rm -rf .next/standalone
 
 # Start the application
