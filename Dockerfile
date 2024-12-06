@@ -22,14 +22,11 @@ RUN mkdir -p ~/.subversion && \
 # Set working directory
 WORKDIR /app
 
-# Install global dependencies
-RUN npm install -g npm@latest
-
 # Copy package files
-COPY package.json package-lock.json ./
+COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install
 
 # Copy source files
 COPY . .
@@ -40,21 +37,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS="--max_old_space_size=8192"
 
 # Build the application
-RUN npm run build || (echo "Build failed. Showing .next directory contents:" && ls -la .next && cat .next/build-manifest.json)
-
-# Set up the standalone build
-RUN cp -r .next/standalone/* ./
-RUN mkdir -p public
-RUN cp -r .next/static public/
-RUN rm -rf .next/standalone
-
-# Create a script to handle environment variables at runtime
-RUN echo '#!/bin/sh\n\
-if [ -f .env ]; then\n\
-  export $(cat .env | grep -v "^#" | xargs)\n\
-fi\n\
-exec node server.js\n\
-' > ./start.sh && chmod +x ./start.sh
+RUN npm run build
 
 # Start the application
-CMD ["./start.sh"]
+CMD ["npm", "start"]
