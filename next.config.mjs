@@ -4,7 +4,7 @@ const nextConfig = {
   // Configure standalone output
   output: 'standalone',
   // Optional: specify output file tracing root if needed
-  // outputFileTracingRoot: process.cwd(),
+  outputFileTracingRoot: process.cwd(),
   
   // Enable CORS for API routes
   async headers() {
@@ -19,6 +19,20 @@ const nextConfig = {
         ],
       },
     ];
+  },
+  
+  // Optional: Add webpack configuration if needed
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Ensure critical dependencies are not excluded
+      config.resolve.fallback = { 
+        ...config.resolve.fallback, 
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    return config;
   },
 };
 

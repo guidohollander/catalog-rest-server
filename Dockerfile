@@ -91,23 +91,36 @@ RUN echo "=== Debugging Production Image ===" && \
     echo "\nAll .js files:" && \
     find . -name "*.js"
 
-# Expose port 3000
-EXPOSE 3000
-
-# Use a shell script to start the server with debugging
+# Create a shell script to start the server
 RUN echo '#!/bin/sh\n\
+set -e\n\
+echo "=== Starting Next.js Standalone Server ==="\n\
 echo "Current directory: $(pwd)"\n\
 echo "Directory contents:"\n\
 ls -la\n\
-echo "Attempting to start server..."\n\
-node server.js || {\n\
-    echo "Failed to start server. Debugging information:"\n\
+\n\
+# Try different potential server entry points\n\
+if [ -f server.js ]; then\n\
+    echo "Starting with server.js"\n\
+    node server.js\n\
+elif [ -f .next/standalone/server.js ]; then\n\
+    echo "Starting with .next/standalone/server.js"\n\
+    node .next/standalone/server.js\n\
+elif [ -f node_modules/next/dist/server/next-server.js ]; then\n\
+    echo "Starting with Next.js server directly"\n\
+    node node_modules/next/dist/server/next-server.js start\n\
+else\n\
+    echo "ERROR: No server entry point found!"\n\
+    echo "Available files:"\n\
     find . -name "*.js"\n\
     exit 1\n\
-}' > /start.sh && \
+fi' > /start.sh && \
     chmod +x /start.sh
 
-# Default command
+# Expose port 3000
+EXPOSE 3000
+
+# Use the shell script to start the server
 CMD ["/start.sh"]
 
 # Development stage
