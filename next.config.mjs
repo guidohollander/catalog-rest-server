@@ -1,8 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Disable static exports since we're using API routes
+  // Configure standalone output
   output: 'standalone',
+  experimental: {
+    // Enable all features needed for standalone mode
+    outputFileTracingRoot: process.cwd(),
+  },
   // Enable CORS for API routes
   async headers() {
     return [
