@@ -48,5 +48,13 @@ RUN mkdir -p public
 RUN cp -r .next/static public/
 RUN rm -rf .next/standalone
 
+# Create a script to handle environment variables at runtime
+RUN echo '#!/bin/sh\n\
+if [ -f .env ]; then\n\
+  export $(cat .env | grep -v "^#" | xargs)\n\
+fi\n\
+exec node server.js\n\
+' > ./start.sh && chmod +x ./start.sh
+
 # Start the application
-CMD ["node", "server.js"]
+CMD ["./start.sh"]
