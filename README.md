@@ -23,3 +23,34 @@ To just run the server:
 npm run server <enter>
 ```
 
+
+## Docker Deployment
+
+### Prerequisites
+- Docker
+- Docker Compose
+- Subversion (optional, pre-installed in Docker image)
+
+### Production Deployment
+1. Copy `.env.example` to `.env` and fill in your configuration
+2. Build and run the production container:
+   ```bash
+   docker-compose up -d
+   ```
+
+### Development Deployment
+1. Copy `.env.example` to `.env` and fill in your configuration
+2. Run the development container with hot reloading:
+   ```bash
+   docker-compose up dev
+   ```
+
+### Subversion Configuration
+- The Docker image includes Subversion pre-installed
+- Ensure SVN credentials are correctly set in the `.env` file
+- SVN commands are executed within the container environment
+
+### Useful Commands
+- Stop containers: `docker-compose down`
+- Rebuild containers: `docker-compose up --build`
+- View logs: `docker-compose logs catalog-rest-server`
