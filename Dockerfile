@@ -66,14 +66,15 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/package-lock.json ./package-lock.json
 
-# Install only production dependencies
-RUN npm ci --only=production
+# Install only production dependencies and Next.js globally
+RUN npm ci --only=production \
+    && npm install -g next
 
 # Expose port 3000
 EXPOSE 3000
 
 # Default to production start command
-CMD ["npm", "start"]
+CMD ["npx", "next", "start"]
 
 # Development stage
 FROM base AS development
@@ -81,7 +82,8 @@ WORKDIR /app
 
 # Install all dependencies for development
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci \
+    && npm install -g next
 
 # Copy all project files
 COPY . .
