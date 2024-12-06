@@ -59,28 +59,35 @@ COPY --from=builder /app/public ./public
 RUN npm ci --only=production
 
 # Create a comprehensive startup script
-RUN echo '#!/bin/bash\nset -e\n\n\
-echo "=== Next.js Production Server Startup ==="\n\
-echo "Current directory: $(pwd)"\n\
-echo "Node version: $(node --version)"\n\
-echo "NPM version: $(npm --version)"\n\
-\n\
-if [ ! -d ".next" ]; then\n\
-    echo "ERROR: No .next build directory found!"\n\
-    exit 1\n\
-fi\n\
-\n\
-echo "Build directory contents:"\n\
-ls -la .next\n\
-\n\
-if [ ! -f ".next/BUILD_ID" ]; then\n\
-    echo "WARNING: No BUILD_ID found in .next directory!"\n\
-    echo "Attempting to generate standalone build..."\n\
-    npx next build\n\
-fi\n\
-\n\
-echo "Starting Next.js production server..."\n\
-npx next start -p ${PORT}' > /app/start.sh && chmod +x /app/start.sh
+RUN <<'EOF' > /app/start.sh
+#!/bin/bash
+set -e
+
+echo "=== Next.js Production Server Startup ==="
+echo "Current directory: $(pwd)"
+echo "Node version: $(node --version)"
+echo "NPM version: $(npm --version)"
+
+if [ ! -d ".next" ]; then
+    echo "ERROR: No .next build directory found!"
+    exit 1
+fi
+
+echo "Build directory contents:"
+ls -la .next
+
+if [ ! -f ".next/BUILD_ID" ]; then
+    echo "WARNING: No BUILD_ID found in .next directory!"
+    echo "Attempting to generate standalone build..."
+    npx next build
+fi
+
+echo "Starting Next.js production server..."
+npx next start -p ${PORT}
+EOF
+
+# Make the startup script executable
+RUN chmod +x /app/start.sh
 
 # Expose port 3000
 EXPOSE 3000
