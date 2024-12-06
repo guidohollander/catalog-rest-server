@@ -33,7 +33,9 @@ RUN echo "=== Building Next.js application ===" && \
     npm run build && \
     echo "\nBuild complete. Checking directories:" && \
     echo "\n.next directory contents:" && \
-    ls -la .next/
+    ls -la .next/ && \
+    echo "\nStandalone directory contents:" && \
+    ls -la .next/standalone
 
 # Production stage
 FROM node:20-slim AS production
@@ -65,10 +67,18 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/package-lock.json ./package-lock.json
+COPY --from=builder /app/.next ./.next
 
 # Install only production dependencies and Next.js globally
 RUN npm ci --only=production \
     && npm install -g next
+
+# Verify build contents
+RUN echo "=== Verifying Next.js build ===" && \
+    echo "Contents of .next directory:" && \
+    ls -la .next && \
+    echo "\nContents of standalone directory:" && \
+    ls -la
 
 # Expose port 3000
 EXPOSE 3000
