@@ -3,7 +3,6 @@ const nextConfig = {
   reactStrictMode: true,
   // Configure standalone output
   output: 'standalone',
-  outputFileTracingRoot: process.cwd(),
   // Enable CORS for API routes
   async headers() {
     return [

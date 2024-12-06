@@ -26,16 +26,13 @@ COPY . .
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Explicitly run build and verify
 RUN echo "=== Building Next.js application ===" && \
-    echo "Current directory contents:" && \
-    ls -la && \
-    echo "\nStarting build..." && \
     npm run build && \
-    echo "\nBuild complete. Checking directories:" && \
-    echo "\n.next directory contents:" && \
-    ls -la .next/ && \
-    echo "\nStandalone directory contents:" && \
-    ls -la .next/standalone
+    echo "\n=== Verifying build contents ===" && \
+    ls -la .next && \
+    test -d .next/standalone && \
+    echo "Build successful with standalone output"
 
 # Production stage
 FROM node:20-slim AS production
@@ -61,30 +58,31 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy standalone build and required files
+# Copy all necessary files for production
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/.next/standalone/ ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/.next ./.next
 
-# Install only production dependencies and Next.js globally
-RUN npm ci --only=production \
-    && npm install -g next
+# Install production dependencies
+RUN npm ci --only=production
 
 # Verify build contents
-RUN echo "=== Verifying Next.js build ===" && \
-    echo "Contents of .next directory:" && \
+RUN echo "=== Verifying Next.js Production Build ===" && \
+    echo "Contents of current directory:" && \
+    ls -la && \
+    echo "\nContents of .next directory:" && \
     ls -la .next && \
-    echo "\nContents of standalone directory:" && \
-    ls -la
+    echo "\nChecking for server.js:" && \
+    ls -la server.js || echo "server.js not found"
 
 # Expose port 3000
 EXPOSE 3000
 
-# Default to production start command
-CMD ["npx", "next", "start"]
+# Use node to start the standalone server
+CMD ["node", "server.js"]
 
 # Development stage
 FROM base AS development
@@ -92,8 +90,7 @@ WORKDIR /app
 
 # Install all dependencies for development
 COPY package.json package-lock.json ./
-RUN npm ci \
-    && npm install -g next
+RUN npm ci
 
 # Copy all project files
 COPY . .
