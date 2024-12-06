@@ -58,6 +58,7 @@ WORKDIR /app
 # Set environment to production
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
 
 # Copy all necessary files for production
 COPY --from=builder /app/package.json ./package.json
@@ -91,28 +92,33 @@ RUN echo "=== Debugging Production Image ===" && \
     echo "\nAll .js files:" && \
     find . -name "*.js"
 
-# Create a shell script to start the server
-RUN echo '#!/bin/sh\n\
+# Create a comprehensive startup script
+RUN echo '#!/bin/bash\n\
 set -e\n\
+\n\
 echo "=== Starting Next.js Standalone Server ==="\n\
 echo "Current directory: $(pwd)"\n\
-echo "Directory contents:"\n\
-ls -la\n\
+echo "Environment:"\n\
+env\n\
 \n\
-# Try different potential server entry points\n\
-if [ -f server.js ]; then\n\
-    echo "Starting with server.js"\n\
-    node server.js\n\
-elif [ -f .next/standalone/server.js ]; then\n\
+# Debugging: list all potential server files\n\
+echo "=== Potential Server Files ==="\n\
+find . -name "server.js" -o -name "next-server.js"\n\
+\n\
+# Try multiple startup methods\n\
+if [ -f .next/standalone/server.js ]; then\n\
     echo "Starting with .next/standalone/server.js"\n\
     node .next/standalone/server.js\n\
 elif [ -f node_modules/next/dist/server/next-server.js ]; then\n\
     echo "Starting with Next.js server directly"\n\
     node node_modules/next/dist/server/next-server.js start\n\
+elif [ -f server.js ]; then\n\
+    echo "Starting with server.js"\n\
+    node server.js\n\
 else\n\
-    echo "ERROR: No server entry point found!"\n\
+    echo "ERROR: No valid server entry point found!"\n\
     echo "Available files:"\n\
-    find . -name "*.js"\n\
+    find . -type f\n\
     exit 1\n\
 fi' > /start.sh && \
     chmod +x /start.sh

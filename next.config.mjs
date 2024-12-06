@@ -34,6 +34,11 @@ const nextConfig = {
     }
     return config;
   },
+
+  // Ensure the server listens on the correct port
+  serverRuntimeConfig: {
+    port: process.env.PORT || 3000,
+  },
 };
 
 export default nextConfig;
