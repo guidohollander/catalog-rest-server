@@ -5,6 +5,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+      target: production  # Explicitly specify production stage
     ports:
       - "3000:3000"
     env_file:
@@ -22,6 +23,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+      target: development  # Explicitly specify development stage
     ports:
       - "3000:3000"
     env_file:

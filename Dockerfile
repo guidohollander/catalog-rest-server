@@ -20,7 +20,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Build stage
+# Build stage for production
 FROM base AS builder
 COPY . .
 ENV NODE_ENV=production
@@ -33,15 +33,10 @@ RUN echo "=== Building Next.js application ===" && \
     npm run build && \
     echo "\nBuild complete. Checking directories:" && \
     echo "\n.next directory contents:" && \
-    ls -la .next/ && \
-    echo "\nStandalone directory structure:" && \
-    tree .next/standalone && \
-    echo "\nChecking for server.js:" && \
-    find .next/standalone -name "server.js"
+    ls -la .next/
 
 # Production stage
-FROM node:20-slim AS runner
-
+FROM node:20-slim AS production
 # Install system dependencies and verify installation
 RUN apt-get update && apt-get install -y \
     subversion \
@@ -68,18 +63,31 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=builder /app/.next/standalone/ ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json ./package-lock.json
 
-# Verify Next.js build exists
-RUN echo "=== Verifying Next.js build ===" && \
-    echo "Contents of app directory:" && \
-    tree . && \
-    echo "\nChecking server.js:" && \
-    ls -la server.js || echo "server.js not found" && \
-    echo "\nChecking all .js files:" && \
-    find . -name "*.js"
+# Install only production dependencies
+RUN npm ci --only=production
 
 # Expose port 3000
 EXPOSE 3000
 
-# Start the application using next start
+# Default to production start command
 CMD ["npm", "start"]
+
+# Development stage
+FROM base AS development
+WORKDIR /app
+
+# Install all dependencies for development
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Copy all project files
+COPY . .
+
+# Expose port 3000
+EXPOSE 3000
+
+# Default to development start command
+CMD ["npm", "run", "dev"]
