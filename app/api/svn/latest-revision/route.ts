@@ -25,8 +25,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         } 
       }, { status: 400 });
     }
-
-    const svnInfoCommand = `svn info "${url}"`;
+    
+    const svnInfoCommand = `svn info "${url}" --username ${svn_username} --password ${svn_password}`;
 
     return new Promise<NextResponse>((resolve, reject) => {
       exec(svnInfoCommand, (error, stdout, stderr) => {
