@@ -42,6 +42,11 @@ const nextConfig = {
   httpAgentOptions: {
     keepAlive: true,
   },
+
+  // Logging configuration
+  logging: {
+    level: 'verbose',
+  },
 };
 
 export default nextConfig;

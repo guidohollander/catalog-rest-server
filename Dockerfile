@@ -107,13 +107,24 @@ find . -name "server.js" -o -name "next-server.js"\n\
 \n\
 # Attempt to start the server with detailed logging\n\
 echo "Attempting to start Next.js server..."\n\
+echo "Contents of current directory:"\n\
+ls -la\n\
+\n\
+echo "Contents of .next directory:"\n\
+ls -la .next\n\
+\n\
+echo "Attempting to run server.js"\n\
 node server.js || {\n\
     echo "Failed to start with server.js. Trying alternative methods..."\n\
-    node node_modules/next/dist/server/next-server.js start || {\n\
-        echo "ERROR: Could not start the server using known methods."\n\
-        echo "Available files:"\n\
-        find . -type f\n\
-        exit 1\n\
+    echo "Attempting to run next start"\n\
+    npx next start || {\n\
+        echo "Failed to start with next start. Trying direct node invocation..."\n\
+        node node_modules/next/dist/server/next-server.js start || {\n\
+            echo "ERROR: Could not start the server using known methods."\n\
+            echo "Available files:"\n\
+            find . -type f\n\
+            exit 1\n\
+        }\n\
     }\n\
 }' > /start.sh && \
     chmod +x /start.sh
