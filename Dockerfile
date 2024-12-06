@@ -23,8 +23,17 @@ RUN npm ci
 FROM base AS builder
 COPY . .
 ENV NODE_ENV=production
-RUN npm run build \
-    && ls -la .next/
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN echo "=== Building Next.js application ===" && \
+    echo "Current directory contents:" && \
+    ls -la && \
+    echo "\nStarting build..." && \
+    npm run build && \
+    echo "\nBuild complete. Checking .next directory:" && \
+    ls -la .next/ && \
+    echo "\nChecking standalone directory:" && \
+    ls -la .next/standalone/
 
 # Production stage
 FROM node:20-slim AS runner
@@ -48,19 +57,22 @@ WORKDIR /app
 
 # Set environment to production
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy necessary files from builder
-COPY --from=builder /app/next.config.mjs ./
+# Copy standalone build and required files
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next/
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
 
 # Verify Next.js build exists
-RUN ls -la .next/
+RUN echo "=== Verifying Next.js build ===" && \
+    echo "Contents of app directory:" && \
+    ls -la && \
+    echo "\nContents of server directory:" && \
+    ls -la server.js
 
 # Expose port 3000
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
