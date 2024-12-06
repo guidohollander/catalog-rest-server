@@ -3,8 +3,6 @@ const nextConfig = {
   reactStrictMode: true,
   // Configure standalone output
   output: 'standalone',
-  // Optional: specify output file tracing root if needed
-  outputFileTracingRoot: process.cwd(),
   
   // Enable CORS for API routes
   async headers() {
@@ -35,9 +33,14 @@ const nextConfig = {
     return config;
   },
 
-  // Ensure the server listens on the correct port
+  // Customize server configuration
   serverRuntimeConfig: {
     port: process.env.PORT || 3000,
+  },
+
+  // Customize HTTP server
+  httpAgentOptions: {
+    keepAlive: true,
   },
 };
 

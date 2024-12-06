@@ -105,22 +105,17 @@ env\n\
 echo "=== Potential Server Files ==="\n\
 find . -name "server.js" -o -name "next-server.js"\n\
 \n\
-# Try multiple startup methods\n\
-if [ -f .next/standalone/server.js ]; then\n\
-    echo "Starting with .next/standalone/server.js"\n\
-    node .next/standalone/server.js\n\
-elif [ -f node_modules/next/dist/server/next-server.js ]; then\n\
-    echo "Starting with Next.js server directly"\n\
-    node node_modules/next/dist/server/next-server.js start\n\
-elif [ -f server.js ]; then\n\
-    echo "Starting with server.js"\n\
-    node server.js\n\
-else\n\
-    echo "ERROR: No valid server entry point found!"\n\
-    echo "Available files:"\n\
-    find . -type f\n\
-    exit 1\n\
-fi' > /start.sh && \
+# Attempt to start the server with detailed logging\n\
+echo "Attempting to start Next.js server..."\n\
+node server.js || {\n\
+    echo "Failed to start with server.js. Trying alternative methods..."\n\
+    node node_modules/next/dist/server/next-server.js start || {\n\
+        echo "ERROR: Could not start the server using known methods."\n\
+        echo "Available files:"\n\
+        find . -type f\n\
+        exit 1\n\
+    }\n\
+}' > /start.sh && \
     chmod +x /start.sh
 
 # Expose port 3000
