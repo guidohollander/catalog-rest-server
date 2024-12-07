@@ -1,14 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  
   // Configure standalone output
   output: 'standalone',
+  
+  // Optimize build performance
+  productionBrowserSourceMaps: false,
   
   // Enable CORS for API routes
   async headers() {
     return [
       {
-        // Apply these headers to all routes
         source: '/api/:path*',
         headers: [
           { key: 'Access-Control-Allow-Origin', value: '*' },
@@ -19,34 +22,26 @@ const nextConfig = {
     ];
   },
   
-  // Optional: Add webpack configuration if needed
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      // Ensure critical dependencies are not excluded
-      config.resolve.fallback = { 
-        ...config.resolve.fallback, 
-        fs: false,
-        net: false,
-        tls: false,
-      };
-    }
-    return config;
-  },
-
   // Customize server configuration
   serverRuntimeConfig: {
     port: process.env.PORT || 3000,
   },
-
-  // Customize HTTP server
-  httpAgentOptions: {
-    keepAlive: true,
+  
+  // Webpack configuration for optimization
+  webpack: (config, { isServer }) => {
+    // Minimize server bundle
+    if (isServer) {
+      config.optimization.minimize = true;
+    }
+    
+    return config;
   },
-
-  // Logging configuration
-  logging: {
-    level: 'verbose',
-  },
+  
+  // Compress static assets
+  compress: true,
+  
+  // Disable telemetry
+  telemetry: false
 };
 
 export default nextConfig;

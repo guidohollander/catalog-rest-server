@@ -1,5 +1,5 @@
 # Use Node.js LTS image
-FROM node:20-slim
+FROM node:20-slim AS base
 
 # Install system dependencies including SVN
 RUN apt-get update && \
@@ -22,22 +22,29 @@ RUN mkdir -p ~/.subversion && \
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
 # Install dependencies
-RUN npm install
+FROM base AS deps
+COPY package.json package-lock.json ./
+RUN npm ci --only=production
 
-# Copy source files
+# Build stage
+FROM base AS builder
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Set environment variables
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_OPTIONS="--max_old_space_size=8192"
-
-# Build the application
 RUN npm run build
 
+# Production stage
+FROM base AS runner
+ENV NODE_ENV=production
+
+# Copy necessary files from builder
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=deps /app/node_modules ./node_modules
+
+# Expose port
+EXPOSE 3000
+
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
