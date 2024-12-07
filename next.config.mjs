@@ -34,14 +34,14 @@ const nextConfig = {
       config.optimization.minimize = true;
     }
     
+    // Fix module resolution
+    config.resolve.alias['@/src'] = config.resolve.alias['@'] = config.context;
+    
     return config;
   },
   
   // Compress static assets
-  compress: true,
-  
-  // Disable telemetry
-  telemetry: false
+  compress: true
 };
 
 export default nextConfig;

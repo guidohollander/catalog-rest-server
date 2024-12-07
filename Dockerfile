@@ -29,8 +29,17 @@ RUN npm ci --only=production
 
 # Build stage
 FROM base AS builder
+# Copy node_modules from deps stage
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+
+# Copy all necessary files for building
+COPY src ./src
+COPY app ./app
+COPY public ./public
+COPY next.config.mjs tsconfig.json ./
+COPY package.json package-lock.json ./
+
+# Build the application
 RUN npm run build
 
 # Production stage
