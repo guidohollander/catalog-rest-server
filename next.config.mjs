@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
   
@@ -16,6 +16,18 @@ const nextConfig = {
         ],
       },
     ];
+  },
+  
+  // Development configuration
+  webpack: (config, { dev, isServer }) => {
+    // Fix module resolution
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': config.context,
+      '@/src': config.context + '/src'
+    };
+    
+    return config;
   },
   
   // Optimize for production
