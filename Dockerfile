@@ -1,13 +1,13 @@
-# Use Node.js LTS image
-FROM node:20-slim AS base
+# Production image
+FROM node:20-slim
 
-# Install system dependencies including SVN
+# Install SVN
 RUN apt-get update && \
     apt-get install -y subversion ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Configure SVN to trust the server certificate
+# Configure SVN
 RUN mkdir -p ~/.subversion && \
     echo '[global]' > ~/.subversion/servers && \
     echo 'ssl-authority-files = /etc/ssl/certs/ca-certificates.crt' >> ~/.subversion/servers && \
@@ -19,41 +19,23 @@ RUN mkdir -p ~/.subversion && \
     echo 'ssl-trust-default-ca = yes' >> ~/.subversion/servers && \
     echo 'ssl-verify-server-cert = no' >> ~/.subversion/servers
 
-# Set working directory
 WORKDIR /app
 
+# Copy package files
+COPY package*.json ./
+
 # Install dependencies
-FROM base AS deps
-COPY package.json package-lock.json ./
 RUN npm ci --only=production
 
-# Build stage
-FROM base AS builder
-# Copy node_modules from deps stage
-COPY --from=deps /app/node_modules ./node_modules
+# Copy source files
+COPY . .
 
-# Copy all necessary files for building
-COPY src ./src
-COPY app ./app
-COPY public ./public
-COPY next.config.mjs tsconfig.json ./
-COPY package.json package-lock.json ./
-
-# Build the application
-RUN npm run build
-
-# Production stage
-FROM base AS runner
+# Build the app
 ENV NODE_ENV=production
-
-# Copy necessary files from builder
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=deps /app/node_modules ./node_modules
+RUN npm run build
 
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["node", "server.js"]
+# Start the app
+CMD ["node", ".next/standalone/server.js"]
