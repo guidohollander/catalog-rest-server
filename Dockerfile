@@ -1,4 +1,4 @@
-# Production image
+# Use Node.js LTS image
 FROM node:20-slim
 
 # Install SVN
@@ -10,8 +10,6 @@ RUN apt-get update && \
 # Configure SVN
 RUN mkdir -p ~/.subversion && \
     echo '[global]' > ~/.subversion/servers && \
-    echo 'ssl-authority-files = /etc/ssl/certs/ca-certificates.crt' >> ~/.subversion/servers && \
-    echo 'store-plaintext-passwords = yes' >> ~/.subversion/servers && \
     echo 'ssl-trust-default-ca = yes' >> ~/.subversion/servers && \
     echo '[groups]' >> ~/.subversion/servers && \
     echo 'hollanderconsulting = svn.hollanderconsulting.nl' >> ~/.subversion/servers && \
@@ -23,19 +21,20 @@ WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
+RUN npm ci
 
-# Install dependencies
-RUN npm ci --only=production
-
-# Copy source files
+# Copy application files
 COPY . .
 
-# Build the app
-ENV NODE_ENV=production
+# Build the application
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Expose port
-EXPOSE 3000
+# Cleanup dev dependencies
+RUN rm -rf node_modules && \
+    npm ci --only=production
 
-# Start the app
+# Start the application
+ENV NODE_ENV=production
+EXPOSE 3000
 CMD ["node", ".next/standalone/server.js"]

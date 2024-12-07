@@ -1,11 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  
-  // Configure standalone output
   output: 'standalone',
-  
-  // Optimize build performance
+  reactStrictMode: true,
   productionBrowserSourceMaps: false,
   
   // Enable CORS for API routes
@@ -22,26 +18,8 @@ const nextConfig = {
     ];
   },
   
-  // Customize server configuration
-  serverRuntimeConfig: {
-    port: process.env.PORT || 3000,
-  },
-  
-  // Webpack configuration for optimization
-  webpack: (config, { isServer }) => {
-    // Minimize server bundle
-    if (isServer) {
-      config.optimization.minimize = true;
-    }
-    
-    // Fix module resolution
-    config.resolve.alias['@/src'] = config.resolve.alias['@'] = config.context;
-    
-    return config;
-  },
-  
-  // Compress static assets
-  compress: true
+  // Optimize for production
+  compress: true,
 };
 
 export default nextConfig;
