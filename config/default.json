@@ -21,7 +21,7 @@
     "services": {
         "svn": {
             "protocol": "https://",
-            "baseUrl": "svn.hollanderconsulting.nl",
+            "baseUrl": "${SVN_HOST}",
             "username": "${SVN_USERNAME}",
             "password": "${SVN_PASSWORD}"
         },

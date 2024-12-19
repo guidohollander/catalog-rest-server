@@ -1,3 +1,5 @@
+import logger from '@/src/utils/logger';
+
 export interface AppConfig {
     environment: 'development' | 'staging' | 'production';
     server: {
@@ -46,7 +48,7 @@ export function validateConfig(config: Partial<AppConfig>): config is AppConfig 
     }
 
     if (errors.length > 0) {
-        console.error('Configuration Validation Errors:', errors);
+        logger.error('Configuration Validation Errors:', { errors });
         return false;
     }
 

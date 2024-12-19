@@ -28,7 +28,7 @@ function fetchFolderContents(path: string): Promise<string[]> {
         'Authorization': auth
       }
     };
-
+    
     const req = https.request(options, (resSvn) => {
       let data = '';
 
@@ -81,37 +81,38 @@ function fetchFolderContents(path: string): Promise<string[]> {
   });
 }
 
-function fetchAllVersions(solutionImplementation: string): Promise<any[]> {
+async function fetchAllVersions(solutionImplementation: string): Promise<any[]> {
   const encodedSolution = encodeURIComponent(solutionImplementation);
 
-  return Promise.all([
-    fetchFolderContents(`/svn/${encodedSolution}/tags/`).then((tags) =>
-      tags.map((tag) => ({
-        solutionName: solutionImplementation,
-        branchName: 'tags',
-        version: tag
-      }))
-    ),
-    fetchFolderContents(`/svn/${encodedSolution}/branches/`).then(
-      (branches) =>
-        branches.map((branch) => ({
-          solutionName: solutionImplementation,
-          branchName: 'branches',
-          version: branch
-        }))
-    ),
-    fetchFolderContents(`/svn/${encodedSolution}/trunk/`).then((trunk) =>
-      trunk.length > 0
-        ? [
-            {
-              solutionName: solutionImplementation,
-              branchName: 'trunk',
-              version: 'trunk'
-            }
-          ]
-        : []
-    )
-  ]).then((results) => results.flat());
+  const [tags, branches, trunk] = await Promise.all([
+    fetchFolderContents(`/svn/${encodedSolution}/tags/`),
+    fetchFolderContents(`/svn/${encodedSolution}/branches/`),
+    fetchFolderContents(`/svn/${encodedSolution}/trunk/`)
+  ]);
+
+  const results = [
+    ...tags.map((tag) => ({
+      solutionName: solutionImplementation,
+      branchName: 'tags',
+      version: tag
+    })),
+    ...branches.map((branch) => ({
+      solutionName: solutionImplementation,
+      branchName: 'branches',
+      version: branch
+    }))
+  ];
+
+  // Add trunk if it exists
+  if (trunk.length > 0) {
+    results.push({
+      solutionName: solutionImplementation,
+      branchName: 'trunk',
+      version: 'trunk'
+    });
+  }
+
+  return results;
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -130,7 +131,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Flatten the results, filter for valid versions, and transform them into the desired format
     const transformedVersions = allVersions
       .flat()
-      .filter((item) => isValidVersion(item.version)) // Filtering for valid versions
+      .filter((item) => isValidVersion(item.version) || item.branchName === 'trunk') // Filtering for valid versions and trunk
       .map((item) => {
         const isTrunk = item.branchName === 'trunk';
         return {
