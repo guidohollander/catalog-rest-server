@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
+import crypto from 'crypto';
 import { loadConfig } from '@/src/config/loader';
+import logger from '@/src/utils/logger';
 
 // Load configuration
 const config = loadConfig();
@@ -13,7 +15,16 @@ const svn_password = config.services.svn.password;
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
-    console.log("SVN Copy Request Body:", body);
+    logger.info("SVN Copy Request", { 
+      body: { 
+        ...body, 
+        request: { 
+          ...body.request, 
+          from_url: body.request?.from_url,
+          to_url: body.request?.to_url 
+        } 
+      } 
+    });
 
     // Validate request body
     if (!body.request || !body.request.from_url || !body.request.to_url || !body.request.commitmessage) {
@@ -30,7 +41,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return new Promise<NextResponse>((resolve, reject) => {
       exec(svnCommand, (error, stdout, stderr) => {
         if (error) {
-          console.error(`Error executing svn copy: ${error.message}`);
+          logger.error(`Error executing svn copy:`, { error: error.message });
           resolve(NextResponse.json({ 
             response: { 
               success: "0", 
@@ -41,10 +52,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
         
         if (stderr) {
-          console.error(`svn copy stderr: ${stderr}`);
+          logger.warn(`svn copy stderr:`, { stderr });
         }
         
-        console.log(`svn copy stdout: ${stdout}`);
+        logger.info(`svn copy completed successfully`, { stdout });
         
         resolve(NextResponse.json({ 
           response: { 
@@ -55,7 +66,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       });
     });
   } catch (error) {
-    console.error("Error in SVN copy route:", error);
+    logger.error("Error in SVN copy route:", { error });
     return NextResponse.json({ 
       response: { 
         success: "0", 

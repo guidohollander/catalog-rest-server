@@ -3,6 +3,7 @@ import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 import { loadConfig } from '@/src/config/loader';
+import logger from '@/src/utils/logger';
 
 // Load configuration
 const config = loadConfig();
@@ -13,7 +14,7 @@ const svn_password = config.services.svn.password;
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
-    console.log("latest-revision - SVN Request Body:", body);
+    logger.info("latest-revision - SVN Request", { body: { ...body, request: { ...body.request, url: body.request?.url } } });
 
     const url = body.request?.url;
 
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return new Promise<NextResponse>((resolve, reject) => {
       exec(svnInfoCommand, (error, stdout, stderr) => {
         if (error) {
-          console.error(`Error executing svn info: ${error.message}`);
+          logger.error(`Error executing svn info:`, { error: error.message });
           resolve(NextResponse.json({ 
             response: { 
               validUrl: "0", 
@@ -42,7 +43,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
 
         if (stderr) {
-          console.error(`svn info stderr: ${stderr}`);
+          logger.error(`svn info stderr:`, { stderr });
           resolve(NextResponse.json({ 
             response: { 
               validUrl: "0", 
@@ -61,16 +62,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           const releaseDateRaw = dateMatch[1];
           const release_date = new Date(releaseDateRaw).toISOString().split("T")[0];
 
-          // Emit socket message (if socket is available)
-          // try {
-          //   getIo().emit(
-          //     "message",
-          //     `REST server: svn info ${url} [r${latest_revision}]`
-          //   );
-          // } catch (socketError) {
-          //   console.error('Could not emit socket message:', socketError);
-          // }
-
           resolve(NextResponse.json({
             response: {
               latest_revision: latest_revision,
@@ -78,9 +69,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             },
           }));
         } else {
-          console.error(
-            "Unable to extract revision or release date from svn info output"
-          );
+          logger.error("Unable to extract revision or release date from svn info output");
 
           resolve(NextResponse.json({
             response: {
@@ -92,7 +81,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       });
     });
   } catch (error) {
-    console.error("Error in SVN latest-revision route:", error);
+    logger.error("Error in SVN latest-revision route:", { error });
     return NextResponse.json({ 
       response: { 
         validUrl: "0",

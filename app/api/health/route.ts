@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import logger from '@/src/utils/logger';
 
 export async function POST(request: NextRequest) {
-  console.log('Health check received');
+  logger.info('Health check received');
   return NextResponse.json({ 
     response: { 
       status: true 
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  console.log('Health check received (GET)');
+  logger.info('Health check received (GET)');
   return NextResponse.json({ 
     response: { 
       status: true 
