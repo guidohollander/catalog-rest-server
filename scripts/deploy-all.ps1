@@ -69,6 +69,7 @@ function Deploy-ToAWS {
         docker-compose.aws.yml `
         nginx/nginx.aws.conf `
         scripts/deploy-with-nginx.sh `
+        .env `
         "${AWSHost}:/srv/catalog-rest-server/"
     Test-LastCommand
 
