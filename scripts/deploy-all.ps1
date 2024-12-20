@@ -124,16 +124,13 @@ $awsJob = Start-Job -ScriptBlock {
     # Create directory structure on AWS if it doesn't exist
     ssh $AWS_SERVER "mkdir -p $AWS_SERVER_PATH/scripts"
     
-    # Copy deployment files
-    scp ./scripts/deploy.sh $AWS_SERVER":$AWS_SERVER_PATH/scripts/"
-    
     # Copy .env file if it exists
     if (Test-Path .env) {
         scp ./.env $AWS_SERVER":$AWS_SERVER_PATH/.env"
     }
     
     # Make script executable and deploy
-    ssh $AWS_SERVER "chmod +x $AWS_SERVER_PATH/scripts/deploy.sh && cd $AWS_SERVER_PATH && ./scripts/deploy.sh"
+    ssh $AWS_SERVER "cd $AWS_SERVER_PATH && ./scripts/deploy.sh"
 } -ArgumentList $AWS_SERVER, $AWS_SERVER_PATH
 
 # Docker Server Deployment Job
