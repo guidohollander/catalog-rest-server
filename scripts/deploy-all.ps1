@@ -160,4 +160,54 @@ if ($dockerServerJob.State -eq 'Failed') {
 # Clean up jobs
 Remove-Job -Job $awsJob, $dockerServerJob
 
+# Step 5: Docker server deployment
+Write-Host "`nStep 5: Docker server deployment..." -ForegroundColor Cyan
+
+# Create backup of current deployment if it doesn't exist
+ssh 192.168.1.152 "if [ ! -f /srv/docker-compose.yml.bak ]; then cp /srv/docker-compose.yml /srv/docker-compose.yml.bak 2>/dev/null || true; fi"
+
+# Copy Nginx configuration and setup script
+Write-Host "Copying Nginx configuration..."
+scp -r ./nginx 192.168.1.152:/srv/
+scp ./scripts/setup-nginx.sh 192.168.1.152:/srv/
+ssh 192.168.1.152 "chmod +x /srv/setup-nginx.sh"
+
+# Run the setup script
+Write-Host "Setting up Nginx and deploying services..."
+ssh 192.168.1.152 "cd /srv && ./setup-nginx.sh"
+
 Write-Host "`nDeployment complete!" -ForegroundColor Green
+Write-Host "The service is now available at:"
+Write-Host "- Original port: http://192.168.1.152:3010"
+Write-Host "- New HTTP port: http://192.168.1.152:80"
+Write-Host "- New HTTPS port: https://192.168.1.152:443 (once SSL is configured)"
+
+# Function to check if a port is accessible
+function Test-Port {
+    param(
+        [string]$Server,
+        [int]$Port
+    )
+    try {
+        $tcp = New-Object System.Net.Sockets.TcpClient
+        $tcp.ConnectAsync($Server, $Port).Wait(1000) | Out-Null
+        $tcp.Close()
+        return $true
+    } catch {
+        return $false
+    }
+}
+
+# Test the ports
+Write-Host "`nTesting connectivity..."
+$ports = @(3010, 80)
+foreach ($port in $ports) {
+    if (Test-Port -Server "192.168.1.152" -Port $port) {
+        Write-Host "Port $port is accessible" -ForegroundColor Green
+    } else {
+        Write-Host "Port $port is not accessible" -ForegroundColor Red
+    }
+}
+
+Write-Host "`nTo rollback to the previous configuration, run:"
+Write-Host "ssh 192.168.1.152 'cd /srv && docker-compose down && cp docker-compose.yml.bak docker-compose.yml && docker-compose up -d'"

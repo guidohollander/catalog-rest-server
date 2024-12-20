@@ -1,16 +1,21 @@
+#!/bin/bash
+
+# Create nginx directory if it doesn't exist
+mkdir -p /srv/nginx
+
+# Copy nginx configuration
+cp nginx/nginx.conf /srv/nginx/
+
+# Create docker compose file for both services
+cat > /srv/docker-compose.yml << 'EOL'
 version: '3.8'
 
 services:
   catalog-rest-server:
-    image: catalog-rest-server
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file: .env
+    image: registry.hollanderconsulting.nl/catalog-rest-server:latest
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
-    # Keep the direct port mapping for backward compatibility
     ports:
       - "3010:3000"
     restart: unless-stopped
@@ -23,9 +28,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      # Uncomment these lines when you have SSL certificates
-      # - ./nginx/certs:/etc/nginx/certs:ro
+      - /srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - catalog-rest-server
     restart: unless-stopped
@@ -35,3 +38,10 @@ services:
 networks:
   catalog-network:
     driver: bridge
+EOL
+
+# Stop existing containers
+docker-compose down || true
+
+# Start the new setup
+docker-compose up -d
