@@ -1,5 +1,7 @@
-// Import package.json using require to avoid named export warning
-const { version } = require('../../package.json') as { version: string };
+'use client';
+
+// Import version from environment variable
+const version = process.env.NEXT_PUBLIC_APP_VERSION || '0.1.23';
 
 export function VersionDisplay() {
   return (

@@ -25,7 +25,11 @@ interface Firework {
   particles: number;
 }
 
-export function Fireworks() {
+interface FireworksProps {
+  className?: string;
+}
+
+export function Fireworks({ className = '' }: FireworksProps) {
   const [fireworks, setFireworks] = useState<Firework[]>([]);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -72,7 +76,7 @@ export function Fireworks() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none">
+    <div className={`fixed inset-0 pointer-events-none ${className}`}>
       <AnimatePresence>
         {fireworks.map(firework => (
           <motion.div

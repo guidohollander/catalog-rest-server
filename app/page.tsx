@@ -7,8 +7,8 @@ import { Fireworks } from './components/Fireworks';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gray-900 text-gray-100">
-      <Fireworks />
+    <main className="min-h-screen bg-gray-900 text-gray-100 relative">
+      <Fireworks className="absolute top-0 left-0 w-full h-full" />
       <div className="container mx-auto px-4 py-16">
         {/* New Year's Message */}
         <div className="text-center mb-16 relative">

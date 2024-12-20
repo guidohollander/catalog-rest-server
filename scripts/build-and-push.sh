@@ -23,6 +23,7 @@ cd /srv/catalog-rest-server
 echo "Building and pushing Docker image version ${VERSION}..."
 docker build --progress=plain \
     --build-arg BUILDKIT_INLINE_CACHE=1 \
+    --build-arg VERSION=${VERSION} \
     -t $REGISTRY_URL/$IMAGE_NAME:latest \
     -t $REGISTRY_URL/$IMAGE_NAME:v${VERSION} .
 

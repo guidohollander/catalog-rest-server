@@ -32,6 +32,8 @@ COPY . .
 
 # Build the application
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG VERSION
+ENV NEXT_PUBLIC_APP_VERSION=${VERSION}
 RUN npm run build
 
 # Copy necessary files for standalone server
