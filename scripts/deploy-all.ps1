@@ -16,19 +16,24 @@ function Test-LastCommand {
 function Run-NpmCommand {
     param (
         [Parameter(Mandatory=$true)]
-        [string[]]$Arguments
+        [string]$Command,
+        [string]$Script = ""
     )
-    Write-Host "Running: npm $($Arguments -join ' ')"
+    $npmArgs = @($Command)
+    if ($Script) {
+        $npmArgs += $Script
+    }
+    Write-Host "Running: npm $($npmArgs -join ' ')"
+    
     # Run npm command and filter out deprecation warnings
-    $output = & npm $Arguments 2>&1 | Where-Object { 
+    $output = & npm $npmArgs 2>&1 | Where-Object { 
         $_ -notmatch "npm warn deprecated" -and
         $_ -notmatch "packages are looking for funding"
     }
     $output | ForEach-Object { Write-Host $_ }
-    $LASTEXITCODE = $?
-    if (-not $?) {
-        Write-Error "npm command failed"
-        exit 1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "npm command failed with exit code $LASTEXITCODE"
+        exit $LASTEXITCODE
     }
 }
 
@@ -44,12 +49,16 @@ function Clean-NextBuild {
 Write-Host "Step 1: Local build and verification..." -ForegroundColor Cyan
 
 Write-Host "Installing dependencies..."
-Run-NpmCommand @("install")
+Run-NpmCommand "install"
 
 Clean-NextBuild
 
 Write-Host "Running build..."
-Run-NpmCommand @("run", "build")
+& npm run rebuild
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "npm run rebuild failed with exit code $LASTEXITCODE"
+    exit $LASTEXITCODE
+}
 
 # Step 2: Git Operations
 Write-Host "`nStep 2: Git operations..." -ForegroundColor Cyan
@@ -78,7 +87,13 @@ if ($status) {
 # Step 3: Docker Build
 Write-Host "`nStep 3: Docker build..." -ForegroundColor Cyan
 Write-Host "Building and pushing Docker image..."
-$dockerBuildOutput = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && git checkout $currentBranch && git pull && ./scripts/build-and-push.sh"
+
+# First, clean up any changes on Docker server
+ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && git reset --hard && git clean -fd && git checkout $currentBranch && git pull"
+Test-LastCommand
+
+# Now run the build
+$dockerBuildOutput = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && ./scripts/build-and-push.sh"
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Docker build failed:`n$dockerBuildOutput"
     exit $LASTEXITCODE
