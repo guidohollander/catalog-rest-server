@@ -41,7 +41,8 @@ networks:
 EOL
 
 # Stop existing containers
-docker-compose down || true
+cd /srv
+docker compose down || true
 
 # Start the new setup
-docker-compose up -d
+docker compose up -d
