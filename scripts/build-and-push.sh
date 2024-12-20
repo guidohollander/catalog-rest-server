@@ -4,30 +4,29 @@
 REGISTRY_URL="registry.hollanderconsulting.nl"
 IMAGE_NAME="catalog-rest-server"
 
+# Enable BuildKit features
+export DOCKER_BUILDKIT=1
+
 # Ensure proper permissions
 chmod 755 /home/guido
 chmod 700 /home/guido/.ssh
 chmod 600 /home/guido/.ssh/authorized_keys
 
-# Get the current date for the tag
-DATE_TAG=$(date +%Y%m%d-%H%M%S)
+# Update repository only if there are changes
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Updating repository..."
+    git fetch origin
+    git checkout master
+    git reset --hard origin/master
+fi
 
-# Update repository
-echo "Updating repository..."
-git fetch origin
-git checkout master
-git reset --hard origin/master
+# Build and push the Docker image directly with the registry URL
+echo "Building and pushing Docker image..."
+docker build --progress=plain \
+    --build-arg BUILDKIT_INLINE_CACHE=1 \
+    -t $REGISTRY_URL/$IMAGE_NAME:latest .
 
-# Build the Docker image
-docker build -t $IMAGE_NAME:$DATE_TAG -t $IMAGE_NAME:latest .
-
-# Tag images with registry URL
-docker tag $IMAGE_NAME:$DATE_TAG $REGISTRY_URL/$IMAGE_NAME:$DATE_TAG
-docker tag $IMAGE_NAME:latest $REGISTRY_URL/$IMAGE_NAME:latest
-
-# Push images to registry
-docker push $REGISTRY_URL/$IMAGE_NAME:$DATE_TAG
+# Push image to registry
 docker push $REGISTRY_URL/$IMAGE_NAME:latest
 
 echo "Build complete and pushed to registry"
-echo "Tags pushed: latest, $DATE_TAG"

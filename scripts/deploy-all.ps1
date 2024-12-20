@@ -1,3 +1,6 @@
+# Enable BuildKit for faster Docker builds
+$env:DOCKER_BUILDKIT = 1
+
 # Configuration
 $DOCKER_SERVER = "docker-build"
 $AWS_SERVER = "aws-catalog"
@@ -88,61 +91,69 @@ if ($status) {
 Write-Host "`nStep 3: Docker build..." -ForegroundColor Cyan
 Write-Host "Building and pushing Docker image..."
 
-# First, clean up any changes on Docker server
-ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && git reset --hard && git clean -fd && git checkout $currentBranch && git pull"
-Test-LastCommand
+# Only reset and clean if there are changes
+$changes = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && git status --porcelain"
+if ($changes) {
+    ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && git reset --hard && git clean -fd && git checkout $currentBranch && git pull"
+    Test-LastCommand
+}
 
 # Make scripts executable
 ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && chmod +x scripts/*.sh"
 Test-LastCommand
 
 # Now run the build
-$dockerBuildOutput = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && ./scripts/build-and-push.sh"
+$dockerBuildOutput = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && DOCKER_BUILDKIT=1 ./scripts/build-and-push.sh"
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Docker build failed:`n$dockerBuildOutput"
     exit $LASTEXITCODE
 }
 Write-Host $dockerBuildOutput
 
-# Step 4: AWS Deployment
-Write-Host "`nStep 4: AWS deployment..." -ForegroundColor Cyan
+# Start parallel deployments
+Write-Host "`nStarting parallel deployments..." -ForegroundColor Cyan
 
-# Create directory structure on AWS if it doesn't exist
-Write-Host "Setting up directories on AWS..."
-ssh $AWS_SERVER "mkdir -p $AWS_SERVER_PATH/scripts"
-Test-LastCommand
+# AWS Deployment Job
+$awsJob = Start-Job -ScriptBlock {
+    param($AWS_SERVER, $AWS_SERVER_PATH)
+    
+    # Create directory structure on AWS if it doesn't exist
+    ssh $AWS_SERVER "mkdir -p $AWS_SERVER_PATH/scripts"
+    
+    # Copy deployment files
+    scp ./scripts/deploy.sh $AWS_SERVER":$AWS_SERVER_PATH/scripts/"
+    
+    # Copy .env file if it exists
+    if (Test-Path .env) {
+        scp ./.env $AWS_SERVER":$AWS_SERVER_PATH/.env"
+    }
+    
+    # Make script executable and deploy
+    ssh $AWS_SERVER "chmod +x $AWS_SERVER_PATH/scripts/deploy.sh && cd $AWS_SERVER_PATH && ./scripts/deploy.sh"
+} -ArgumentList $AWS_SERVER, $AWS_SERVER_PATH
 
-# Copy deployment scripts and config to AWS
-Write-Host "Copying deployment files to AWS..."
-scp ./scripts/deploy.sh $AWS_SERVER":$AWS_SERVER_PATH/scripts/"
-Test-LastCommand
+# Docker Server Deployment Job
+$dockerServerJob = Start-Job -ScriptBlock {
+    param($DOCKER_SERVER_IP)
+    ssh $DOCKER_SERVER_IP "docker stop catalog-rest-server-dev || true && docker rm catalog-rest-server-dev || true && docker run -d --name catalog-rest-server-dev -p 3010:3000 registry.hollanderconsulting.nl/catalog-rest-server:latest"
+} -ArgumentList "192.168.1.152"
 
-# Copy .env file
-Write-Host "Copying .env file..."
-if (Test-Path .env) {
-    scp ./.env $AWS_SERVER":$AWS_SERVER_PATH/.env"
-    Test-LastCommand
-} else {
-    Write-Warning ".env file not found. Make sure to create one on the AWS server."
+# Wait for both jobs to complete
+Write-Host "Waiting for deployments to complete..."
+$awsResult = Receive-Job -Job $awsJob -Wait
+$dockerServerResult = Receive-Job -Job $dockerServerJob -Wait
+
+# Check for any errors in the jobs
+if ($awsJob.State -eq 'Failed') {
+    Write-Error "AWS deployment failed:`n$awsResult"
+    exit 1
+}
+if ($dockerServerJob.State -eq 'Failed') {
+    Write-Error "Docker server deployment failed:`n$dockerServerResult"
+    exit 1
 }
 
-# Make the script executable
-Write-Host "Setting execute permissions..."
-ssh $AWS_SERVER "chmod +x $AWS_SERVER_PATH/scripts/deploy.sh"
-Test-LastCommand
-
-# Run deploy.sh on AWS server
-Write-Host "Deploying to AWS..."
-$awsDeployOutput = ssh $AWS_SERVER "cd $AWS_SERVER_PATH && ./scripts/deploy.sh"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "AWS deployment failed:`n$awsDeployOutput"
-    exit $LASTEXITCODE
-}
-Write-Host $awsDeployOutput
-
-# Step 5: Docker server deployment
-Write-Host "`nStep 5: Docker server deployment..." -ForegroundColor Cyan
-Write-Host "Deploying to Docker server (192.168.1.152) on port 3010..."
-ssh 192.168.1.152 "docker system prune -af && docker pull registry.hollanderconsulting.nl/catalog-rest-server:latest && docker stop catalog-rest-server-dev || true && docker rm catalog-rest-server-dev || true && docker run -d --name catalog-rest-server-dev -p 3010:3000 registry.hollanderconsulting.nl/catalog-rest-server:latest"
+# Clean up jobs
+Remove-Job -Job $awsJob, $dockerServerJob
 
 Write-Host "`nDeployment complete!" -ForegroundColor Green
