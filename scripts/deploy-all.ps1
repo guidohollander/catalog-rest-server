@@ -26,7 +26,7 @@ if ($status) {
     Write-Host "Changes detected, committing..."
     git commit -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
     Test-LastCommand
-    git push origin "$CURRENT_BRANCH":"$CURRENT_BRANCH"
+    git push origin $CURRENT_BRANCH
     Test-LastCommand
 } else {
     Write-Host "No changes to commit"
