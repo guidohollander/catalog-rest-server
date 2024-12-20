@@ -19,6 +19,10 @@ RUN mkdir -p ~/.subversion && \
 
 WORKDIR /app
 
+# Create logs directory with proper permissions
+RUN mkdir -p /app/logs && \
+    chown -R node:node /app/logs
+
 # Copy package files
 COPY package*.json ./
 RUN npm ci
