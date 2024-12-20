@@ -9,10 +9,10 @@ services:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       - HOST=0.0.0.0
-      - DEBUG=*
-      - NODE_DEBUG=*
+      - LOG_LEVEL=debug
     volumes:
       - /srv/catalog-rest-server/.env:/app/.env:ro
+      - /srv/catalog-rest-server/logs:/app/logs
     ports:
       - "127.0.0.1:3000:3000"
     restart: unless-stopped
