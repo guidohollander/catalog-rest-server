@@ -30,6 +30,10 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
+# Copy necessary files for standalone server
+RUN cp -r .next/static .next/standalone/.next/ && \
+    cp -r public .next/standalone/
+
 # Cleanup dev dependencies
 RUN rm -rf node_modules && \
     npm ci --only=production
