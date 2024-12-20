@@ -140,4 +140,9 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host $awsDeployOutput
 
+# Step 5: Docker server deployment
+Write-Host "`nStep 5: Docker server deployment..." -ForegroundColor Cyan
+Write-Host "Deploying to Docker server (192.168.1.152) on port 3010..."
+ssh 192.168.1.152 "docker system prune -af && docker pull registry.hollanderconsulting.nl/catalog-rest-server:latest && docker stop catalog-rest-server-dev || true && docker rm catalog-rest-server-dev || true && docker run -d --name catalog-rest-server-dev -p 3010:3000 registry.hollanderconsulting.nl/catalog-rest-server:latest"
+
 Write-Host "`nDeployment complete!" -ForegroundColor Green

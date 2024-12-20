@@ -6,6 +6,10 @@ IMAGE_NAME="catalog-rest-server"
 CONTAINER_NAME="catalog-rest-server"
 CONTAINER_PORT=3000
 
+# Clean up Docker system
+echo "Cleaning up Docker system..."
+docker system prune -af
+
 # Pull the latest image
 docker pull $REGISTRY_URL/$IMAGE_NAME:latest
 
