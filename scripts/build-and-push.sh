@@ -12,13 +12,11 @@ chmod 600 /home/guido/.ssh/authorized_keys
 # Get the current date for the tag
 DATE_TAG=$(date +%Y%m%d-%H%M%S)
 
-# Get current branch name
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-
 # Update repository
 echo "Updating repository..."
 git fetch origin
-git reset --hard "origin/$CURRENT_BRANCH"
+git checkout master
+git reset --hard origin/master
 
 # Build the Docker image
 docker build -t $IMAGE_NAME:$DATE_TAG -t $IMAGE_NAME:latest .
