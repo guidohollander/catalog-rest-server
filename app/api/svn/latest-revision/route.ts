@@ -29,10 +29,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     
     const svnInfoCommand = `svn info "${url}" --username ${svn_username} --password ${svn_password}`;
 
+    // Log command with sensitive data masked
+    const maskedCommand = svnInfoCommand
+      .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+      .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
+    logger.debug(`Executing SVN info command: ${maskedCommand}`);
+
     return new Promise<NextResponse>((resolve, reject) => {
       exec(svnInfoCommand, (error, stdout, stderr) => {
         if (error) {
-          logger.error(`Error executing svn info:`, { error: error.message });
+          logger.error(`Error executing svn info:`, { 
+            error: error.message.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+              .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+          });
           resolve(NextResponse.json({ 
             response: { 
               validUrl: "0", 
@@ -43,19 +52,26 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
 
         if (stderr) {
-          logger.error(`svn info stderr:`, { stderr });
+          logger.error(`SVN info error`, { 
+            stderr: stderr.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+              .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+          });
           resolve(NextResponse.json({ 
             response: { 
               validUrl: "0", 
-              error: stderr 
+              error: "SVN info failed" // Don't expose internal error messages
             } 
           }));
           return;
         }
 
+        // Mask sensitive data in stdout before processing
+        const maskedStdout = stdout.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+          .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
+
         // Extract revision and date
-        const revisionMatch = stdout.match(/Last Changed Rev:\s*(\d+)/);
-        const dateMatch = stdout.match(/Last Changed Date:\s*(.*)/);
+        const revisionMatch = maskedStdout.match(/Last Changed Rev:\s*(\d+)/);
+        const dateMatch = maskedStdout.match(/Last Changed Date:\s*(.*)/);
 
         if (revisionMatch && dateMatch) {
           const latest_revision = revisionMatch[1];
@@ -69,7 +85,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             },
           }));
         } else {
-          logger.error("Unable to extract revision or release date from svn info output");
+          logger.error("Unable to extract revision or release date from svn info output", {
+            output: maskedStdout
+          });
 
           resolve(NextResponse.json({
             response: {
@@ -81,7 +99,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       });
     });
   } catch (error) {
-    logger.error("Error in SVN latest-revision route:", { error });
+    logger.error("Error in SVN latest-revision route:", { 
+      error: (error as Error).message.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+        .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+    });
     return NextResponse.json({ 
       response: { 
         validUrl: "0",

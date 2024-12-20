@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   catalog-rest-server:
+    image: catalog-rest-server
     build:
       context: .
       dockerfile: Dockerfile

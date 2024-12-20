@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { loadConfig } from '@/src/config/loader';
+import logger from '@/src/utils/logger';
 
 // Load configuration
 const config = loadConfig();
@@ -31,7 +32,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       // Construct the SVN command to add a .no-op file to the target URL
       const svnCommand = `svnmucc put ${fullPath} -m "reset" ${from_url}.no-op --username ${svn_username} --password ${svn_password}`;
-      console.log(svnCommand);
+      
+      // Log command with sensitive data masked
+      const maskedCommand = svnCommand
+        .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+        .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
+      logger.debug(`Executing SVN reset command: ${maskedCommand}`);
 
       // Execute the SVN command asynchronously
       exec(svnCommand, (error, stdout, stderr) => {
@@ -57,19 +63,27 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
               "Commit rejected: adding or modifying a .no-op file is not allowed."
             )
           ) {
-            console.log("Commit intentionally rejected by pre-commit hook.");
+            logger.info("Commit intentionally rejected by pre-commit hook.");
           } else {
-            console.error(`Other SVN error: ${stderr}`);
+            logger.error("SVN command error", { 
+              error: stderr.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+                .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+            });
           }
           return;
         }
 
         // Handle successful stdout (optional)
-        console.log(`svnmucc stdout: ${stdout}`);
+        logger.debug("SVN command completed", { 
+          output: stdout.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+            .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+        });
       });
     });
   } catch (err) {
-    console.error('SVN Reset Error:', err);
+    logger.error('SVN Reset Error:', { 
+      error: err instanceof Error ? err.message : String(err) 
+    });
     return NextResponse.json(
       { 
         response: { 

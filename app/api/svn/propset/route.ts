@@ -35,11 +35,22 @@ export async function POST(request: NextRequest) {
     try {
       // Prepare the SVN command
       const svnCommand = `svnmucc propsetf svn:externals ${fullPath} -m "${body.req.key}" ${body.req.url} --username ${svn_username} --password ${svn_password}`;
-      logger.debug('Executing SVN command', { command: svnCommand.replace(svn_password, '***REDACTED***') });
+      
+      // Log command with sensitive data masked
+      const maskedCommand = svnCommand
+        .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+        .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
+      logger.debug(`Executing SVN propset command: ${maskedCommand}`);
 
       // Execute the SVN command synchronously
       const stdout = execSync(svnCommand);
-      logger.info(`svnmucc completed successfully`, { stdout: stdout.toString() });
+      
+      // Log success with masked output
+      logger.info(`SVN propset completed successfully`, {
+        output: stdout.toString()
+          .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+          .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+      });
 
       // Send a success response
       return NextResponse.json({ 
@@ -57,7 +68,14 @@ export async function POST(request: NextRequest) {
       }
     }
   } catch (error) {
-    logger.error("Error executing SVN command:", { error });
+    // Log error with sensitive data masked
+    logger.error("Error executing SVN propset command:", {
+      error: error instanceof Error 
+        ? error.message.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+            .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+        : String(error).replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+            .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+    });
     return NextResponse.json({ 
       response: { 
         success: "0", 

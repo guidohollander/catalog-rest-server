@@ -5,7 +5,7 @@
         "host": "localhost"
     },
     "logging": {
-        "level": "info",
+        "level": "debug",
         "format": "json"
     },
     "repositories": {
