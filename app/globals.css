@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .service-card {
+    @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 transform transition-all hover:scale-105 hover:shadow-xl border border-white/20;
+  }
+
+  .card-icon {
+    @apply text-2xl mr-3;
+  }
+
+  .card-title {
+    @apply text-2xl font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent;
+  }
+
+  .feature-list {
+    @apply space-y-2 text-gray-700;
+  }
+
+  .feature-item {
+    @apply flex items-center space-x-2 hover:text-indigo-600 transition-colors;
+  }
+}
