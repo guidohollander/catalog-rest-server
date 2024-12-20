@@ -92,6 +92,10 @@ Write-Host "Building and pushing Docker image..."
 ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && git reset --hard && git clean -fd && git checkout $currentBranch && git pull"
 Test-LastCommand
 
+# Make scripts executable
+ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && chmod +x scripts/*.sh"
+Test-LastCommand
+
 # Now run the build
 $dockerBuildOutput = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && ./scripts/build-and-push.sh"
 if ($LASTEXITCODE -ne 0) {
