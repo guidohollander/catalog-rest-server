@@ -7,6 +7,10 @@ $AWS_SERVER = "aws-catalog"
 $DOCKER_SERVER_PATH = "/srv/catalog-rest-server"
 $AWS_SERVER_PATH = "/home/ec2-user/catalog-rest-server"
 
+# Update version before deployment
+Write-Host "`nUpdating version..." -ForegroundColor Cyan
+./scripts/update-version.ps1 -VersionType patch
+
 # Function to check if a command was successful
 function Test-LastCommand {
     if ($LASTEXITCODE -ne 0) {

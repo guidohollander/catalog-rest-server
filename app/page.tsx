@@ -1,5 +1,6 @@
 import { FaServer, FaJenkins, FaCode, FaDatabase, FaCheckCircle } from 'react-icons/fa';
 import { BiGitBranch } from 'react-icons/bi';
+import { VersionDisplay } from './components/VersionDisplay';
 
 export default function Home() {
   return (
@@ -100,6 +101,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <VersionDisplay />
     </main>
   )
 }

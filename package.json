@@ -1,38 +1,38 @@
 {
-  "name": "catalog-rest",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "node .next/standalone/server.js",
-    "lint": "next lint",
-    "clean": "rimraf .next",
-    "rebuild": "npm run clean && npm run build"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.7",
-    "next": "^15.0.3",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-icons": "^5.4.0",
-    "rimraf": "^3.0.2",
-    "winston": "^3.11.0",
-    "xml2js": "^0.6.2"
-  },
-  "devDependencies": {
-    "@types/node": "^22.10.1",
-    "@types/react": "^18.3.14",
-    "@types/xml2js": "^0.4.14",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
-    "autoprefixer": "^10.4.20",
-    "critters": "^0.0.23",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.22.0",
-    "eslint-config-next": "^13.5.4",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.16",
-    "typescript": "^5.7.2"
-  }
+    "name":  "catalog-rest",
+    "version":  "0.1.1",
+    "private":  true,
+    "scripts":  {
+                    "dev":  "next dev",
+                    "build":  "next build",
+                    "start":  "node .next/standalone/server.js",
+                    "lint":  "next lint",
+                    "clean":  "rimraf .next",
+                    "rebuild":  "npm run clean \u0026\u0026 npm run build"
+                },
+    "dependencies":  {
+                         "dotenv":  "^16.4.7",
+                         "next":  "^15.0.3",
+                         "react":  "^18.3.1",
+                         "react-dom":  "^18.3.1",
+                         "react-icons":  "^5.4.0",
+                         "rimraf":  "^3.0.2",
+                         "winston":  "^3.11.0",
+                         "xml2js":  "^0.6.2"
+                     },
+    "devDependencies":  {
+                            "@types/node":  "^22.10.1",
+                            "@types/react":  "^18.3.14",
+                            "@types/xml2js":  "^0.4.14",
+                            "@typescript-eslint/eslint-plugin":  "^5.62.0",
+                            "@typescript-eslint/parser":  "^5.62.0",
+                            "autoprefixer":  "^10.4.20",
+                            "critters":  "^0.0.23",
+                            "cross-env":  "^7.0.3",
+                            "eslint":  "^8.22.0",
+                            "eslint-config-next":  "^13.5.4",
+                            "postcss":  "^8.4.49",
+                            "tailwindcss":  "^3.4.16",
+                            "typescript":  "^5.7.2"
+                        }
 }

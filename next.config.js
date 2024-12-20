@@ -4,11 +4,11 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
   },
-  webpack: (config, { dev, isServer }) => {
-    // Only run CSS optimization in production and when not running on the server
-    if (!dev && !isServer) {
-      config.optimization.minimize = true;
-    }
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.json$/,
+      type: 'json',
+    });
     return config;
   },
 }
