@@ -1,3 +1,5 @@
+'use client';
+
 import { FaServer, FaJenkins, FaCode, FaDatabase, FaCheckCircle, FaGift } from 'react-icons/fa';
 import { BiGitBranch } from 'react-icons/bi';
 import { VersionDisplay } from './components/VersionDisplay';
@@ -44,20 +46,24 @@ export default function Home() {
                 </li>
                 <li className="flex items-center space-x-2 text-gray-300">
                   <FaCheckCircle className="text-green-400" />
-                  <span>/api/svn/info</span>
+                  <span>/api/svn/exists</span>
+                </li>
+                <li className="flex items-center space-x-2 text-gray-300">
+                  <FaCheckCircle className="text-green-400" />
+                  <span>/api/svn/copy</span>
                 </li>
               </ul>
             </div>
           </div>
 
           {/* Jenkins Section */}
-          <div className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-700/50 transform hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:border-pink-500/50">
+          <div className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-700/50 transform hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:border-yellow-500/50">
             <div className="flex items-center mb-4">
-              <FaJenkins className="text-3xl mr-3 text-pink-400" />
-              <h2 className="text-xl font-semibold text-gray-100">Jenkins Builds</h2>
+              <FaJenkins className="text-3xl mr-3 text-yellow-400" />
+              <h2 className="text-xl font-semibold text-gray-100">Jenkins Services</h2>
             </div>
             <div className="space-y-4">
-              <p className="text-gray-400 font-inter">Build management:</p>
+              <p className="text-gray-400 font-inter">Available endpoints:</p>
               <ul className="space-y-2">
                 <li className="flex items-center space-x-2 text-gray-300">
                   <FaCheckCircle className="text-green-400" />
@@ -65,56 +71,29 @@ export default function Home() {
                 </li>
                 <li className="flex items-center space-x-2 text-gray-300">
                   <FaCheckCircle className="text-green-400" />
-                  <span>/api/jenkins/status</span>
+                  <span>/api/jenkins/build</span>
                 </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* System Status */}
-          <div className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-700/50 transform hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:border-purple-500/50">
-            <div className="flex items-center mb-4">
-              <FaServer className="text-3xl mr-3 text-purple-400" />
-              <h2 className="text-xl font-semibold text-gray-100">System Status</h2>
-            </div>
-            <div className="space-y-4">
-              <p className="text-gray-400 font-inter">Health monitoring:</p>
-              <ul className="space-y-2">
                 <li className="flex items-center space-x-2 text-gray-300">
                   <FaCheckCircle className="text-green-400" />
-                  <span>/api/health</span>
+                  <span>/api/jenkins/ping</span>
                 </li>
               </ul>
             </div>
           </div>
-        </div>
 
-        {/* API Documentation */}
-        <div className="mt-16 bg-gray-800/50 backdrop-blur-lg rounded-xl p-8 shadow-lg border border-gray-700/50 max-w-4xl mx-auto transform hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:border-indigo-500/50">
-          <div className="flex items-center mb-6">
-            <BiGitBranch className="text-3xl mr-3 text-indigo-400" />
-            <h2 className="text-3xl font-semibold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-              API Documentation
-            </h2>
-          </div>
-          <div className="prose prose-invert max-w-none">
-            <p className="text-gray-300 mb-6 font-inter">
-              This service catalog provides RESTful APIs for managing SVN repositories and Jenkins builds.
-              All endpoints require authentication using the provided API key.
-            </p>
-            <div className="bg-gray-900/50 rounded-lg p-6 border border-gray-700">
-              <h3 className="text-lg font-semibold text-indigo-300 mb-3">Authentication</h3>
-              <p className="text-gray-300 font-inter">
-                Include your API key in the request headers:
-                <code className="bg-gray-800 text-sm px-3 py-1 rounded ml-2 text-pink-400 border border-gray-700">
-                  X-API-Key: your-api-key
-                </code>
-              </p>
+          {/* Version Section */}
+          <div className="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 shadow-lg border border-gray-700/50 transform hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:border-yellow-500/50">
+            <div className="flex items-center mb-4">
+              <BiGitBranch className="text-3xl mr-3 text-yellow-400" />
+              <h2 className="text-xl font-semibold text-gray-100">Version</h2>
+            </div>
+            <div className="space-y-4">
+              <p className="text-gray-400 font-inter">Current version:</p>
+              <VersionDisplay />
             </div>
           </div>
         </div>
       </div>
-      <VersionDisplay />
     </main>
-  )
+  );
 }

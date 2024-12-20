@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const colors = [
@@ -29,17 +29,7 @@ export function Fireworks() {
   const [fireworks, setFireworks] = useState<Firework[]>([]);
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    // Show fireworks after 2 seconds
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-      startFireworks();
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const startFireworks = () => {
+  const startFireworks = useCallback(() => {
     let count = 0;
     const interval = setInterval(() => {
       if (count >= 25) { // Increased number of fireworks
@@ -67,7 +57,17 @@ export function Fireworks() {
     }, 200); // Faster launch interval
 
     return () => clearInterval(interval);
-  };
+  }, []);
+
+  useEffect(() => {
+    // Show fireworks after 2 seconds
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+      startFireworks();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [startFireworks]);
 
   if (!isVisible) return null;
 
@@ -99,60 +99,33 @@ export function Fireworks() {
                   bottom: 0,
                   left: '50%',
                   background: `linear-gradient(to top, transparent, ${firework.color})`,
-                  transformOrigin: 'bottom'
+                  transformOrigin: 'bottom',
                 }}
               />
-              
               {/* Explosion particles */}
-              {[...Array(firework.particles)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{
-                    x: Math.cos(i * (2 * Math.PI / firework.particles)) * 100,
-                    y: Math.sin(i * (2 * Math.PI / firework.particles)) * 100,
-                    opacity: [1, 0],
-                    scale: [1, 0]
-                  }}
-                  transition={{ 
-                    duration: 1,
-                    ease: "easeOut",
-                    times: [0, 1]
-                  }}
-                  className="absolute"
-                  style={{
-                    width: `${firework.size * 4}px`,
-                    height: `${firework.size * 4}px`,
-                    borderRadius: '50%',
-                    backgroundColor: firework.color,
-                    boxShadow: `0 0 ${firework.size * 8}px ${firework.color}`
-                  }}
-                />
-              ))}
-              
-              {/* Secondary particles */}
-              {[...Array(firework.particles * 2)].map((_, i) => (
-                <motion.div
-                  key={`spark-${i}`}
-                  animate={{
-                    x: (Math.random() - 0.5) * 160,
-                    y: (Math.random() - 0.5) * 160,
-                    opacity: [1, 0],
-                    scale: [1, 0]
-                  }}
-                  transition={{ 
-                    duration: Math.random() * 0.5 + 0.5,
-                    ease: "easeOut"
-                  }}
-                  className="absolute"
-                  style={{
-                    width: `${firework.size}px`,
-                    height: `${firework.size}px`,
-                    borderRadius: '50%',
-                    backgroundColor: firework.color,
-                    boxShadow: `0 0 ${firework.size * 4}px ${firework.color}`
-                  }}
-                />
-              ))}
+              {Array.from({ length: firework.particles }).map((_, i) => {
+                const angle = (i * 360) / firework.particles;
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ scale: 0 }}
+                    animate={{
+                      scale: [0, 1, 0],
+                      x: [0, Math.cos(angle * Math.PI / 180) * 50],
+                      y: [0, Math.sin(angle * Math.PI / 180) * 50],
+                    }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    style={{
+                      position: 'absolute',
+                      width: `${firework.size}px`,
+                      height: `${firework.size}px`,
+                      borderRadius: '50%',
+                      backgroundColor: firework.color,
+                      boxShadow: `0 0 ${firework.size * 2}px ${firework.color}`,
+                    }}
+                  />
+                );
+              })}
             </div>
           </motion.div>
         ))}
