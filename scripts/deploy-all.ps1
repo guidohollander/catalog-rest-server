@@ -12,7 +12,18 @@ function Test-LastCommand {
     }
 }
 
-# Commit and push changes to git
+# Step 1: Local Build and Verification
+Write-Host "Step 1: Local build and verification..." -ForegroundColor Cyan
+Write-Host "Installing dependencies..."
+npm ci
+Test-LastCommand
+
+Write-Host "Running build..."
+npm run build
+Test-LastCommand
+
+# Step 2: Git Operations
+Write-Host "`nStep 2: Git operations..." -ForegroundColor Cyan
 Write-Host "Committing and pushing changes to git..."
 git add .
 Test-LastCommand
@@ -34,17 +45,25 @@ if ($status) {
     Write-Host "No changes to commit"
 }
 
-# Build and push to registry on Docker server
+# Step 3: Docker Build
+Write-Host "`nStep 3: Docker build..." -ForegroundColor Cyan
 Write-Host "Building and pushing Docker image..."
-ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && ./scripts/build-and-push.sh"
-Test-LastCommand
+$dockerBuildOutput = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && ./scripts/build-and-push.sh"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "Docker build failed:`n$dockerBuildOutput"
+    exit $LASTEXITCODE
+}
+Write-Host $dockerBuildOutput
+
+# Step 4: AWS Deployment
+Write-Host "`nStep 4: AWS deployment..." -ForegroundColor Cyan
 
 # Create directory structure on AWS if it doesn't exist
 Write-Host "Setting up directories on AWS..."
 ssh $AWS_SERVER "mkdir -p $AWS_SERVER_PATH/scripts"
 Test-LastCommand
 
-# Copy deployment scripts to AWS
+# Copy deployment scripts and config to AWS
 Write-Host "Copying deployment files to AWS..."
 scp ./scripts/deploy.sh $AWS_SERVER":$AWS_SERVER_PATH/scripts/"
 Test-LastCommand
@@ -63,9 +82,13 @@ Write-Host "Setting execute permissions..."
 ssh $AWS_SERVER "chmod +x $AWS_SERVER_PATH/scripts/deploy.sh"
 Test-LastCommand
 
-# Deploy on AWS server
+# Run deploy.sh on AWS server
 Write-Host "Deploying to AWS..."
-ssh $AWS_SERVER "cd $AWS_SERVER_PATH && ./scripts/deploy.sh"
-Test-LastCommand
+$awsDeployOutput = ssh $AWS_SERVER "cd $AWS_SERVER_PATH && ./scripts/deploy.sh"
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "AWS deployment failed:`n$awsDeployOutput"
+    exit $LASTEXITCODE
+}
+Write-Host $awsDeployOutput
 
-Write-Host "Deployment complete!"
+Write-Host "`nDeployment complete!" -ForegroundColor Green
