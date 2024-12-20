@@ -3,9 +3,7 @@ $env:DOCKER_BUILDKIT = 1
 
 # Configuration
 $DOCKER_SERVER = "docker-build"
-$AWS_SERVER = "aws-catalog"
 $DOCKER_SERVER_PATH = "/srv/catalog-rest-server"
-$AWS_SERVER_PATH = "/home/ec2-user/catalog-rest-server"
 
 # Update version before deployment
 Write-Host "`nUpdating version..." -ForegroundColor Cyan
@@ -91,74 +89,14 @@ if ($status) {
     Write-Host "No changes to commit"
 }
 
-# Step 3: Docker Build
-Write-Host "`nStep 3: Docker build..." -ForegroundColor Cyan
-Write-Host "Building and pushing Docker image..."
+# Step 2: Docker build and push
+Write-Host "`nStep 2: Docker build and push..." -ForegroundColor Cyan
 
-# Only reset and clean if there are changes
-$changes = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && git status --porcelain"
-if ($changes) {
-    ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && git reset --hard && git clean -fd && git checkout $currentBranch && git pull"
-    Test-LastCommand
-}
+# Build and push Docker image
+./scripts/build-and-push.sh
 
-# Make scripts executable
-ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && chmod +x scripts/*.sh"
-Test-LastCommand
-
-# Now run the build
-$dockerBuildOutput = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && DOCKER_BUILDKIT=1 ./scripts/build-and-push.sh"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Docker build failed:`n$dockerBuildOutput"
-    exit $LASTEXITCODE
-}
-Write-Host $dockerBuildOutput
-
-# Start parallel deployments
-Write-Host "`nStarting parallel deployments..." -ForegroundColor Cyan
-
-# AWS Deployment Job
-$awsJob = Start-Job -ScriptBlock {
-    param($AWS_SERVER, $AWS_SERVER_PATH)
-    
-    # Create directory structure on AWS if it doesn't exist
-    ssh $AWS_SERVER "mkdir -p $AWS_SERVER_PATH/scripts"
-    
-    # Copy .env file if it exists
-    if (Test-Path .env) {
-        scp ./.env $AWS_SERVER":$AWS_SERVER_PATH/.env"
-    }
-    
-    # Make script executable and deploy
-    ssh $AWS_SERVER "cd $AWS_SERVER_PATH && ./scripts/deploy.sh"
-} -ArgumentList $AWS_SERVER, $AWS_SERVER_PATH
-
-# Docker Server Deployment Job
-$dockerServerJob = Start-Job -ScriptBlock {
-    param($DOCKER_SERVER_IP)
-    ssh $DOCKER_SERVER_IP "docker stop catalog-rest-server-dev || true && docker rm catalog-rest-server-dev || true && docker run -d --name catalog-rest-server-dev -p 3010:3000 registry.hollanderconsulting.nl/catalog-rest-server:latest"
-} -ArgumentList "192.168.1.152"
-
-# Wait for both jobs to complete
-Write-Host "Waiting for deployments to complete..."
-$awsResult = Receive-Job -Job $awsJob -Wait
-$dockerServerResult = Receive-Job -Job $dockerServerJob -Wait
-
-# Check for any errors in the jobs
-if ($awsJob.State -eq 'Failed') {
-    Write-Error "AWS deployment failed:`n$awsResult"
-    exit 1
-}
-if ($dockerServerJob.State -eq 'Failed') {
-    Write-Error "Docker server deployment failed:`n$dockerServerResult"
-    exit 1
-}
-
-# Clean up jobs
-Remove-Job -Job $awsJob, $dockerServerJob
-
-# Step 5: Docker server deployment
-Write-Host "`nStep 5: Docker server deployment..." -ForegroundColor Cyan
+# Step 3: Docker server deployment
+Write-Host "`nStep 3: Docker server deployment..." -ForegroundColor Cyan
 
 # Create backup of current deployment if it doesn't exist
 ssh 192.168.1.152 "if [ ! -f /srv/docker-compose.yml.bak ]; then cp /srv/docker-compose.yml /srv/docker-compose.yml.bak 2>/dev/null || true; fi"
@@ -197,14 +135,17 @@ function Test-Port {
 
 # Test the ports
 Write-Host "`nTesting connectivity..."
-$ports = @(3010, 80)
-foreach ($port in $ports) {
-    if (Test-Port -Server "192.168.1.152" -Port $port) {
-        Write-Host "Port $port is accessible" -ForegroundColor Green
-    } else {
-        Write-Host "Port $port is not accessible" -ForegroundColor Red
-    }
+if (Test-Port -Server "192.168.1.152" -Port 3010) {
+    Write-Host "Port 3010 is accessible" -ForegroundColor Green
+} else {
+    Write-Host "Warning: Port 3010 is not accessible" -ForegroundColor Yellow
+}
+
+if (Test-Port -Server "192.168.1.152" -Port 80) {
+    Write-Host "Port 80 is accessible" -ForegroundColor Green
+} else {
+    Write-Host "Warning: Port 80 is not accessible" -ForegroundColor Yellow
 }
 
 Write-Host "`nTo rollback to the previous configuration, run:"
-Write-Host "ssh 192.168.1.152 'cd /srv && docker-compose down && cp docker-compose.yml.bak docker-compose.yml && docker-compose up -d'"
+Write-Host "ssh 192.168.1.152 'cd /srv && docker compose down && cp docker-compose.yml.bak docker-compose.yml && docker compose up -d'" -ForegroundColor Cyan
