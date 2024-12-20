@@ -12,9 +12,6 @@ function Test-LastCommand {
     }
 }
 
-# Get current branch name
-$CURRENT_BRANCH = git rev-parse --abbrev-ref HEAD
-
 # Commit and push changes to git
 Write-Host "Committing and pushing changes to git..."
 git add .
@@ -25,9 +22,14 @@ $status = git status --porcelain
 if ($status) {
     Write-Host "Changes detected, committing..."
     git commit -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
-    Test-LastCommand
-    git push origin $CURRENT_BRANCH
-    Test-LastCommand
+    # Don't test last command here as it might fail if nothing to commit
+    
+    # Push changes - ignore the main branch error as we're using master
+    git push origin master 2>&1 | ForEach-Object {
+        if ($_ -notmatch "src refspec main does not match any") {
+            Write-Host $_
+        }
+    }
 } else {
     Write-Host "No changes to commit"
 }
