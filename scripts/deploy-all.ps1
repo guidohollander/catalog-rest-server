@@ -12,6 +12,9 @@ function Test-LastCommand {
     }
 }
 
+# Get current branch name
+$CURRENT_BRANCH = git rev-parse --abbrev-ref HEAD
+
 # Commit and push changes to git
 Write-Host "Committing and pushing changes to git..."
 git add .
@@ -23,7 +26,7 @@ if ($status) {
     Write-Host "Changes detected, committing..."
     git commit -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
     Test-LastCommand
-    git push
+    git push origin "$CURRENT_BRANCH":"$CURRENT_BRANCH"
     Test-LastCommand
 } else {
     Write-Host "No changes to commit"
