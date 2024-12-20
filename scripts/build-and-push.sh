@@ -14,7 +14,7 @@ chmod 600 /home/guido/.ssh/authorized_keys
 DATE_TAG=$(date +%Y%m%d-%H%M%S)
 
 # Pull latest changes
-git pull origin $GIT_BRANCH
+git pull
 
 # Build the Docker image
 docker build -t $IMAGE_NAME:$DATE_TAG -t $IMAGE_NAME:latest .
