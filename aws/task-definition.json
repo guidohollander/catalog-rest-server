@@ -1,0 +1,36 @@
+{
+    "family": "catalog-rest-server",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "executionRoleArn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+        {
+            "name": "app",
+            "image": "YOUR_ACCOUNT_ID.dkr.ecr.YOUR_REGION.amazonaws.com/catalog-rest-server:latest",
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "NODE_ENV",
+                    "value": "production"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/catalog-rest-server",
+                    "awslogs-region": "YOUR_REGION",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ]
+}

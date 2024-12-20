@@ -1,0 +1,13 @@
+# Docker Compose configuration for local deployment
+# - catalog-rest-server: Node.js application running on port 3000
+
+services:
+  catalog-rest-server:
+    image: registry.hollanderconsulting.nl/catalog-rest-server:latest
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - HOST=0.0.0.0
+    ports:
+      - "3000:3000"
+    restart: unless-stopped

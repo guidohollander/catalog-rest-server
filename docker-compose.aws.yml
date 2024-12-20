@@ -1,0 +1,24 @@
+# Docker Compose configuration for AWS deployment with Nginx
+# - catalog-rest-server: Node.js application
+# - nginx: Reverse proxy for Cloudflare integration
+
+services:
+  catalog-rest-server:
+    image: registry.hollanderconsulting.nl/catalog-rest-server:latest
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - HOST=0.0.0.0
+    ports:
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - /srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - catalog-rest-server
+    restart: unless-stopped
