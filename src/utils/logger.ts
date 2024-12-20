@@ -1,5 +1,6 @@
 import winston from 'winston';
 import { format } from 'winston';
+import path from 'path';
 const { combine, timestamp, printf, colorize } = format;
 
 // Custom format to obfuscate sensitive data
@@ -51,6 +52,9 @@ const logFormat = printf(({ level, message, timestamp }) => {
   }`;
 });
 
+// Get the log directory path
+const LOG_DIR = path.join(process.cwd(), 'logs');
+
 // Create the logger instance
 const logger = winston.createLogger({
   format: combine(
@@ -62,18 +66,18 @@ const logger = winston.createLogger({
   transports: [
     // Console transport for development
     new winston.transports.Console({
-      level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+      level: process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
     }),
     // File transport for errors
     new winston.transports.File({
-      filename: 'logs/error.log',
+      filename: path.join(LOG_DIR, 'error.log'),
       level: 'error',
       maxsize: 5242880, // 5MB
       maxFiles: 5,
     }),
     // File transport for all logs
     new winston.transports.File({
-      filename: 'logs/combined.log',
+      filename: path.join(LOG_DIR, 'combined.log'),
       maxsize: 5242880, // 5MB
       maxFiles: 5,
     }),
