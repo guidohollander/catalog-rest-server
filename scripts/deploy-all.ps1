@@ -16,10 +16,18 @@ function Test-LastCommand {
 Write-Host "Committing and pushing changes to git..."
 git add .
 Test-LastCommand
-git commit -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
-# Don't test last command here as it will fail if there's nothing to commit
-git push
-Test-LastCommand
+
+# Only commit and push if there are changes
+$status = git status --porcelain
+if ($status) {
+    Write-Host "Changes detected, committing..."
+    git commit -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
+    Test-LastCommand
+    git push
+    Test-LastCommand
+} else {
+    Write-Host "No changes to commit"
+}
 
 # Build and push to registry on Docker server
 Write-Host "Building and pushing Docker image..."
