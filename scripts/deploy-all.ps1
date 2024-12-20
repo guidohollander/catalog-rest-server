@@ -12,19 +12,53 @@ function Test-LastCommand {
     }
 }
 
+# Function to run npm commands
+function Run-NpmCommand {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string[]]$Arguments
+    )
+    Write-Host "Running: npm $($Arguments -join ' ')"
+    # Run npm command and filter out deprecation warnings
+    $output = & npm $Arguments 2>&1 | Where-Object { 
+        $_ -notmatch "npm warn deprecated" -and
+        $_ -notmatch "packages are looking for funding"
+    }
+    $output | ForEach-Object { Write-Host $_ }
+    $LASTEXITCODE = $?
+    if (-not $?) {
+        Write-Error "npm command failed"
+        exit 1
+    }
+}
+
+# Function to clean .next directory
+function Clean-NextBuild {
+    if (Test-Path .next) {
+        Write-Host "Cleaning .next directory..."
+        Remove-Item -Recurse -Force .next
+    }
+}
+
 # Step 1: Local Build and Verification
 Write-Host "Step 1: Local build and verification..." -ForegroundColor Cyan
+
 Write-Host "Installing dependencies..."
-npm ci
-Test-LastCommand
+Run-NpmCommand @("install")
+
+Clean-NextBuild
 
 Write-Host "Running build..."
-npm run build
-Test-LastCommand
+Run-NpmCommand @("run", "build")
 
 # Step 2: Git Operations
 Write-Host "`nStep 2: Git operations..." -ForegroundColor Cyan
 Write-Host "Committing and pushing changes to git..."
+
+# Get current branch name
+$currentBranch = git rev-parse --abbrev-ref HEAD
+Test-LastCommand
+
 git add .
 Test-LastCommand
 
@@ -33,14 +67,10 @@ $status = git status --porcelain
 if ($status) {
     Write-Host "Changes detected, committing..."
     git commit -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
-    # Don't test last command here as it might fail if nothing to commit
     
-    # Push changes - ignore the main branch error as we're using master
-    git push origin master 2>&1 | ForEach-Object {
-        if ($_ -notmatch "src refspec main does not match any") {
-            Write-Host $_
-        }
-    }
+    Write-Host "Pushing to $currentBranch branch..."
+    git push origin $currentBranch
+    Test-LastCommand
 } else {
     Write-Host "No changes to commit"
 }
@@ -48,7 +78,7 @@ if ($status) {
 # Step 3: Docker Build
 Write-Host "`nStep 3: Docker build..." -ForegroundColor Cyan
 Write-Host "Building and pushing Docker image..."
-$dockerBuildOutput = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && ./scripts/build-and-push.sh"
+$dockerBuildOutput = ssh $DOCKER_SERVER "cd $DOCKER_SERVER_PATH && git checkout $currentBranch && git pull && ./scripts/build-and-push.sh"
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Docker build failed:`n$dockerBuildOutput"
     exit $LASTEXITCODE
