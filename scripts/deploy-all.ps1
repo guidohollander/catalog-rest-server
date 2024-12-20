@@ -3,7 +3,7 @@ $DOCKER_SERVER = "guido@192.168.1.152"
 $AWS_SERVER = "ec2-user@ec2-44-204-81-162.compute-1.amazonaws.com"
 $DOCKER_SERVER_PATH = "/srv/catalog-rest-server"
 $AWS_SERVER_PATH = "/home/ec2-user/catalog-rest-server"
-$AWS_PEM_PATH = "$env:USERPROFILE\.ssh\aws-key.pem"  # Update this with your actual .pem file path
+$AWS_PEM_PATH = "$env:USERPROFILE\.ssh\service-catalog-rest-api.pem"  # Update this with your actual .pem file path
 
 # Function to check if a command was successful
 function Test-LastCommand {
