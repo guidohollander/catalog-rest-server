@@ -3,7 +3,7 @@
 
 services:
   catalog-rest-server:
-    image: registry.hollanderconsulting.nl/catalog-rest-server:latest
+    image: registry.hollanderconsulting.nl/catalog-rest-server:v${VERSION:-0.1.23}
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
