@@ -5,6 +5,7 @@
 services:
   catalog-rest-server:
     image: registry.hollanderconsulting.nl/catalog-rest-server:latest
+    env_file: .env
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
@@ -12,7 +13,6 @@ services:
       - LOG_LEVEL=debug
       - DEBUG=express:*,next:*
     volumes:
-      - /srv/catalog-rest-server/.env:/app/.env:ro
       - /srv/catalog-rest-server/logs:/app/logs
     ports:
       - "127.0.0.1:3000:3000"
