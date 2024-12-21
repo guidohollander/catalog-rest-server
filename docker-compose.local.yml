@@ -8,6 +8,8 @@ services:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       - HOST=0.0.0.0
+      - NEXT_PUBLIC_APP_VERSION=${VERSION:-0.1.23}
+      - NEXT_PUBLIC_DEFAULT_THEME=dark
     ports:
       - "3000:3000"
     restart: unless-stopped

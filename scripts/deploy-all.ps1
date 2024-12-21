@@ -88,12 +88,15 @@ function Deploy-ToAWS {
 function Deploy-ToDockerServer {
     Write-Host "`nDeploying to Docker server..." -ForegroundColor Cyan
     
+    Write-Host "Cleaning up and cloning fresh repository..."
+    & ssh ${DockerServer} "rm -rf /srv/catalog-rest-server && cd /srv && git clone https://github.com/guidohollander/catalog-rest-server.git"
+    Test-LastCommand
+
     # Create backup of current deployment if it doesn't exist
     & ssh ${DockerServer} "if [ ! -f /srv/docker-compose.yml.bak ]; then cp /srv/docker-compose.yml /srv/docker-compose.yml.bak 2>/dev/null || true; fi"
 
     # Copy files
     Write-Host "Copying configuration files..."
-    & scp -r docker-compose.local.yml Dockerfile .next "${DockerServer}:/srv/catalog-rest-server/"
     & scp docker-compose.local.yml "${DockerServer}:/srv/docker-compose.yml"
 
     # Deploy with version

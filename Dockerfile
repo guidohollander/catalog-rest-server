@@ -34,6 +34,9 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ARG VERSION
 ENV NEXT_PUBLIC_APP_VERSION=${VERSION}
+
+# Add a build-time check for the version
+RUN echo "Building with version: ${NEXT_PUBLIC_APP_VERSION}"
 RUN npm run build
 
 # Copy necessary files for standalone server
@@ -43,6 +46,9 @@ RUN cp -r .next/static .next/standalone/.next/ && \
 # Cleanup dev dependencies
 RUN rm -rf node_modules && \
     npm ci --only=production
+
+# Ensure runtime has access to the version
+ENV NEXT_PUBLIC_APP_VERSION=${VERSION}
 
 # Start the application
 ENV NODE_ENV=production
