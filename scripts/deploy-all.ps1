@@ -63,7 +63,7 @@ function Deploy-ToAWS {
     Test-LastCommand
 
     Write-Host "Running deployment script..." -ForegroundColor Cyan
-    & ssh -i $SSHKeyPath ${AWSHost} "cd /srv/catalog-rest-server && VERSION=$newVersion docker-compose pull && VERSION=$newVersion docker-compose up -d"
+    & ssh -i $SSHKeyPath ${AWSHost} "cd /srv/catalog-rest-server && docker-compose pull && docker-compose up -d"
     Test-LastCommand
 
     Write-Host "`nAWS Deployment complete!" -ForegroundColor Green
@@ -74,7 +74,7 @@ function Deploy-ToDockerServer {
     Write-Host "`nDeploying to Docker server..." -ForegroundColor Cyan
     
     Write-Host "Deploying services..."
-    & ssh ${DockerServer} "cd /srv && VERSION=$newVersion docker-compose pull && VERSION=$newVersion docker-compose up -d"
+    & ssh ${DockerServer} "cd /srv && docker compose pull && docker compose up -d"
 
     Write-Host "`nDocker Server Deployment complete!" -ForegroundColor Green
 }
