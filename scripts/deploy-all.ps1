@@ -13,9 +13,17 @@ param (
 # Enable BuildKit for faster Docker builds
 $env:DOCKER_BUILDKIT = 1
 
-# Get version from package.json
-$version = (Get-Content package.json | ConvertFrom-Json).version
-Write-Host "Deploying version $version..."
+# Get current version and increment patch number
+$packageJson = Get-Content package.json | ConvertFrom-Json
+$versionParts = $packageJson.version.Split('.')
+$newPatch = [int]$versionParts[2] + 1
+$newVersion = "$($versionParts[0]).$($versionParts[1]).$newPatch"
+
+# Update version in package.json
+$packageJson.version = $newVersion
+$packageJson | ConvertTo-Json -Depth 100 | Set-Content package.json
+
+Write-Host "Deploying version $newVersion..."
 
 # Function to check if a command was successful
 function Test-LastCommand {
@@ -58,26 +66,23 @@ function Clean-NextBuild {
 function Deploy-ToAWS {
     Write-Host "`nDeploying to AWS..." -ForegroundColor Cyan
     
-    # Create required directories on EC2
-    Write-Host "Creating directories..." -ForegroundColor Cyan
-    & ssh -i $SSHKeyPath -o StrictHostKeyChecking=no ${AWSHost} "sudo mkdir -p /srv/catalog-rest-server/nginx && sudo chown -R ec2-user:ec2-user /srv/catalog-rest-server"
+    Write-Host "Updating repository on AWS..."
+    & ssh -i $SSHKeyPath -o StrictHostKeyChecking=no ${AWSHost} "cd /srv/catalog-rest-server && git fetch && git reset --hard origin/master"
     Test-LastCommand
 
-    # Copy configuration files and build artifacts
+    # Create required directories on EC2
+    Write-Host "Creating directories..." -ForegroundColor Cyan
+    & ssh -i $SSHKeyPath ${AWSHost} "sudo mkdir -p /srv/catalog-rest-server/nginx && sudo chown -R ec2-user:ec2-user /srv/catalog-rest-server"
+    Test-LastCommand
+
+    # Copy only the necessary configuration files
     Write-Host "Copying configuration files..." -ForegroundColor Cyan
-    & scp -i $SSHKeyPath -r `
-        docker-compose.aws.yml `
-        nginx/nginx.aws.conf `
-        scripts/deploy-with-nginx.sh `
-        .env `
-        Dockerfile `
-        .next `
-        "${AWSHost}:/srv/catalog-rest-server/"
+    & scp -i $SSHKeyPath docker-compose.aws.yml "${AWSHost}:/srv/catalog-rest-server/docker-compose.yml"
     Test-LastCommand
 
     # Make the deploy script executable and run it with version
     Write-Host "Running deployment script..." -ForegroundColor Cyan
-    & ssh -i $SSHKeyPath ${AWSHost} "cd /srv/catalog-rest-server && mv docker-compose.aws.yml docker-compose.yml && chmod +x deploy-with-nginx.sh && VERSION=$version sudo -E ./deploy-with-nginx.sh"
+    & ssh -i $SSHKeyPath ${AWSHost} "cd /srv/catalog-rest-server && chmod +x scripts/deploy-with-nginx.sh && VERSION=$newVersion sudo -E ./scripts/deploy-with-nginx.sh"
     Test-LastCommand
 
     Write-Host "`nAWS Deployment complete!" -ForegroundColor Green
@@ -88,8 +93,8 @@ function Deploy-ToAWS {
 function Deploy-ToDockerServer {
     Write-Host "`nDeploying to Docker server..." -ForegroundColor Cyan
     
-    Write-Host "Cleaning up and cloning fresh repository..."
-    & ssh ${DockerServer} "rm -rf /srv/catalog-rest-server && cd /srv && git clone https://github.com/guidohollander/catalog-rest-server.git"
+    Write-Host "Forcing update of repository..."
+    & ssh ${DockerServer} "cd /srv/catalog-rest-server && git fetch && git reset --hard origin/master"
     Test-LastCommand
 
     # Create backup of current deployment if it doesn't exist
@@ -101,7 +106,7 @@ function Deploy-ToDockerServer {
 
     # Deploy with version
     Write-Host "Deploying services..."
-    & ssh ${DockerServer} "cd /srv && VERSION=$version docker compose down && VERSION=$version docker compose up -d"
+    & ssh ${DockerServer} "cd /srv && VERSION=$newVersion docker compose down && VERSION=$newVersion docker compose up -d"
 
     Write-Host "`nDocker Server Deployment complete!" -ForegroundColor Green
     Write-Host "The service is now available at:"
@@ -159,17 +164,17 @@ if ($status) {
     git push origin $currentBranch
     
     # Only create tag if it doesn't exist
-    $tagExists = git tag -l "v$version"
+    $tagExists = git tag -l "v$newVersion"
     if (-not $tagExists) {
-        git tag -a "v$version" -m "Version $version"
-        git push origin "v$version"
+        git tag -a "v$newVersion" -m "Version $newVersion"
+        git push origin "v$newVersion"
     }
 }
 
 Write-Host "`nStep 3: Docker build and push on Docker server..." -ForegroundColor Cyan
 Write-Host "Copying build script..."
 & scp -r scripts/build-and-push.sh Dockerfile .next "${DockerServer}:/tmp/"
-& ssh ${DockerServer} "cd /tmp && chmod +x build-and-push.sh && VERSION=$version ./build-and-push.sh"
+& ssh ${DockerServer} "cd /tmp && chmod +x build-and-push.sh && VERSION=$newVersion ./build-and-push.sh"
 
 Write-Host "`nStep 4: Deployment..." -ForegroundColor Cyan
 

@@ -6,6 +6,12 @@ IMAGE_NAME="catalog-rest-server"
 APP_CONTAINER_NAME="catalog-rest-server-catalog-rest-server-1"
 NGINX_CONTAINER_NAME="catalog-rest-server-nginx-1"
 
+# Build and push the Docker image
+echo "Building and pushing Docker image..."
+VERSION=${VERSION:-latest}
+docker build --no-cache --build-arg VERSION=$VERSION -t $REGISTRY_URL/$IMAGE_NAME:v$VERSION .
+docker push $REGISTRY_URL/$IMAGE_NAME:v$VERSION
+
 # Show current status
 echo "Current container status:"
 sudo docker ps -a
@@ -14,22 +20,15 @@ sudo docker ps -a
 echo "Stopping existing containers..."
 sudo docker-compose down
 
-# Pull the latest image
-echo "Pulling latest image..."
-sudo docker pull $REGISTRY_URL/$IMAGE_NAME:latest
-
-# Create necessary directories
-echo "Setting up directories..."
+# Copy nginx configuration
+echo "Setting up nginx configuration..."
 sudo mkdir -p /srv/nginx
+sudo cp nginx/nginx.aws.conf /srv/nginx/nginx.conf
 sudo chown -R ec2-user:ec2-user /srv/nginx
-
-# Copy configuration files
-echo "Copying configuration files..."
-sudo cp ./nginx.aws.conf /srv/nginx/nginx.conf
 
 # Start containers with docker-compose
 echo "Starting containers..."
-sudo docker-compose up -d
+sudo VERSION=$VERSION docker-compose up -d
 
 # Wait for containers to start
 echo "Waiting for containers to start..."

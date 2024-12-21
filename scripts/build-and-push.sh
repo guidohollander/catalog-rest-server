@@ -10,11 +10,10 @@ export DOCKER_BUILDKIT=1
 # Get version from environment variable or default to latest
 VERSION=${VERSION:-latest}
 
-# Clean up and get fresh copy
-cd /srv
-rm -rf catalog-rest-server
-git clone https://github.com/guidohollander/catalog-rest-server.git
-cd catalog-rest-server
+# Force update repository
+cd /srv/catalog-rest-server
+git fetch
+git reset --hard origin/master
 
 # Build the Docker image
 echo "Building Docker image..."

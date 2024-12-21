@@ -2,17 +2,20 @@
 
 import { useEffect, useState } from 'react';
 
-export function VersionDisplay() {
-  const [version, setVersion] = useState(process.env.NEXT_PUBLIC_APP_VERSION || '');
+const VersionDisplay = () => {
+    const [version, setVersion] = useState<string>('');
 
-  useEffect(() => {
-    // Update version from runtime environment
-    setVersion(process.env.NEXT_PUBLIC_APP_VERSION || '');
-  }, []);
+    useEffect(() => {
+        // Get version from environment variable
+        const appVersion = process.env.NEXT_PUBLIC_APP_VERSION;
+        setVersion(appVersion || 'Version not available');
+    }, []);
 
-  return (
-    <div className="fixed bottom-4 right-4 bg-gray-100 rounded-full px-3 py-1 text-sm text-gray-600 font-mono">
-      v{version}
-    </div>
-  );
-}
+    return (
+        <div className="fixed bottom-4 right-4 text-sm text-gray-500">
+            v{version}
+        </div>
+    );
+};
+
+export default VersionDisplay;
