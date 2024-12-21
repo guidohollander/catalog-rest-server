@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 
-const VersionDisplay = () => {
+interface VersionDisplayProps {
+    className?: string;
+}
+
+const VersionDisplay = ({ className = '' }: VersionDisplayProps) => {
     const [version, setVersion] = useState<string>('');
 
     useEffect(() => {
@@ -12,7 +16,7 @@ const VersionDisplay = () => {
     }, []);
 
     return (
-        <div className="fixed bottom-4 right-4 text-sm text-gray-500">
+        <div className={className}>
             v{version}
         </div>
     );

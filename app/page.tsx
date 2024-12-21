@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import Fireworks from './components/Fireworks';
 import VersionDisplay from './components/VersionDisplay';
 
 export default function Home() {
@@ -44,35 +42,6 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-[#1a1b26] text-white">
-      <Fireworks />
-      
-      <motion.h1 
-        className="text-7xl font-bold mb-8 bg-gradient-to-r from-[#ff9a9e] to-[#ff3366] text-transparent bg-clip-text"
-        initial={{ scale: 0.5, opacity: 0 }}
-        animate={{ 
-          scale: [0.5, 1.2, 1],
-          opacity: 1
-        }}
-        transition={{
-          duration: 0.8,
-          ease: "easeOut",
-          times: [0, 0.7, 1]
-        }}
-      >
-        Happy New Year 2025!
-      </motion.h1>
-
-      <div className="text-2xl text-center mb-8">
-        Wishing you a fantastic holiday season from all of us at{' '}
-        <span className="text-yellow-400">Hollander Consulting</span>
-      </div>
-
-      <div className="text-xl text-[#ff69b4] mb-16 flex items-center">
-        <span role="img" aria-label="gift" className="mr-2">🎁</span>
-        Get ready for an exciting 2025!
-        <span role="img" aria-label="gift" className="ml-2">🎁</span>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
         <div className="bg-[#1f2937] p-6 rounded-lg">
           <h2 className="text-2xl font-bold mb-4 flex items-center">
@@ -129,10 +98,13 @@ export default function Home() {
           </h2>
           <div className="text-gray-300">
             <p className="mb-2">Current version:</p>
-            <VersionDisplay />
+            <div className="bg-white/10 px-3 py-1 rounded-full inline-block">
+              <VersionDisplay className="text-white" />
+            </div>
           </div>
         </div>
       </div>
+      <VersionDisplay className="fixed bottom-4 right-4 text-sm text-gray-500" />
     </main>
   );
 }
