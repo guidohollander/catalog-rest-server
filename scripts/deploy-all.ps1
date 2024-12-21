@@ -66,23 +66,13 @@ function Clean-NextBuild {
 function Deploy-ToAWS {
     Write-Host "`nDeploying to AWS..." -ForegroundColor Cyan
     
-    Write-Host "Updating repository on AWS..."
-    & ssh -i $SSHKeyPath -o StrictHostKeyChecking=no ${AWSHost} "cd /srv/catalog-rest-server && git fetch && git reset --hard origin/master"
-    Test-LastCommand
-
-    # Create required directories on EC2
-    Write-Host "Creating directories..." -ForegroundColor Cyan
-    & ssh -i $SSHKeyPath ${AWSHost} "sudo mkdir -p /srv/catalog-rest-server/nginx && sudo chown -R ec2-user:ec2-user /srv/catalog-rest-server"
-    Test-LastCommand
-
-    # Copy only the necessary configuration files
-    Write-Host "Copying configuration files..." -ForegroundColor Cyan
+    Write-Host "Copying files to AWS..."
     & scp -i $SSHKeyPath docker-compose.aws.yml "${AWSHost}:/srv/catalog-rest-server/docker-compose.yml"
     Test-LastCommand
 
     # Make the deploy script executable and run it with version
     Write-Host "Running deployment script..." -ForegroundColor Cyan
-    & ssh -i $SSHKeyPath ${AWSHost} "cd /srv/catalog-rest-server && chmod +x scripts/deploy-with-nginx.sh && VERSION=$newVersion sudo -E ./scripts/deploy-with-nginx.sh"
+    & ssh -i $SSHKeyPath ${AWSHost} "cd /srv/catalog-rest-server && VERSION=$newVersion docker compose pull && VERSION=$newVersion docker compose up -d"
     Test-LastCommand
 
     Write-Host "`nAWS Deployment complete!" -ForegroundColor Green
