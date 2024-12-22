@@ -42,14 +42,28 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-[#1a1b26] text-white">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+      <div className="grid grid-cols-1 gap-8 w-full max-w-2xl">
+        <div className="bg-[#1f2937] p-6 rounded-lg">
+          <h2 className="text-2xl font-bold mb-4 flex items-center">
+            <span className="text-yellow-400 mr-2">💓</span>
+            Health
+          </h2>
+          <div className="text-gray-300">
+            <ul className="space-y-2">
+              <li className="flex items-center">
+                <span className="text-green-400 mr-2">✓</span>
+                /api/health
+              </li>
+            </ul>
+          </div>
+        </div>
+
         <div className="bg-[#1f2937] p-6 rounded-lg">
           <h2 className="text-2xl font-bold mb-4 flex items-center">
             <span className="text-yellow-400 mr-2">&lt;/&gt;</span>
             SVN Services
           </h2>
           <div className="text-gray-300">
-            <p className="mb-2">Available endpoints:</p>
             <ul className="space-y-2">
               <li className="flex items-center">
                 <span className="text-green-400 mr-2">✓</span>
@@ -73,7 +87,6 @@ export default function Home() {
             Jenkins Services
           </h2>
           <div className="text-gray-300">
-            <p className="mb-2">Available endpoints:</p>
             <ul className="space-y-2">
               <li className="flex items-center">
                 <span className="text-green-400 mr-2">✓</span>
@@ -97,9 +110,8 @@ export default function Home() {
             Version
           </h2>
           <div className="text-gray-300">
-            <p className="mb-2">Current version:</p>
             <div className="bg-white/10 px-3 py-1 rounded-full inline-block">
-              <VersionDisplay className="text-white" />
+              <VersionDisplay />
             </div>
           </div>
         </div>
