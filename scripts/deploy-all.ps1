@@ -93,7 +93,7 @@ git commit -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
 git push origin master
 
 Write-Host "`nStep 3: Docker build and push..." -ForegroundColor Cyan
-& ssh ${DockerServer} "cd /srv/catalog-rest-server && git pull && VERSION=$newVersion docker build -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion . && docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion"
+& ssh ${DockerServer} "cd /srv/catalog-rest-server && git pull && VERSION=$newVersion docker build -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest . && docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
 
 Write-Host "`nStep 4: Deployment..." -ForegroundColor Cyan
 
