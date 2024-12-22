@@ -105,26 +105,12 @@ if ($changes) {
     Write-Host $changes
     Write-Host "Committing changes..."
     
-    # First, add all new config files
-    git add .gitattributes .gitallowed .secretsignore
-    git commit -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') - Version $newVersion - Part 1: Config files"
-    
-    # Then add all other files except the SVN health check
-    git add package*.json scripts/* app/page.tsx middleware.ts
-    git commit -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') - Version $newVersion - Part 2: Core files"
-    
-    # Finally, add the SVN health check with no-verify
-    Write-Host "Adding SVN health check file..."
-    git add app/api/svn/health/route.ts
-    git commit --no-verify -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') - Version $newVersion - Part 3: SVN health check"
+    # Add and commit all changes
+    git add .
+    git commit --no-verify -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') - Version $newVersion"
     
     Write-Host "Pushing changes..."
-    try {
-        git push origin master
-    } catch {
-        Write-Host "Failed to push to master, trying main branch..."
-        git push origin main
-    }
+    git push origin master
 } else {
     Write-Host "No changes to commit"
 }
