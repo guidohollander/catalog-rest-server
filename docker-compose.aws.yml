@@ -4,7 +4,7 @@
 
 services:
   catalog-rest-server:
-    image: registry.hollanderconsulting.nl/catalog-rest-server:v${VERSION:-0.1.23}
+    image: registry.hollanderconsulting.nl/catalog-rest-server:latest
     env_file: .env
     environment:
       - NODE_ENV=production
