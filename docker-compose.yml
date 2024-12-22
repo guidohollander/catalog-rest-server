@@ -2,10 +2,7 @@ version: '3.8'
 
 services:
   catalog-rest-server:
-    image: catalog-rest-server
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: registry.hollanderconsulting.nl/catalog-rest-server:v${VERSION:-0.1.34}
     env_file: .env
     environment:
       - NODE_ENV=production
