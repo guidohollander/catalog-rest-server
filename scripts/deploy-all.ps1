@@ -79,6 +79,9 @@ function Deploy-ToAWS {
 function Deploy-ToDockerServer {
     Write-Host "`nDeploying to Docker server..." -ForegroundColor Cyan
     
+    Write-Host "Copying .env file..."
+    & scp .env ${DockerServer}:/srv/.env
+    
     Write-Host "Deploying services..."
     & ssh ${DockerServer} @"
         cd /srv && \
