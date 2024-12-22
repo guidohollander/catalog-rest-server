@@ -51,19 +51,20 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-[#1a1b26] text-white">
       <div className="grid grid-cols-1 gap-8 w-full max-w-2xl">
+        <h1 className="text-4xl font-bold">service catalog REST server</h1>
+        
         <div className="bg-[#1f2937] p-6 rounded-lg">
           <h2 className="text-2xl font-bold mb-4 flex items-center">
             <span className="text-red-400 mr-2">❤️</span>
             health
           </h2>
           <div className="text-gray-300">
-            {isLoading ? (
-              <div className="text-yellow-400">checking system status...</div>
-            ) : error ? (
-              <div className="text-red-400">error: {error}</div>
-            ) : (
-              <div className="text-green-400">system is running properly</div>
-            )}
+            <ul className="space-y-2">
+              <li className="flex items-center">
+                <span className="text-green-400 mr-2">✓</span>
+                /api/health
+              </li>
+            </ul>
           </div>
         </div>
 

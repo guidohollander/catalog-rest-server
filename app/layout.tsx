@@ -14,7 +14,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Service Catalog',
+  title: 'service catalog REST server',
   description: 'Your central hub for managing services, repositories, and build information',
 }
 
