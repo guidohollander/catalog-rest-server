@@ -3,8 +3,11 @@ import type { NextRequest } from 'next/server';
 import { basicAuthMiddleware } from './src/middleware/basic-auth';
 
 export function middleware(request: NextRequest) {
-  // Exclude health route from authentication
-  if (request.nextUrl.pathname === '/api/health') {
+  // Exclude health routes from authentication
+  if (
+    request.nextUrl.pathname === '/api/health' ||
+    request.nextUrl.pathname === '/api/svn/health'
+  ) {
     return NextResponse.next();
   }
 
