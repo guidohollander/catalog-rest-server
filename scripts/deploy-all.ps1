@@ -82,20 +82,18 @@ function Deploy-ToAWS {
 
 # Function to deploy to Docker server
 function Deploy-ToDockerServer {
-    Write-Host "`nDeploying to Docker server..." -ForegroundColor Cyan
+    Write-Host "`nDeploying to Docker server..."
     
+    # Copy files to Docker server
     Write-Host "Copying files..."
-    & scp .env ${DockerServer}:/srv/.env
-    & scp docker-compose.yml ${DockerServer}:/srv/docker-compose.yml
+    ssh -o StrictHostKeyChecking=no $DockerServer "mkdir -p /srv/nginx"
+    scp -o StrictHostKeyChecking=no docker-compose.docker.yml "${DockerServer}:/srv/docker-compose.yml"
+    scp -o StrictHostKeyChecking=no -r nginx/nginx.conf "${DockerServer}:/srv/nginx/"
+    scp -o StrictHostKeyChecking=no .env "${DockerServer}:/srv/.env"
     
+    # Deploy services
     Write-Host "Deploying services..."
-    & ssh ${DockerServer} @"
-        cd /srv && \
-        VERSION=$newVersion docker compose pull --no-parallel && \
-        VERSION=$newVersion docker compose up -d --force-recreate --remove-orphans
-"@
-
-    Write-Host "`nDocker Server Deployment complete!" -ForegroundColor Green
+    ssh -o StrictHostKeyChecking=no $DockerServer "cd /srv && VERSION=v$newVersion docker compose up -d --force-recreate"
 }
 
 # Main deployment logic
