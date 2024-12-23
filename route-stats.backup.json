@@ -3,8 +3,8 @@
   "method": "GET",
   "/": {
     "GET": {
-      "count": 4,
-      "lastAccessed": "2024-12-23T12:42:06.022Z"
+      "count": 3,
+      "lastAccessed": "2024-12-23T12:41:57.369Z"
     }
   }
 }

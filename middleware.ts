@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { basicAuthMiddleware } from './src/middleware/basic-auth';
-import { updateRouteStats } from './app/utils/statsManager';
 
-// List of routes to exclude from tracking and authentication
-const EXCLUDED_ROUTES = [
+// List of routes to exclude from authentication
+const EXCLUDED_ROUTES = new Set([
   '/api/health',
   '/api/svn/health',
   '/api/jenkins/ping',
@@ -12,10 +11,7 @@ const EXCLUDED_ROUTES = [
   '/api/stats/data',
   '/api/stats/authenticated',
   '/stats'  // The stats page itself
-];
-
-// Optimize route checking with Set for O(1) lookup
-const EXCLUDED_SET = new Set(EXCLUDED_ROUTES);
+]);
 
 // Cache for auth responses
 const AUTH_CACHE = new Map<string, { response: NextResponse; timestamp: number }>();
@@ -25,13 +21,20 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
 
-  // Check if route should be excluded from tracking using Set for O(1) lookup
-  const isExcluded = EXCLUDED_SET.has(pathname);
-
-  // Track all routes except excluded ones
-  if (!isExcluded) {
+  // Track route usage via API call
+  if (!EXCLUDED_ROUTES.has(pathname)) {
     try {
-      await updateRouteStats(pathname, method);
+      // Make API call to track stats
+      fetch(`${request.nextUrl.origin}/api/stats/data`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          route: pathname, 
+          method: method 
+        })
+      }).catch(error => console.error('Stats tracking error:', error));
     } catch (error) {
       // Log error but don't block the request
       console.error('Stats tracking error:', error);
@@ -39,7 +42,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Only apply Basic Authentication to API routes (excluding health and stats)
-  if (pathname.startsWith('/api/') && !isExcluded) {
+  if (pathname.startsWith('/api/') && !EXCLUDED_ROUTES.has(pathname)) {
     // Check auth cache first
     const cacheKey = `${request.headers.get('authorization') || ''}-${pathname}`;
     const cachedAuth = AUTH_CACHE.get(cacheKey);
