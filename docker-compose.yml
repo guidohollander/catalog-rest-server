@@ -2,12 +2,22 @@ version: '3.8'
 
 services:
   catalog-rest-server:
-    image: registry.hollanderconsulting.nl/catalog-rest-server:latest
+    image: registry.hollanderconsulting.nl/catalog-rest-server:${VERSION:-latest}
     env_file: .env
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       - HOST=0.0.0.0
+    expose:
+      - "3000"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
-      - "3000:3000"
+      - "80:80"
+    depends_on:
+      - catalog-rest-server
     restart: unless-stopped
