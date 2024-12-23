@@ -25,6 +25,7 @@ export default function Home() {
 
         const svnData = await svnHealthResponse.json();
         setSvnHealth(svnData);
+        setIsLoading(false);  // Set loading to false after basic health checks
 
         // Then check Jenkins separately so it doesn't block the main loading
         try {
@@ -37,8 +38,6 @@ export default function Home() {
           console.error('Jenkins health check failed:', err);
           setJenkinsHealth({ status: 'error' });
         }
-
-        setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');
         setIsLoading(false);
