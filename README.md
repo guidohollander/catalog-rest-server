@@ -1,56 +1,141 @@
-## Catalog REST server - Getting Started
+# service catalog REST server
 
-First, cd into the catalog-rest-server folder with a terminal client and install the necessary dependencies. This downloads any dependencies which are put into the node_module folder. This folder is ignored by svn, so these files will not and don't have to be committed. 
+A modern REST API server built with Next.js that provides a central hub for managing services, repositories, and build information. This server interfaces with SVN repositories and Jenkins to provide a unified service catalog management solution.
 
-```
-cd <drive>:<workspace>\Service catalog\src\nodejs\catalog-rest-server <enter>
-npm install <enter>
-```
+## Goals
 
-To start development, install the latest visual studio code, do the above and type
+- Provide a centralized REST API for service catalog management
+- Interface with SVN repositories for version control
+- Integrate with Jenkins for build management
+- Offer a modern web interface for service monitoring
+- Enable automated service deployment and management
 
-```
-code . <enter>
-open server.ts (for example)
-press ctrl - ~ to open a terminal and type
-npm run dev <enter>
-```
+## Features
 
+- SVN Repository Management
+- Jenkins Build Integration
+- Health Monitoring
+- Service Version Control
+- Automated Deployment Support
 
-To just run the server:
+## API Routes
 
-```
-npm run server <enter>
-```
+### Health Endpoints
+- `GET /api/health` - Server health check
+- `GET /api/svn/health` - SVN connection health check
 
+### SVN Endpoints
+- `GET /api/svn/repositories` - List available repositories
+- `GET /api/svn/exists` - Check if a repository exists
+- `POST /api/svn/copy` - Create repository copy
+- `GET /api/svn/bulk-exists` - Batch check repository existence
+- `GET /api/svn/existing_component_versions` - List component versions
+- `GET /api/svn/existing_solution_implementations` - List solution implementations
+- `GET /api/svn/latest-revision` - Get latest revision info
+- `POST /api/svn/propset` - Set repository properties
+- `POST /api/svn/reset` - Reset repository state
 
-## Docker Deployment
+### Jenkins Endpoints
+- `GET /api/jenkins/builds` - List builds
+- `POST /api/jenkins/build` - Trigger new build
+- `GET /api/jenkins/ping` - Check Jenkins connectivity
+
+## Installation
 
 ### Prerequisites
-- Docker
-- Docker Compose
-- Subversion (optional, pre-installed in Docker image)
+- Node.js 20 or higher
+- Docker and Docker Compose (for containerized deployment)
+- SVN client (pre-installed in Docker image)
+- Access to SVN and Jenkins servers
 
-### Production Deployment
-1. Copy `.env.example` to `.env` and fill in your configuration
-2. Build and run the production container:
+### Local Development Setup
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd catalog-rest-server
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+
+4. Configure the following in your `.env` file:
+   ```env
+   # Server Configuration
+   PORT=3000
+   NODE_ENV=development
+
+   # SVN Configuration
+   SVN_URL=https://your-svn-server
+   SVN_USERNAME=your-username
+   SVN_PASSWORD=your-password
+
+   # Jenkins Configuration
+   JENKINS_URL=https://your-jenkins-server
+   JENKINS_USERNAME=your-username
+   JENKINS_API_TOKEN=your-api-token
+   ```
+
+5. Start development server:
+   ```bash
+   npm run dev
+   ```
+
+### Docker Deployment
+
+1. Production deployment:
    ```bash
    docker-compose up -d
    ```
 
-### Development Deployment
-1. Copy `.env.example` to `.env` and fill in your configuration
-2. Run the development container with hot reloading:
+2. Development deployment with hot reloading:
    ```bash
    docker-compose up dev
    ```
 
-### Subversion Configuration
-- The Docker image includes Subversion pre-installed
-- Ensure SVN credentials are correctly set in the `.env` file
-- SVN commands are executed within the container environment
+## API Keys and Authentication
 
-### Useful Commands
-- Stop containers: `docker-compose down`
-- Rebuild containers: `docker-compose up --build`
-- View logs: `docker-compose logs catalog-rest-server`
+### Required API Keys
+- Jenkins API Token (for Jenkins integration)
+- SVN credentials (for repository access)
+
+### Setting Up Authentication
+1. Generate a Jenkins API token:
+   - Log into Jenkins
+   - Click your username → Configure
+   - Add new API Token
+   - Copy the token to your `.env` file
+
+2. Configure SVN credentials:
+   - Use your SVN username and password
+   - Or set up SSH keys for authentication
+   - Update credentials in `.env` file
+
+## Deployment
+
+### Docker Server Deployment
+```bash
+./scripts/deploy-all.ps1 -Environment local
+```
+
+### AWS Deployment
+```bash
+./scripts/deploy-aws.ps1
+```
+
+### Docker Configuration
+- Uses Node.js 20-slim base image
+- Includes pre-installed SVN client
+- Nginx reverse proxy for production
+- Automatic SSL termination
+
+## License
+
+This project is proprietary software. All rights reserved.

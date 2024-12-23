@@ -12,9 +12,9 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
 })
-
 export const metadata: Metadata = {
-  title: 'service catalog REST server',
+
+  title: 'Service Catalog',
   description: 'Your central hub for managing services, repositories, and build information',
 }
 

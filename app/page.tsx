@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import VersionDisplay from './components/VersionDisplay';
+import Link from 'next/link';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -68,11 +69,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="bg-[#1f2937] p-6 rounded-lg relative">
-          <div 
-            className={`absolute top-2 right-2 w-2 h-2 rounded-full ${svnHealth?.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'}`}
-            title={`svn host: ${svnHealth?.host || 'Unknown'}`}
-          />
+        <div className="bg-[#1f2937] p-6 rounded-lg">
           <h2 className="text-2xl font-bold mb-4 flex items-center">
             <span className="text-yellow-400 mr-2">&lt;/&gt;</span>
             svn services
@@ -87,9 +84,15 @@ export default function Home() {
                 <span className="text-green-400 mr-2">✓</span>
                 /api/svn/exists
               </li>
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                /api/svn/copy
+              <li className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="text-green-400 mr-2">✓</span>
+                  /api/svn/copy
+                </div>
+                <div 
+                  className={`w-4 h-4 rounded-full ${svnHealth?.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'}`}
+                  title={`SVN Status: ${svnHealth?.status || 'Unknown'}\nHost: ${svnHealth?.host || 'Unknown'}`}
+                />
               </li>
             </ul>
           </div>
@@ -129,6 +132,12 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="mt-8">
+        <Link href="/docs" className="text-blue-400 hover:text-blue-300 flex items-center">
+          <span className="mr-2">📚</span>
+          View Documentation
+        </Link>
       </div>
       <VersionDisplay className="fixed bottom-4 right-4 text-sm text-gray-500" />
     </main>
