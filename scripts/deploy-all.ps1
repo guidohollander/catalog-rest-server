@@ -33,26 +33,31 @@ function Test-LastCommand {
     }
 }
 
-# Function to run npm commands
+# Kill any running Node.js processes first
+taskkill /F /IM node.exe 2>$null
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Killed running Node.js processes"
+} else {
+    Write-Host "No Node.js processes were running"
+}
+
+# Function to run npm commands and check for errors
 function Run-NpmCommand {
-    param (
-        [Parameter(Mandatory=$true)]
+    param(
+        [Parameter(Mandatory=$true, Position=0)]
         [string]$Command,
-        [string]$Script = ""
+        [Parameter(Position=1)]
+        [string]$Argument
     )
-    if ($Script) {
-        Write-Host "Running: npm $Command $Script"
-        $env:NEXT_PUBLIC_APP_VERSION = $newVersion
-        & npm $Command $Script
+    
+    if ($Argument) {
+        Write-Host "Running: npm $Command $Argument"
+        npm $Command $Argument
     } else {
         Write-Host "Running: npm $Command"
-        & npm $Command
+        npm $Command
     }
-    
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "npm command failed with exit code $LASTEXITCODE"
-        exit $LASTEXITCODE
-    }
+    Test-LastCommand
 }
 
 # Function to deploy to AWS
