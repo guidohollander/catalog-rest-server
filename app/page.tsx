@@ -13,12 +13,10 @@ export default function Home() {
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        const [healthResponse, svnHealthResponse, jenkinsHealthResponse] = await Promise.all([
+        // First check basic health and SVN
+        const [healthResponse, svnHealthResponse] = await Promise.all([
           fetch('/api/health'),
-          fetch('/api/svn/health'),
-          fetch('/api/jenkins/ping', {
-            method: 'POST'
-          })
+          fetch('/api/svn/health')
         ]);
 
         if (!healthResponse.ok) {
@@ -26,9 +24,20 @@ export default function Home() {
         }
 
         const svnData = await svnHealthResponse.json();
-        const jenkinsData = await jenkinsHealthResponse.json();
         setSvnHealth(svnData);
-        setJenkinsHealth(jenkinsData);
+
+        // Then check Jenkins separately so it doesn't block the main loading
+        try {
+          const jenkinsHealthResponse = await fetch('/api/jenkins/ping', {
+            method: 'POST'
+          });
+          const jenkinsData = await jenkinsHealthResponse.json();
+          setJenkinsHealth(jenkinsData);
+        } catch (err) {
+          console.error('Jenkins health check failed:', err);
+          setJenkinsHealth({ status: 'error' });
+        }
+
         setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');
