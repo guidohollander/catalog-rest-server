@@ -1,7 +1,36 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
+  // Output as standalone for better Docker support
+  output: 'standalone',
+
+  // Optimize images
+  images: {
+    unoptimized: false,
+    minimumCacheTTL: 60,
+  },
+
+  // Disable powered by header
+  poweredByHeader: false,
+
+  // Configure external packages
+  serverExternalPackages: ['fs', 'path'],
+
+  // Disable telemetry for better performance
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+
+  // Enable gzip compression
+  compress: true,
+
+  // Cache build output
+  generateBuildId: async () => {
+    return process.env.NEXT_PUBLIC_APP_VERSION || 'development'
+  },
+
+  // Strict mode for better development
   reactStrictMode: true,
+
   productionBrowserSourceMaps: false,
   
   // Enable CORS for API routes
@@ -11,27 +40,12 @@ const nextConfig = {
         source: '/api/:path*',
         headers: [
           { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE,OPTIONS' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
           { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
         ],
       },
-    ];
+    ]
   },
-  
-  // Development configuration
-  webpack: (config, { dev, isServer }) => {
-    // Fix module resolution
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': config.context,
-      '@/src': config.context + '/src'
-    };
-    
-    return config;
-  },
-  
-  // Optimize for production
-  compress: true,
-};
+}
 
-export default nextConfig;
+export default nextConfig

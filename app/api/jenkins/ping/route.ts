@@ -32,8 +32,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             resolve(
               NextResponse.json({ 
                 status: 'ok', 
-                version: jenkinsInfo.hudson.version,
-                instanceName: jenkinsInfo.hudson.nodeName
+                version: jenkinsInfo._class?.split('.')?.pop() || 'Unknown',
+                instanceName: jenkinsInfo.nodeName || jenkinsInfo.displayName || 'Unknown'
               })
             );
           } catch (error) {
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           console.error('Failed to ping Jenkins:', statusCode);
           resolve(
             NextResponse.json(
-              { status: 'error', message: 'Failed to ping Jenkins' }, 
+              { status: 'error', message: `Failed to connect to Jenkins (${statusCode})` }, 
               { status: statusCode }
             )
           );
@@ -58,11 +58,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       });
     });
 
-    req.on('error', (e) => {
-      console.error(`Problem with request: ${e.message}`);
+    req.on('error', (error) => {
+      console.error('Jenkins connection error:', error);
       resolve(
         NextResponse.json(
-          { status: 'error', message: 'Failed to ping Jenkins' }, 
+          { status: 'error', message: 'Failed to connect to Jenkins' }, 
           { status: 500 }
         )
       );

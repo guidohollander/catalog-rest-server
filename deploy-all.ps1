@@ -1,3 +1,11 @@
+# Kill any running Node.js processes first
+taskkill /F /IM node.exe 2>$null
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Killed running Node.js processes"
+} else {
+    Write-Host "No Node.js processes were running"
+}
+
 # Get the version from package.json
 $version = (Get-Content .\package.json | ConvertFrom-Json).version
 

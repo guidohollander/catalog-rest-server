@@ -8,13 +8,17 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [svnHealth, setSvnHealth] = useState<{ status: string; message: string; host: string } | null>(null);
+  const [jenkinsHealth, setJenkinsHealth] = useState<{ status: string } | null>(null);
 
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        const [healthResponse, svnHealthResponse] = await Promise.all([
+        const [healthResponse, svnHealthResponse, jenkinsHealthResponse] = await Promise.all([
           fetch('/api/health'),
-          fetch('/api/svn/health')
+          fetch('/api/svn/health'),
+          fetch('/api/jenkins/ping', {
+            method: 'POST'
+          })
         ]);
 
         if (!healthResponse.ok) {
@@ -22,7 +26,9 @@ export default function Home() {
         }
 
         const svnData = await svnHealthResponse.json();
+        const jenkinsData = await jenkinsHealthResponse.json();
         setSvnHealth(svnData);
+        setJenkinsHealth(jenkinsData);
         setIsLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');
@@ -113,9 +119,15 @@ export default function Home() {
                 <span className="text-green-400 mr-2">✓</span>
                 /api/jenkins/build
               </li>
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                /api/jenkins/ping
+              <li className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="text-green-400 mr-2">✓</span>
+                  /api/jenkins/ping
+                </div>
+                <div 
+                  className={`w-4 h-4 rounded-full ${jenkinsHealth?.status === 'ok' ? 'bg-green-500' : 'bg-red-500'}`}
+                  title={`Jenkins Status: ${jenkinsHealth?.status || 'Unknown'}`}
+                />
               </li>
             </ul>
           </div>
@@ -132,6 +144,11 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="mt-4">
+        <Link href="/stats" className="text-blue-500 hover:text-blue-700 underline">
+          View API Statistics
+        </Link>
       </div>
       <div className="mt-8">
         <Link href="/docs" className="text-blue-400 hover:text-blue-300 flex items-center">
