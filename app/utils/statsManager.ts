@@ -13,6 +13,11 @@ let statsCache: RouteStats = {};
 let lastCacheUpdate = 0;
 const CACHE_TTL = 5000; // 5 seconds cache TTL
 
+// Lock mechanism
+let isLocked = false;
+const MAX_LOCK_WAIT = 5000; // 5 seconds maximum wait time
+const LOCK_CHECK_INTERVAL = 50; // Check every 50ms
+
 // Type for route statistics
 interface RouteStats {
     [route: string]: {
@@ -23,20 +28,40 @@ interface RouteStats {
     };
 }
 
+// Acquire lock with timeout
+async function acquireLock(): Promise<boolean> {
+    const startTime = Date.now();
+    
+    while (isLocked) {
+        if (Date.now() - startTime > MAX_LOCK_WAIT) {
+            return false; // Timeout
+        }
+        await new Promise(resolve => setTimeout(resolve, LOCK_CHECK_INTERVAL));
+    }
+    
+    isLocked = true;
+    return true;
+}
+
+// Release lock
+function releaseLock() {
+    isLocked = false;
+}
+
 // Load stats from file with caching
 export async function loadStats(): Promise<RouteStats> {
     const now = Date.now();
     
     // Return cached stats if within TTL
     if (Object.keys(statsCache).length > 0 && (now - lastCacheUpdate) < CACHE_TTL) {
-        return statsCache;
+        return { ...statsCache }; // Return a copy to prevent mutations
     }
 
     try {
         const data = await fs.promises.readFile(STATS_FILE, 'utf-8');
         statsCache = JSON.parse(data);
         lastCacheUpdate = now;
-        return statsCache;
+        return { ...statsCache }; // Return a copy to prevent mutations
     } catch (error) {
         console.error('Error reading stats file:', error);
         return {};
@@ -50,6 +75,10 @@ export async function getAllStats(): Promise<RouteStats> {
 
 // Save stats to file with backup
 async function saveStats(stats: RouteStats): Promise<void> {
+    if (!await acquireLock()) {
+        throw new Error('Could not acquire lock for saving stats');
+    }
+
     try {
         // Create a backup of the current stats
         if (fs.existsSync(STATS_FILE)) {
@@ -60,11 +89,13 @@ async function saveStats(stats: RouteStats): Promise<void> {
         await fs.promises.writeFile(STATS_FILE, JSON.stringify(stats, null, 2));
         
         // Update cache
-        statsCache = stats;
+        statsCache = { ...stats }; // Store a copy in cache
         lastCacheUpdate = Date.now();
     } catch (error) {
         console.error('Error writing stats file:', error);
         throw error;
+    } finally {
+        releaseLock();
     }
 }
 
