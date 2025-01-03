@@ -74,22 +74,16 @@ RUN mkdir -p logs && \
 # Switch to non-root user
 USER node
 
-# Expose port
-EXPOSE 3000
-
 # Set environment variables
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 ENV NODE_ENV production
 ENV NEXT_PUBLIC_APP_VERSION 0.1.68
-
-# Start the server
-CMD ["node", "server.js"]
-    NEXT_TELEMETRY_DISABLED=1 \
-    HOST=0.0.0.0
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOST=0.0.0.0
 
 # Expose port
 EXPOSE 3000
 
-# Start the application
+# Start the server
 CMD ["node", "server.js"]
