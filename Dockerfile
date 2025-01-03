@@ -56,9 +56,9 @@ COPY --from=builder /app/public ./public
 # Create logs directories and set permissions
 USER root
 RUN mkdir -p /app/logs && \
-    mkdir -p /app/.next/standalone/logs && \
+    mkdir -p .next/standalone/logs && \
     chown -R node:node /app && \
-    chmod -R 755 /app
+    chmod -R 777 /app
 
 # Switch to non-root user
 USER node
