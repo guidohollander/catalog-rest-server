@@ -35,12 +35,16 @@ ENV NEXT_PUBLIC_APP_VERSION=${VERSION}
 RUN echo "Building with version: ${NEXT_PUBLIC_APP_VERSION}"
 RUN npm run build
 
-# Remove development dependencies
-RUN npm prune --production
+# Create logs directory in builder stage
+RUN mkdir -p .next/standalone/logs && \
+    chmod -R 777 .next/standalone/logs
 
-# Copy necessary files for standalone server
+# Copy files for standalone server
 RUN cp -r .next/static .next/standalone/.next/ && \
     cp -r public .next/standalone/
+
+# Remove development dependencies
+RUN npm prune --production
 
 # Final stage
 FROM node:20-alpine
@@ -55,7 +59,7 @@ COPY --from=builder /app/public ./public
 
 # Create logs directories and set permissions
 USER root
-RUN mkdir -p /app/logs && \
+RUN mkdir -p logs && \
     mkdir -p .next/standalone/logs && \
     chown -R node:node /app && \
     chmod -R 777 /app
