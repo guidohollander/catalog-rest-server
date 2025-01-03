@@ -13,7 +13,9 @@ const nextConfig = {
   poweredByHeader: false,
 
   // Configure external packages
-  serverExternalPackages: ['fs', 'path'],
+  experimental: {
+    serverComponentsExternalPackages: ['fs', 'path']
+  },
 
   // Disable telemetry for better performance
   typescript: {

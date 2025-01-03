@@ -9,8 +9,16 @@ services:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
       - HOST=0.0.0.0
+      - PORT=3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     ports:
       - "3000:3000"
+    volumes:
+      - /srv/catalog-rest-server/logs:/app/.next/standalone/logs
     restart: unless-stopped
 
   nginx:
@@ -23,5 +31,11 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/lib/letsencrypt:/var/lib/letsencrypt:ro
     depends_on:
-      - catalog-rest-server
+      catalog-rest-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     restart: unless-stopped

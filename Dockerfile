@@ -1,5 +1,5 @@
 # Use Node.js slim image
-FROM node:20-slim as builder
+FROM node:20.10-slim as builder
 
 # Install system dependencies
 RUN apt-get update && \
@@ -20,61 +20,49 @@ RUN mkdir -p ~/.subversion && \
 # Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Copy package files
 COPY package*.json ./
-RUN npm install
+COPY .env* ./
 
-# Copy application files
+# Install dependencies
+RUN npm ci
+
+# Copy source files
 COPY . .
 
-# Set version for build
-ARG VERSION=0.1.68
-ENV NEXT_PUBLIC_APP_VERSION=${VERSION}
-
-# Build the application
-RUN echo "Building with version: ${NEXT_PUBLIC_APP_VERSION}"
-RUN npm run build
-
-# Create logs directory in builder stage
+# Create logs directory with correct permissions
 RUN mkdir -p .next/standalone/logs && \
-    chmod -R 777 .next/standalone/logs
+    chmod 777 .next/standalone/logs
 
-# Copy files for standalone server
-RUN cp -r .next/static .next/standalone/.next/ && \
-    cp -r public .next/standalone/
+# Build application
+RUN npm run build
 
 # Remove development dependencies
 RUN npm prune --production
 
 # Final stage
-FROM node:20-alpine
+FROM node:20.10-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy standalone server and dependencies
+# Create logs directory with correct permissions
+RUN mkdir -p .next/standalone/logs && \
+    chmod 777 .next/standalone/logs
+
+# Copy built application
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/.env* ./
 
-# Create logs directories and set permissions
-USER root
-RUN mkdir -p logs && \
-    mkdir -p .next/standalone/logs && \
-    chown -R node:node /app && \
-    chmod -R 777 /app
-
-# Switch to non-root user
-USER node
+# Set environment variables
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    HOST=0.0.0.0
 
 # Expose port
 EXPOSE 3000
 
-# Set environment variables
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
-ENV NODE_ENV production
-ENV NEXT_PUBLIC_APP_VERSION 0.1.68
-
-# Start the server
+# Start the application
 CMD ["node", "server.js"]
