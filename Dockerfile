@@ -20,11 +20,6 @@ RUN mkdir -p ~/.subversion && \
 # Set working directory
 WORKDIR /app
 
-# Create and set permissions for logs directories
-RUN mkdir -p /app/logs && \
-    mkdir -p /app/.next/standalone/logs && \
-    chown -R node:node /app
-
 # Install dependencies
 COPY package*.json ./
 RUN npm install
@@ -46,6 +41,17 @@ RUN npm prune --production
 # Copy necessary files for standalone server
 RUN cp -r .next/static .next/standalone/.next/ && \
     cp -r public .next/standalone/
+
+# Copy standalone server and dependencies
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+# Create logs directories and set permissions
+RUN mkdir -p /app/logs && \
+    mkdir -p /app/.next/standalone/logs && \
+    chown -R node:node /app && \
+    chmod -R 755 /app
 
 # Switch to non-root user
 USER node
