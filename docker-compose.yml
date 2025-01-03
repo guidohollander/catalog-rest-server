@@ -10,6 +10,8 @@ services:
       - HOST=0.0.0.0
     expose:
       - "3000"
+    volumes:
+      - ./logs:/app/.next/standalone/logs
     restart: unless-stopped
 
   nginx:
