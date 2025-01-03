@@ -1,1 +1,2 @@
 Authorization.*=.*Basic
+[aA][uU][tT][hH].*=.*['"][^']*['"]
