@@ -77,4 +77,4 @@ ENV NODE_ENV production
 ENV NEXT_PUBLIC_APP_VERSION 0.1.68
 
 # Start the server
-CMD ["node", ".next/standalone/server.js"]
+CMD ["node", "server.js"]
