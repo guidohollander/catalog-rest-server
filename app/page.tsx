@@ -104,10 +104,8 @@ export default function Home() {
         <div className="bg-gray-800 p-6 rounded-lg">
           <div className="flex items-center mb-4">
             <h2 className="text-2xl font-semibold flex items-center">
-              <span className="mr-2">
-                <ServiceIcon service="health" size={24} />
-              </span>
-              health
+              <ServiceIcon service="health" size={24} className="mr-2" />
+              Health
             </h2>
             <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
               public
@@ -144,8 +142,8 @@ export default function Home() {
         <div className="bg-gray-800 p-6 rounded-lg">
           <div className="flex items-center mb-4">
             <h2 className="text-2xl font-semibold flex items-center">
-              <ServiceIcon service="jenkins" size={24} className="mr-2" />
-              jenkins services
+              <ServiceIcon service="jenkins" size={30} className="mr-2" />
+              Jenkins Services
             </h2>
             <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
               auth
@@ -177,7 +175,7 @@ export default function Home() {
           <div className="flex items-center mb-4">
             <h2 className="text-2xl font-semibold flex items-center">
               <ServiceIcon service="jira" size={24} className="mr-2" />
-              jira services
+              Jira Services
             </h2>
             <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
               auth
@@ -202,7 +200,7 @@ export default function Home() {
           <div className="flex items-center mb-4">
             <h2 className="text-2xl font-semibold flex items-center">
               <ServiceIcon service="svn" size={24} className="mr-2" />
-              svn services
+              SVN Services
             </h2>
             <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
               auth
@@ -277,7 +275,7 @@ export default function Home() {
             <div className="flex items-center">
               <h2 className="text-2xl font-semibold flex items-center">
                 <span className="mr-2">🔗</span>
-                version
+                Version
               </h2>
               <div className="ml-4">
                 <VersionDisplay />
