@@ -23,8 +23,7 @@ WORKDIR /app
 # Create and set permissions for logs directories
 RUN mkdir -p /app/logs && \
     mkdir -p /app/.next/standalone/logs && \
-    chown -R node:node /app/logs && \
-    chown -R node:node /app/.next/standalone/logs
+    chown -R node:node /app
 
 # Install dependencies
 COPY package*.json ./
