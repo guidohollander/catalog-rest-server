@@ -1,5 +1,5 @@
 # Use Node.js slim image
-FROM node:20-slim
+FROM node:20-slim as builder
 
 # Install system dependencies
 RUN apt-get update && \
@@ -42,12 +42,19 @@ RUN npm prune --production
 RUN cp -r .next/static .next/standalone/.next/ && \
     cp -r public .next/standalone/
 
+# Final stage
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
 # Copy standalone server and dependencies
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
 # Create logs directories and set permissions
+USER root
 RUN mkdir -p /app/logs && \
     mkdir -p /app/.next/standalone/logs && \
     chown -R node:node /app && \
@@ -56,8 +63,14 @@ RUN mkdir -p /app/logs && \
 # Switch to non-root user
 USER node
 
-# Set version for runtime
-ENV NEXT_PUBLIC_APP_VERSION=${VERSION}
+# Expose port
+EXPOSE 3000
+
+# Set environment variables
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+ENV NODE_ENV production
+ENV NEXT_PUBLIC_APP_VERSION 0.1.68
 
 # Start the server
 CMD ["node", ".next/standalone/server.js"]
