@@ -20,9 +20,11 @@ RUN mkdir -p ~/.subversion && \
 # Set working directory
 WORKDIR /app
 
-# Create and set permissions for logs directory
+# Create and set permissions for logs directories
 RUN mkdir -p /app/logs && \
-    chown -R node:node /app/logs
+    mkdir -p /app/.next/standalone/logs && \
+    chown -R node:node /app/logs && \
+    chown -R node:node /app/.next/standalone/logs
 
 # Install dependencies
 COPY package*.json ./
