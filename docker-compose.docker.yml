@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   catalog-rest-server:
-    image: registry.hollanderconsulting.nl/catalog-rest-server:${VERSION:-latest}
+    image: localhost:5000/catalog-rest-server:${VERSION:-latest}
     env_file: .env
     environment:
       - NODE_ENV=production

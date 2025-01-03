@@ -25,7 +25,7 @@ RUN mkdir -p /app/logs && \
 
 # Copy package files
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --include=dev
 
 # Copy application files
 COPY . .
