@@ -45,53 +45,47 @@ export default function StatsPage() {
     }, []);
 
     return (
-        <div className="p-4 max-w-4xl mx-auto">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">API Route Statistics</h1>
-                <Link href="/" className="text-blue-500 hover:text-blue-700 underline">
-                    Back to Home
+        <main className="flex min-h-screen flex-col items-center p-4 md:p-24 bg-[#1a1b26] text-white">
+            <div className="w-full max-w-4xl space-y-8">
+                <Link href="/" className="text-blue-400 hover:text-blue-300 mb-8 inline-block">
+                    ← Back to Home
                 </Link>
-            </div>
 
-            {loading && (
-                <div className="text-center py-8">
-                    <div className="animate-pulse">Loading statistics...</div>
-                </div>
-            )}
+                <h1 className="text-4xl font-bold mb-8">API Route Statistics</h1>
 
-            {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg mb-4">
-                    {error}
-                </div>
-            )}
+                {error && (
+                    <div className="bg-red-900/50 border border-red-500 p-4 rounded-lg mb-6">
+                        <p className="text-red-200">{error}</p>
+                    </div>
+                )}
 
-            {!loading && !error && (
-                <div className="space-y-4">
-                    {Object.entries(stats).map(([route, methods]) => (
-                        <div key={route} className="border rounded-lg p-4 bg-white shadow-sm">
-                            <h2 className="text-xl font-semibold mb-2 text-gray-800">{route}</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                {Object.entries(methods).map(([method, data]) => (
-                                    <div key={method} className="bg-gray-50 p-3 rounded-md">
-                                        <div className="font-medium text-gray-700">{method}</div>
-                                        <div className="text-sm space-y-1">
-                                            <div className="text-gray-600">Calls: {data.count}</div>
-                                            <div className="text-gray-500 text-xs">
-                                                Last accessed: {new Date(data.lastAccessed).toLocaleString()}
+                {loading ? (
+                    <div className="bg-gray-800 p-6 rounded-lg">
+                        <p className="text-gray-300">Loading statistics...</p>
+                    </div>
+                ) : (
+                    <section className="bg-gray-800 p-6 rounded-lg space-y-6">
+                        {Object.entries(stats).map(([route, methods]) => (
+                            <div key={route} className="border-b border-gray-700 last:border-0 pb-4 last:pb-0">
+                                <h3 className="text-xl font-semibold text-blue-400 mb-2">{route}</h3>
+                                <div className="space-y-2">
+                                    {Object.entries(methods).map(([method, stats]) => (
+                                        <div key={`${route}-${method}`} className="flex justify-between items-center text-gray-300">
+                                            <div className="flex items-center">
+                                                <span className="w-16 text-gray-400">{method}</span>
+                                                <span className="ml-4">Calls: {stats.count}</span>
                                             </div>
+                                            <span className="text-sm">
+                                                Last accessed: {new Date(stats.lastAccessed).toLocaleString()}
+                                            </span>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                    {Object.keys(stats).length === 0 && (
-                        <div className="text-gray-500 text-center py-8">
-                            No authenticated route statistics available yet
-                        </div>
-                    )}
-                </div>
-            )}
-        </div>
+                        ))}
+                    </section>
+                )}
+            </div>
+        </main>
     );
 }

@@ -25,6 +25,12 @@ export interface AppConfig {
             username: string;
             apiToken: string;
         };
+        jira: {
+            baseUrl: string;
+            apiPath: string;
+            username: string;
+            password: string;
+        };
     };
 }
 

@@ -100,6 +100,10 @@ function fetchFolderContents(path: string): Promise<string[]> {
   });
 }
 
+function isValidVersion(version: string): boolean {
+  return /^[0-9.]+(_[0-9.]+)?$/.test(version);
+}
+
 function fetchAllVersions(
   repository: string,
   baseUrl: string
@@ -157,18 +161,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       allComponents = allComponents.concat(allVersions.flat());
     }
 
-    const transformedComponents = allComponents.map((item) => {
-      const isTrunk = item.branchName === "trunk";
-      return {
-        url: isTrunk
-          ? `${svn_protocol}${svn_url}${item.baseUrl}/${encodeURIComponent(
-              item.componentName
-            )}/trunk/`
-          : `${svn_protocol}${svn_url}${item.baseUrl}/${encodeURIComponent(
-              item.componentName
-            )}/${item.branchName}/${item.version}/`,
-      };
-    });
+    const transformedComponents = allComponents
+      .filter((item) => isValidVersion(item.version) || item.branchName === 'trunk')
+      .map((item) => {
+        const isTrunk = item.branchName === "trunk";
+        return {
+          url: isTrunk
+            ? `${svn_protocol}${svn_url}${item.baseUrl}/${encodeURIComponent(
+                item.componentName
+              )}/trunk/`
+            : `${svn_protocol}${svn_url}${item.baseUrl}/${encodeURIComponent(
+                item.componentName
+              )}/${item.branchName}/${item.version}/`,
+        };
+      });
 
     return NextResponse.json({ response: transformedComponents });
   } catch (err) {

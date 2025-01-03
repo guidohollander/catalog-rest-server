@@ -3,14 +3,26 @@ import type { NextRequest } from 'next/server';
 import { basicAuthMiddleware } from './src/middleware/basic-auth';
 
 // List of routes to exclude from authentication
-const EXCLUDED_ROUTES = new Set([
+const AUTH_EXCLUDED_ROUTES = new Set([
+  '/',  // Root path (home page)
+  '/docs',  // Documentation page
+  '/stats',  // Stats page
   '/api/health',
   '/api/svn/health',
-  '/api/jenkins/ping',
+  '/api/jira/health',
+  '/api/jenkins/health',
   '/api/stats',
   '/api/stats/data',
+  '/api/stats/authenticated'
+]);
+
+// List of routes to exclude from stats tracking
+const STATS_EXCLUDED_ROUTES = new Set([
+  '/api/stats',  // Prevent recursive stats tracking
+  '/api/stats/data',
   '/api/stats/authenticated',
-  '/stats'  // The stats page itself
+  '/_next',  // Next.js internal routes
+  '/favicon.ico'
 ]);
 
 // Cache for auth responses
@@ -21,8 +33,8 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
 
-  // Track route usage via API call
-  if (!EXCLUDED_ROUTES.has(pathname)) {
+  // Track route usage via API call for all routes except stats endpoints
+  if (!STATS_EXCLUDED_ROUTES.has(pathname) && !pathname.startsWith('/_next')) {
     try {
       // Make API call to track stats
       fetch(`${request.nextUrl.origin}/api/stats/data`, {
@@ -42,7 +54,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Only apply Basic Authentication to API routes (excluding health and stats)
-  if (pathname.startsWith('/api/') && !EXCLUDED_ROUTES.has(pathname)) {
+  if (pathname.startsWith('/api/') && !AUTH_EXCLUDED_ROUTES.has(pathname)) {
     // Check auth cache first
     const cacheKey = `${request.headers.get('authorization') || ''}-${pathname}`;
     const cachedAuth = AUTH_CACHE.get(cacheKey);
@@ -51,18 +63,19 @@ export async function middleware(request: NextRequest) {
       return cachedAuth.response;
     }
 
-    const authResponse = await basicAuthMiddleware(request);
-    if (authResponse.status !== 200) {
-      // Cache failed auth responses
-      AUTH_CACHE.set(cacheKey, { 
-        response: authResponse, 
-        timestamp: Date.now() 
+    const response = await basicAuthMiddleware(request);
+    
+    // Cache successful auth responses
+    if (response.status === 200) {
+      AUTH_CACHE.set(cacheKey, {
+        response,
+        timestamp: Date.now()
       });
-      return authResponse;
     }
+    
+    return response;
   }
-  
-  // Allow the request to proceed
+
   return NextResponse.next();
 }
 

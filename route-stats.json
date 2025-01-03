@@ -1,10 +1,56 @@
 {
-  "route": "/",
-  "method": "GET",
+  "/api/health": {
+    "GET": {
+      "count": 714,
+      "lastAccessed": "2025-01-03T09:59:32.585Z"
+    }
+  },
+  "/api/jenkins/health": {
+    "GET": {
+      "count": 716,
+      "lastAccessed": "2025-01-03T09:59:32.592Z"
+    }
+  },
+  "/api/svn/health": {
+    "GET": {
+      "count": 716,
+      "lastAccessed": "2025-01-03T09:59:32.592Z"
+    }
+  },
+  "/api/jira/health": {
+    "GET": {
+      "count": 726,
+      "lastAccessed": "2025-01-03T09:59:32.592Z"
+    }
+  },
+  "/api/svn/latest-revision": {
+    "POST": {
+      "count": 1116,
+      "lastAccessed": "2025-01-03T09:59:45.906Z"
+    }
+  },
+  "/api/svn/existing_solution_implementations": {
+    "POST": {
+      "count": 36,
+      "lastAccessed": "2025-01-03T09:59:48.742Z"
+    }
+  },
+  "/api/svn/existing_component_versions": {
+    "POST": {
+      "count": 36,
+      "lastAccessed": "2025-01-03T09:59:49.894Z"
+    }
+  },
+  "/api/jenkins/ping": {
+    "POST": {
+      "count": 4,
+      "lastAccessed": "2025-01-03T09:37:22.508Z"
+    }
+  },
   "/": {
     "GET": {
-      "count": 15,
-      "lastAccessed": "2024-12-23T13:38:03.783Z"
+      "count": 22,
+      "lastAccessed": "2025-01-03T09:58:08.792Z"
     }
   }
 }

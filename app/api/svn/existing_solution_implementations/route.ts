@@ -13,7 +13,7 @@ const auth = `Basic ${Buffer.from(`${config.services.svn.username}:${config.serv
 const excludedFolders = ["SolutionDevelopment", "MBS_ANGLO", "MTS_ANGLO"];
 
 function isValidVersion(version: string): boolean {
-  return version !== 'trunk' && /^[0-9.]+$/.test(version);
+  return version !== 'trunk' && /^[0-9.]+(_[0-9.]+)?$/.test(version);
 }
 
 function fetchFolderContents(path: string): Promise<string[]> {

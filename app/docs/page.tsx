@@ -1,76 +1,101 @@
+import { Metadata } from 'next';
 import Link from 'next/link';
-import ReactMarkdown from 'react-markdown';
-import fs from 'fs';
-import path from 'path';
 
-export const dynamic = 'force-dynamic';
-
-const customComponents = {
-  h1: (props: any) => <h1 {...props} className="text-4xl font-bold mb-8 text-white" />,
-  h2: (props: any) => <h2 {...props} className="text-2xl font-bold mt-8 mb-4 text-white flex items-center gap-2" />,
-  h3: (props: any) => <h3 {...props} className="text-xl font-bold mt-6 mb-3 text-white" />,
-  p: (props: any) => <p {...props} className="text-gray-300 mb-4" />,
-  ul: (props: any) => <ul {...props} className="list-disc pl-6 mb-6 text-gray-300 space-y-2" />,
-  li: (props: any) => <li {...props} className="text-gray-300" />,
-  code: (props: any) => {
-    // Check if it's an inline code block
-    const isInline = !props.className;
-    return (
-      <code
-        {...props}
-        className={isInline ? "bg-gray-800 px-2 py-1 rounded text-gray-300" : "block bg-gray-800 p-4 rounded-lg overflow-x-auto text-gray-300"}
-      />
-    );
-  },
-  pre: (props: any) => <pre {...props} className="bg-gray-800 p-4 rounded-lg mb-6 overflow-x-auto" />,
-  a: (props: any) => (
-    <a
-      {...props}
-      className="text-blue-400 hover:text-blue-300 underline"
-      target="_blank"
-      rel="noopener noreferrer"
-    />
-  ),
-  table: (props: any) => (
-    <div className="overflow-x-auto mb-6 rounded-lg border border-gray-700">
-      <table {...props} className="w-full text-left border-collapse table-auto" />
-    </div>
-  ),
-  th: (props: any) => (
-    <th 
-      {...props} 
-      className="px-6 py-3 text-sm font-semibold text-white border-b border-gray-700" 
-    />
-  ),
-  td: (props: any) => (
-    <td 
-      {...props} 
-      className="px-6 py-3 text-sm text-gray-300 border-b border-gray-700"
-    />
-  ),
-  tbody: (props: any) => (
-    <tbody {...props} className="bg-[#1f2937]" />
-  ),
-  thead: (props: any) => (
-    <thead {...props} className="bg-gray-800" />
-  ),
+export const metadata: Metadata = {
+  title: 'Service Catalog REST Server Documentation',
+  description: 'Documentation for the Service Catalog REST Server API endpoints',
 };
 
-export default function Documentation() {
-  // Read markdown file directly in the component
-  const fullPath = path.join(process.cwd(), 'README.md');
-  const markdown = fs.readFileSync(fullPath, 'utf8');
-
+export default function DocsPage() {
   return (
-    <main className="flex min-h-screen flex-col p-12 bg-[#1a1b26]">
-      <div className="w-full max-w-4xl mx-auto">
+    <main className="flex min-h-screen flex-col items-center p-4 md:p-24 bg-[#1a1b26] text-white">
+      <div className="w-full max-w-4xl space-y-8">
         <Link href="/" className="text-blue-400 hover:text-blue-300 mb-8 inline-block">
           ← Back to Home
         </Link>
-        
-        <div className="prose prose-invert max-w-none">
-          <ReactMarkdown components={customComponents}>{markdown}</ReactMarkdown>
-        </div>
+
+        <h1 className="text-4xl font-bold mb-8">Service Catalog REST Server</h1>
+
+        <section className="bg-gray-800 p-6 rounded-lg space-y-4">
+          <h2 className="text-2xl font-semibold">Overview</h2>
+          <p className="text-gray-300">
+            The Service Catalog REST Server provides a centralized API for managing and interacting with various services
+            including SVN, Jenkins, and Jira. It offers endpoints for health checks, version management, and service-specific
+            operations.
+          </p>
+        </section>
+
+        <section className="bg-gray-800 p-6 rounded-lg space-y-4">
+          <h2 className="text-2xl font-semibold">Authentication</h2>
+          <p className="text-gray-300">
+            Most endpoints require Basic Authentication. Include your credentials in the Authorization header:
+          </p>
+          <pre className="bg-gray-900 p-4 rounded-lg overflow-x-auto">
+            <code>Authorization: Basic base64(username:password)</code>
+          </pre>
+          <p className="text-gray-300">
+            The following endpoints do not require authentication:
+          </p>
+          <ul className="list-disc list-inside text-gray-300 ml-4">
+            <li>All health check endpoints (/api/*/health)</li>
+            <li>Home page (/)</li>
+            <li>Documentation (/docs)</li>
+            <li>Statistics (/stats)</li>
+          </ul>
+        </section>
+
+        <section className="bg-gray-800 p-6 rounded-lg space-y-4">
+          <h2 className="text-2xl font-semibold">Services</h2>
+          
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xl font-semibold text-blue-400">Jenkins Services</h3>
+              <ul className="list-disc list-inside text-gray-300 ml-4 mt-2">
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">GET /api/jenkins/health</code> - Check Jenkins server health</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/jenkins/build</code> - Trigger a Jenkins build</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/jenkins/builds</code> - Get builds information</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-blue-400">Jira Services</h3>
+              <ul className="list-disc list-inside text-gray-300 ml-4 mt-2">
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">GET /api/jira/health</code> - Check Jira server health</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/jira/update-fix-version</code> - Update fix version for Jira issues</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-semibold text-blue-400">SVN Services</h3>
+              <ul className="list-disc list-inside text-gray-300 ml-4 mt-2">
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">GET /api/svn/health</code> - Check SVN server health</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/svn/bulk-exists</code> - Check existence of multiple SVN paths</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/svn/copy</code> - Copy SVN resources</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/svn/exists</code> - Check existence of SVN path</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/svn/existing_component_versions</code> - Get existing component versions</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/svn/existing_solution_implementations</code> - Get existing solution implementations</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/svn/latest-revision</code> - Get latest revision information</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/svn/propset</code> - Set SVN properties</li>
+                <li><code className="text-sm bg-gray-900 px-2 py-1 rounded">POST /api/svn/reset</code> - Reset SVN state</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-gray-800 p-6 rounded-lg space-y-4">
+          <h2 className="text-2xl font-semibold">Health Checks</h2>
+          <p className="text-gray-300">
+            Health check endpoints are available for all services and do not require authentication. They return a status
+            and additional information about the service health.
+          </p>
+          <pre className="bg-gray-900 p-4 rounded-lg overflow-x-auto">
+            <code>{JSON.stringify({
+              status: 'healthy',
+              message: 'Service is healthy',
+              timestamp: new Date().toISOString()
+            }, null, 2)}</code>
+          </pre>
+        </section>
       </div>
     </main>
   );

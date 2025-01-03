@@ -3,48 +3,82 @@
 import { useEffect, useState } from 'react';
 import VersionDisplay from './components/VersionDisplay';
 import Link from 'next/link';
+import ServiceIcon from './components/ServiceIcon';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [svnHealth, setSvnHealth] = useState<{ status: string; message: string; host: string } | null>(null);
   const [jenkinsHealth, setJenkinsHealth] = useState<{ status: string } | null>(null);
+  const [jiraHealth, setJiraHealth] = useState<{ status: string; message: string } | null>(null);
 
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        // First check basic health and SVN
-        const [healthResponse, svnHealthResponse] = await Promise.all([
+        // Check all health endpoints in parallel
+        const [healthResponse, svnHealthResponse, jenkinsHealthResponse, jiraHealthResponse] = await Promise.allSettled([
           fetch('/api/health'),
-          fetch('/api/svn/health')
+          fetch('/api/svn/health'),
+          fetch('/api/jenkins/health', { 
+            method: 'GET',
+            signal: AbortSignal.timeout(3000) // 3 second timeout
+          }),
+          fetch('/api/jira/health')
         ]);
 
-        if (!healthResponse.ok) {
+        // Process main health check
+        if (healthResponse.status === 'fulfilled' && healthResponse.value.ok) {
+          setIsLoading(false);
+        } else {
           throw new Error('Health check failed');
         }
 
-        const svnData = await svnHealthResponse.json();
-        setSvnHealth(svnData);
-        setIsLoading(false);  // Set loading to false after basic health checks
+        // Process SVN health
+        if (svnHealthResponse.status === 'fulfilled') {
+          const svnData = await svnHealthResponse.value.json();
+          setSvnHealth(svnData);
+        } else {
+          setSvnHealth({ status: 'error', message: 'SVN health check failed', host: '' });
+        }
 
-        // Then check Jenkins separately so it doesn't block the main loading
-        try {
-          const jenkinsHealthResponse = await fetch('/api/jenkins/ping', {
-            method: 'POST'
-          });
-          const jenkinsData = await jenkinsHealthResponse.json();
+        // Process Jenkins health
+        if (jenkinsHealthResponse.status === 'fulfilled') {
+          const jenkinsData = await jenkinsHealthResponse.value.json();
           setJenkinsHealth(jenkinsData);
-        } catch (err) {
-          console.error('Jenkins health check failed:', err);
+        } else {
           setJenkinsHealth({ status: 'error' });
         }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+
+        // Process Jira health
+        if (jiraHealthResponse.status === 'fulfilled') {
+          if (jiraHealthResponse.value.ok) {
+            const jiraData = await jiraHealthResponse.value.json();
+            setJiraHealth(jiraData);
+          } else {
+            const errorData = await jiraHealthResponse.value.json();
+            setJiraHealth({ 
+              status: 'unhealthy', 
+              message: errorData.message || 'Failed to connect to Jira' 
+            });
+          }
+        } else {
+          setJiraHealth({ 
+            status: 'unhealthy', 
+            message: 'Jira health check failed' 
+          });
+        }
+
+      } catch (error) {
+        console.error('Health check error:', error);
+        setError(error instanceof Error ? error.message : 'Failed to check service health');
         setIsLoading(false);
       }
     };
 
     checkHealth();
+    // Refresh health status every 30 seconds
+    const interval = setInterval(checkHealth, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   if (isLoading) {
@@ -64,107 +98,202 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-[#1a1b26] text-white">
-      <div className="grid grid-cols-1 gap-8 w-full max-w-2xl">
-        <h1 className="text-4xl font-bold">service catalog REST server</h1>
-        
-        <div className="bg-[#1f2937] p-6 rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 flex items-center">
-            <span className="text-red-400 mr-2">❤️</span>
-            health
-          </h2>
-          <div className="text-gray-300">
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                /api/health
-              </li>
-            </ul>
+    <main className="flex min-h-screen flex-col items-center justify-center p-4 md:p-24 bg-[#1a1b26] text-white">
+      <div className="w-full max-w-3xl space-y-8">
+        {/* Health Section */}
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <div className="flex items-center mb-4">
+            <h2 className="text-2xl font-semibold flex items-center">
+              <span className="mr-2">
+                <ServiceIcon service="health" size={24} />
+              </span>
+              health
+            </h2>
+            <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
+              public
+            </span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center">
+              <span className="text-green-500 mr-2">✓</span>
+              <span className="w-16 text-gray-400">GET</span>
+              <span>/api/health</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-green-500 mr-2">✓</span>
+              <span className="w-16 text-gray-400">GET</span>
+              <span>/api/jenkins/health</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-green-500 mr-2">✓</span>
+              <span className="w-16 text-gray-400">GET</span>
+              <span>/api/jira/health</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">GET</span>
+                <span>/api/svn/health</span>
+              </div>
+              {!isLoading && <div className={`status-indicator ${error ? 'error' : ''}`}></div>}
+            </div>
           </div>
         </div>
 
-        <div className="bg-[#1f2937] p-6 rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 flex items-center">
-            <span className="text-yellow-400 mr-2">&lt;/&gt;</span>
-            svn services
-          </h2>
-          <div className="text-gray-300">
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                /api/svn/repositories
-              </li>
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                /api/svn/exists
-              </li>
-              <li className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <span className="text-green-400 mr-2">✓</span>
-                  /api/svn/copy
-                </div>
-                <div 
-                  className={`w-4 h-4 rounded-full ${svnHealth?.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'}`}
-                  title={`SVN Status: ${svnHealth?.status || 'Unknown'}\nHost: ${svnHealth?.host || 'Unknown'}`}
-                />
-              </li>
-            </ul>
+        {/* Jenkins Services Section */}
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <div className="flex items-center mb-4">
+            <h2 className="text-2xl font-semibold flex items-center">
+              <ServiceIcon service="jenkins" size={24} className="mr-2" />
+              jenkins services
+            </h2>
+            <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
+              auth
+            </span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/jenkins/build</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/jenkins/builds</span>
+              </div>
+              {jenkinsHealth && (
+                <div className={`status-indicator ${jenkinsHealth.status !== 'ok' ? 'error' : ''}`}></div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="bg-[#1f2937] p-6 rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 flex items-center">
-            <span className="text-yellow-400 mr-2">👨‍💻</span>
-            jenkins services
-          </h2>
-          <div className="text-gray-300">
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                /api/jenkins/builds
-              </li>
-              <li className="flex items-center">
-                <span className="text-green-400 mr-2">✓</span>
-                /api/jenkins/build
-              </li>
-              <li className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <span className="text-green-400 mr-2">✓</span>
-                  /api/jenkins/ping
-                </div>
-                <div 
-                  className={`w-4 h-4 rounded-full ${jenkinsHealth?.status === 'ok' ? 'bg-green-500' : 'bg-red-500'}`}
-                  title={`Jenkins Status: ${jenkinsHealth?.status || 'Unknown'}`}
-                />
-              </li>
-            </ul>
+        {/* Jira Services Section */}
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <div className="flex items-center mb-4">
+            <h2 className="text-2xl font-semibold flex items-center">
+              <ServiceIcon service="jira" size={24} className="mr-2" />
+              jira services
+            </h2>
+            <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
+              auth
+            </span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/jira/update-fix-version</span>
+              </div>
+              {jiraHealth && (
+                <div className={`status-indicator ${jiraHealth.status !== 'healthy' ? 'error' : ''}`}></div>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="bg-[#1f2937] p-6 rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 flex items-center">
-            <span className="text-yellow-400 mr-2">🔗</span>
-            version
-          </h2>
-          <div className="text-gray-300">
-            <div className="bg-white/10 px-3 py-1 rounded-full inline-block">
-              <VersionDisplay />
+        {/* SVN Services Section */}
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <div className="flex items-center mb-4">
+            <h2 className="text-2xl font-semibold flex items-center">
+              <ServiceIcon service="svn" size={24} className="mr-2" />
+              svn services
+            </h2>
+            <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
+              auth
+            </span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/svn/bulk-exists</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/svn/copy</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/svn/exists</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/svn/existing_component_versions</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/svn/existing_solution_implementations</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/svn/latest-revision</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/svn/propset</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
+                <span>/api/svn/reset</span>
+              </div>
+              {svnHealth && (
+                <div className={`status-indicator ${svnHealth.status !== 'healthy' ? 'error' : ''}`}></div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Version Section */}
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <h2 className="text-2xl font-semibold flex items-center">
+                <span className="mr-2">🔗</span>
+                version
+              </h2>
+              <div className="ml-4">
+                <VersionDisplay />
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <a href="/stats" className="text-gray-400 hover:text-white transition-colors" title="Statistics">
+                <span className="text-xl">📊</span>
+              </a>
+              <a href="/docs" className="text-gray-400 hover:text-white transition-colors" title="Documentation">
+                <span className="text-xl">📚</span>
+              </a>
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-4">
-        <Link href="/stats" className="text-blue-500 hover:text-blue-700 underline">
-          View API Statistics
-        </Link>
-      </div>
-      <div className="mt-8">
-        <Link href="/docs" className="text-blue-400 hover:text-blue-300 flex items-center">
-          <span className="mr-2">📚</span>
-          View Documentation
-        </Link>
-      </div>
-      <VersionDisplay className="fixed bottom-4 right-4 text-sm text-gray-500" />
     </main>
   );
 }

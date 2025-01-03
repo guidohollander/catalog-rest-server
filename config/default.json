@@ -29,6 +29,12 @@
             "baseUrl": "http://192.168.10.159",
             "username": "${JENKINS_USERNAME}",
             "apiToken": "${JENKINS_API_TOKEN}"
+        },
+        "jira": {
+            "baseUrl": "https://blyce.atlassian.net",
+            "apiPath": "/rest/api/latest",
+            "username": "${JIRA_USERNAME}",
+            "password": "${JIRA_PASSWORD}"
         }
     }
 }
