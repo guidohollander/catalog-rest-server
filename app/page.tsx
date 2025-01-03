@@ -11,6 +11,7 @@ export default function Home() {
   const [svnHealth, setSvnHealth] = useState<{ status: string; message: string; host: string } | null>(null);
   const [jenkinsHealth, setJenkinsHealth] = useState<{ status: string } | null>(null);
   const [jiraHealth, setJiraHealth] = useState<{ status: string; message: string } | null>(null);
+  const [envHealth, setEnvHealth] = useState<{ status: boolean; missingEnvVars: string[] } | null>(null);
 
   useEffect(() => {
     const checkHealth = async () => {
@@ -27,7 +28,9 @@ export default function Home() {
         ]);
 
         // Process main health check
-        if (healthResponse.status === 'fulfilled' && healthResponse.value.ok) {
+        if (healthResponse.status === 'fulfilled') {
+          const envData = await healthResponse.value.json();
+          setEnvHealth(envData);
           setIsLoading(false);
         } else {
           throw new Error('Health check failed');
@@ -133,7 +136,12 @@ export default function Home() {
                 <span className="w-16 text-gray-400">GET</span>
                 <span>/api/svn/health</span>
               </div>
-              {!isLoading && <div className={`status-indicator ${error ? 'error' : ''}`}></div>}
+              {!isLoading && (
+                <div 
+                  className={`status-indicator ${(!envHealth?.status || error) ? 'error' : ''}`} 
+                  title={!envHealth?.status ? `Missing: ${envHealth?.missingEnvVars.join(', ')}` : 'All systems operational'}
+                />
+              )}
             </div>
           </div>
         </div>
