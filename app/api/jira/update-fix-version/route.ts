@@ -1,99 +1,130 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateJiraIssueFixVersion, updateMultipleJiraIssueFixVersions } from '../utils';
-import { loadConfig } from '@/src/config/loader';
+import { updateMultipleJiraIssueFixVersions } from '../utils';
+import logger from '@/src/utils/logger';
 
-interface SingleUpdateRequestBody {
-  issueNumber: string;
-  fixVersion: string;
-}
+// Explicitly set runtime to nodejs
+export const runtime = 'nodejs';
 
-interface BulkUpdateRequestBody {
+interface RequestBody {
   issueNumbers: string[];
   fixVersion: string;
 }
 
-type RequestBody = SingleUpdateRequestBody | BulkUpdateRequestBody;
+interface ErrorResponse {
+  error: string;
+  details?: Record<string, string[]>;
+  failedIssues?: string[];
+}
 
+interface SuccessResponse {
+  success: true;
+  result: {
+    successful: string[];
+    failed: string[];
+    errors: Record<string, string[]>;
+  };
+}
+
+/**
+ * Handles bulk updates of Jira issue fix versions
+ * @param request The incoming HTTP request
+ * @returns NextResponse with the result of the bulk update operation
+ */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  // Check authentication
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader) {
-    return NextResponse.json(
-      { error: 'Authentication required' },
-      { status: 401 }
-    );
-  }
-
-  const config = loadConfig();
-  const expectedAuth = `Basic ${Buffer.from(`${config.services.jira.username}:${config.services.jira.password}`).toString('base64')}`;
-  
-  if (authHeader !== expectedAuth) {
-    return NextResponse.json(
-      { error: 'Invalid credentials' },
-      { status: 401 }
-    );
-  }
-
   try {
     const body = await request.json() as RequestBody;
-    const { fixVersion } = body;
+    const { issueNumbers, fixVersion } = body;
 
-    if (!fixVersion) {
-      return NextResponse.json(
-        { error: 'Missing required field: fixVersion' },
+    logger.debug('Received fix version update request', { 
+      issueCount: issueNumbers?.length,
+      fixVersion,
+      method: request.method,
+      url: request.url
+    });
+
+    if (!issueNumbers?.length) {
+      logger.warn('Invalid request: missing or empty issueNumbers', {
+        issueCount: issueNumbers?.length
+      });
+
+      return NextResponse.json<ErrorResponse>(
+        { error: 'Missing or invalid required field: issueNumbers' },
         { status: 400 }
       );
     }
 
-    if ('issueNumbers' in body) {
-      // Bulk update
-      if (!body.issueNumbers?.length) {
-        return NextResponse.json(
-          { error: 'Missing or empty required field: issueNumbers' },
-          { status: 400 }
-        );
-      }
-
-      const results = await updateMultipleJiraIssueFixVersions(body.issueNumbers, fixVersion);
-      const hasSuccesses = Object.values(results).some(result => result !== null);
-
-      if (!hasSuccesses) {
-        return NextResponse.json(
-          { error: 'All updates failed', results },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json({ 
-        success: true,
-        results
+    if (!fixVersion?.trim()) {
+      logger.warn('Invalid request: missing or empty fixVersion', {
+        fixVersion,
+        issueCount: issueNumbers?.length
       });
-    } else {
-      // Single update
-      if (!body.issueNumber) {
-        return NextResponse.json(
-          { error: 'Missing required field: issueNumber' },
-          { status: 400 }
-        );
-      }
 
-      const result = await updateJiraIssueFixVersion(body.issueNumber, fixVersion);
-      
-      if (!result) {
-        return NextResponse.json(
-          { error: 'Failed to update Jira issue' },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json({ 
-        success: true,
-        result
-      });
+      return NextResponse.json<ErrorResponse>(
+        { error: 'Missing or invalid required field: fixVersion' },
+        { status: 400 }
+      );
     }
+
+    const resultMap = await updateMultipleJiraIssueFixVersions(issueNumbers, fixVersion);
+    
+    // Process the result map into successful and failed arrays
+    const successful: string[] = [];
+    const failed: string[] = [];
+    const errors: Record<string, string[]> = {};
+
+    Object.entries(resultMap).forEach(([issueKey, result]) => {
+      if (result) {
+        successful.push(issueKey);
+      } else {
+        failed.push(issueKey);
+        errors[issueKey] = ['Failed to update fix version'];
+      }
+    });
+    
+    if (failed.length === issueNumbers.length) {
+      logger.error('All Jira updates failed', { 
+        fixVersion,
+        failedCount: failed.length,
+        errorCount: Object.keys(errors).length,
+        firstError: Object.entries(errors)[0]
+      });
+
+      return NextResponse.json<ErrorResponse>(
+        { 
+          error: 'All updates failed', 
+          details: errors,
+          failedIssues: failed 
+        },
+        { status: 500 }
+      );
+    }
+
+    logger.info('Jira updates completed', {
+      fixVersion,
+      totalCount: issueNumbers.length,
+      successCount: successful.length,
+      failureCount: failed.length,
+      hasPartialFailures: failed.length > 0
+    });
+
+    return NextResponse.json<SuccessResponse>({ 
+      success: true,
+      result: {
+        successful,
+        failed,
+        errors
+      }
+    });
   } catch (error) {
-    console.error('Error updating Jira issue(s):', error);
-    return NextResponse.json(
+    logger.error('Unexpected error during Jira update:', { 
+      error: error instanceof Error ? {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+      } : String(error)
+    });
+    
+    return NextResponse.json<ErrorResponse>(
       { error: 'Internal server error' },
       { status: 500 }
     );
