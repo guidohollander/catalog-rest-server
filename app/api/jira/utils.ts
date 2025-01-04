@@ -46,8 +46,10 @@ export async function jiraPost(
 
   // Handle 204 No Content responses (common for PUT requests)
   if (response.status === 204) {
+    // For version updates, extract ID from URL
+    const versionId = url.split('/').pop();
     return {
-      self: 'success',
+      self: versionId ? `/rest/api/latest/version/${versionId}` : undefined,
       data: null
     };
   }
@@ -139,7 +141,9 @@ export async function addVersionIfNotExists(
       try {
         logger.info('Creating new version', { project, versionToAdd, isReleased });
         const result = await jiraPost('POST', `${JIRA_API_URL}/version`, data);
-        return result.self || null;
+        // Extract version ID from self URL and construct web UI URL
+        const versionId = result.self?.split('/').pop();
+        return versionId ? `${baseUrl}/projects/${project}/versions/${versionId}` : null;
       } catch (error) {
         // If version creation fails, just skip
         logger.error('Failed to create Jira version', { error, project, versionToAdd });
@@ -164,8 +168,9 @@ export async function addVersionIfNotExists(
           projectId: existingVersion.projectId,
         };
         
-        await jiraPost('PUT', `${JIRA_API_URL}/version/${existingVersion.id}`, data);
+        const result = await jiraPost('PUT', `${JIRA_API_URL}/version/${existingVersion.id}`, data);
         logger.info('Successfully updated version', { project, versionToAdd });
+        return `${baseUrl}/projects/${project}/versions/${existingVersion.id}`;
       } catch (error) {
         logger.error('Failed to update Jira version release status', { error, project, versionToAdd });
       }
@@ -176,9 +181,10 @@ export async function addVersionIfNotExists(
         currentlyReleased: existingVersion.released,
         wantReleased: isReleased
       });
+      return `${baseUrl}/projects/${project}/versions/${existingVersion.id}`;
     }
     
-    return 'exists';
+    return `${baseUrl}/projects/${project}/versions/${existingVersion.id}`;
   } catch (error) {
     // Any other errors, just skip version management
     logger.error('Error in version management', { error, project, versionToAdd });
@@ -191,6 +197,7 @@ export async function updateMultipleJiraIssueFixVersions(
   fixVersion: string
 ): Promise<{ [key: string]: string | null }> {
   const resultMap: { [key: string]: string | null } = {};
+  let versionUrl: string | null = null;
 
   // Process each issue one by one since Jira's bulk API is limited
   for (const issueKey of issueNumbers) {
@@ -198,12 +205,18 @@ export async function updateMultipleJiraIssueFixVersions(
       // Add version to project if it doesn't exist, and ensure it's released
       const projectKey = issueKey.split('-')[0];
       const versionResult = await addVersionIfNotExists(projectKey, fixVersion, true);
+      
+      // Store the version URL for the response
+      if (versionResult && versionResult !== 'skip') {
+        versionUrl = versionResult;
+      }
+
       if (versionResult === 'skip') {
-        resultMap[issueKey] = 'version skipped';
+        resultMap[issueKey] = null;
       } else {
         // Update the issue's fix version
         try {
-          const result = await jiraPost(
+          await jiraPost(
             'PUT',
             `${JIRA_API_URL}/issue/${issueKey}`,
             {
@@ -212,7 +225,8 @@ export async function updateMultipleJiraIssueFixVersions(
               }
             }
           );
-          resultMap[issueKey] = result.self || 'success';
+          // Return the version URL instead of the issue URL
+          resultMap[issueKey] = versionUrl;
         } catch (error) {
           // Handle 404 silently - issue doesn't exist
           if (error instanceof Error && error.message.includes('404')) {
