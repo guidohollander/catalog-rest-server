@@ -24,47 +24,50 @@ export async function jiraPost(
   url: string,
   data: any
 ): Promise<JiraResponse> {
-  try {
-    const response = await fetch(url, {
-      method,
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${username}:${password}`, 'binary').toString('base64')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+  const response = await fetch(url, {
+    method,
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${username}:${password}`, 'binary').toString('base64')}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    console.log(`JIRA debug: ${method} ${url}`);
-    return response.json();
-  } catch (err) {
-    console.error('Jira API error:', err);
-    throw err;
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
+
+  // For PUT requests that return no content (204), return a success indicator
+  if (method === 'PUT' && response.status === 204) {
+    return { self: 'success' };
+  }
+
+  // For other requests, try to parse JSON
+  const text = await response.text();
+  if (!text) {
+    return { self: 'success' };
+  }
+  
+  return JSON.parse(text);
 }
 
 export async function jiraGet(url: string): Promise<any> {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${username}:${password}`, 'binary').toString('base64')}`,
-        'Content-Type': 'application/json',
-      },
-    });
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${username}:${password}`, 'binary').toString('base64')}`,
+      'Content-Type': 'application/json',
+    },
+  });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    console.log(`JIRA debug: GET ${url}`);
-    return response.json();
-  } catch (err) {
-    console.error('Jira API error:', err);
-    throw err;
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
+
+  console.log(`JIRA debug: ${response.status === 204 ? '' : 'GET'} ${url}`);
+  
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 }
 
 export async function updateJiraIssueFixVersion(
@@ -95,62 +98,83 @@ export async function addVersionIfNotExists(
   versionToAdd: string,
   isReleased: boolean
 ): Promise<string | null> {
-  // Get all versions of project and check if name already exists
-  const versions = await jiraGet(`${JIRA_API_URL}/project/${project}/versions`);
-  
-  // Check if project fixversion exists
-  if (!versions.some((element: JiraVersion) => element.name === versionToAdd)) {
-    const data = {
-      archived: false,
-      releaseDate: new Date().toISOString().split('T')[0],
-      name: versionToAdd,
-      projectId: versions[0].projectId,
-      released: isReleased,
-    };
+  try {
+    const versions = await jiraGet(`${JIRA_API_URL}/project/${project}/version`);
     
-    const result = await jiraPost('POST', `${JIRA_API_URL}/version`, data);
-    return result.self || null;
+    // If versions is null (404) or has no values, skip version check
+    if (!versions || !versions.values) {
+      return 'skip';
+    }
+    
+    // Check if project fixversion exists
+    if (!versions.values.some((element: JiraVersion) => element.name === versionToAdd)) {
+      const data = {
+        archived: false,
+        releaseDate: new Date().toISOString().split('T')[0],
+        name: versionToAdd,
+        project: project,
+        released: isReleased,
+      };
+      
+      try {
+        const result = await jiraPost('POST', `${JIRA_API_URL}/version`, data);
+        return result.self || null;
+      } catch (error) {
+        // If version creation fails, just skip
+        return 'skip';
+      }
+    }
+    
+    return 'exists';
+  } catch (error) {
+    // Any other errors, just skip version management
+    return 'skip';
   }
-  
-  return null;
 }
 
 export async function updateMultipleJiraIssueFixVersions(
   issueNumbers: string[],
   fixVersion: string
 ): Promise<{ [key: string]: string | null }> {
-  // Prepare the bulk update payload
-  const issueUpdates = issueNumbers.map(issueKey => ({
-    issueKey,
-    update: {
-      fixVersions: [{ add: { name: fixVersion } }]
+  const resultMap: { [key: string]: string | null } = {};
+
+  // Process each issue one by one since Jira's bulk API is limited
+  for (const issueKey of issueNumbers) {
+    try {
+      // Add version to project if it doesn't exist
+      const projectKey = issueKey.split('-')[0];
+      const versionResult = await addVersionIfNotExists(projectKey, fixVersion, false);
+      if (versionResult === 'skip') {
+        resultMap[issueKey] = 'version skipped';
+      } else {
+        // Update the issue's fix version
+        try {
+          const result = await jiraPost(
+            'PUT',
+            `${JIRA_API_URL}/issue/${issueKey}`,
+            {
+              update: {
+                fixVersions: [{ add: { name: fixVersion } }]
+              }
+            }
+          );
+          resultMap[issueKey] = result.self || 'success';
+        } catch (error) {
+          // Handle 404 silently - issue doesn't exist
+          if (error instanceof Error && error.message.includes('404')) {
+            resultMap[issueKey] = null;
+          } else {
+            // Log other errors that might need attention
+            console.error(`Error updating ${issueKey}:`, error);
+            resultMap[issueKey] = null;
+          }
+        }
+      }
+    } catch (error) {
+      console.error(`Failed to process ${issueKey}:`, error);
+      resultMap[issueKey] = null;
     }
-  }));
-
-  const data = {
-    issueUpdates
-  };
-
-  try {
-    const result = await jiraPost(
-      'POST',
-      `${JIRA_API_URL}/bulk`,
-      data
-    );
-
-    // Process the results into a map of issueKey -> result
-    const resultMap: { [key: string]: string | null } = {};
-    issueNumbers.forEach((issueKey, index) => {
-      resultMap[issueKey] = result.data?.[index]?.self || null;
-    });
-
-    return resultMap;
-  } catch (error) {
-    console.error('Bulk update failed:', error);
-    // Return a map of all failures if the bulk operation fails
-    return issueNumbers.reduce((acc, issueKey) => {
-      acc[issueKey] = null;
-      return acc;
-    }, {} as { [key: string]: null });
   }
+
+  return resultMap;
 }

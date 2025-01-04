@@ -5,23 +5,21 @@ import logger from '@/src/utils/logger';
 // Explicitly set runtime to nodejs
 export const runtime = 'nodejs';
 
-interface RequestBody {
-  issueNumbers: string[];
-  fixVersion: string;
+interface IssueNumber {
+  issueNumber: string;
 }
 
-interface ErrorResponse {
-  error: string;
-  details?: Record<string, string[]>;
-  failedIssues?: string[];
+interface UpdateFixVersionRequest {
+  request: {
+    fixVersion: string;
+  };
+  issueNumbers: IssueNumber[];
 }
 
-interface SuccessResponse {
-  success: true;
-  result: {
-    successful: string[];
-    failed: string[];
-    errors: Record<string, string[]>;
+interface UpdateFixVersionResponse {
+  response: {
+    successful: IssueNumber[];
+    failed: IssueNumber[];
   };
 }
 
@@ -31,9 +29,14 @@ interface SuccessResponse {
  * @returns NextResponse with the result of the bulk update operation
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  let requestBody: UpdateFixVersionRequest = {
+    request: { fixVersion: '' },
+    issueNumbers: []
+  };
   try {
-    const body = await request.json() as RequestBody;
-    const { issueNumbers, fixVersion } = body;
+    requestBody = await request.json() as UpdateFixVersionRequest;
+    const fixVersion = requestBody.request.fixVersion;
+    const issueNumbers = requestBody.issueNumbers.map(issue => issue.issueNumber);
 
     logger.debug('Received fix version update request', { 
       issueCount: issueNumbers?.length,
@@ -42,91 +45,51 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       url: request.url
     });
 
-    if (!issueNumbers?.length) {
-      logger.warn('Invalid request: missing or empty issueNumbers', {
-        issueCount: issueNumbers?.length
+    if (!issueNumbers?.length || !fixVersion) {
+      logger.warn('Invalid request: missing required fields', {
+        hasIssueNumbers: !!issueNumbers?.length,
+        hasFixVersion: !!fixVersion
       });
 
-      return NextResponse.json<ErrorResponse>(
-        { error: 'Missing or invalid required field: issueNumbers' },
-        { status: 400 }
-      );
+      return NextResponse.json<UpdateFixVersionResponse>({ 
+        response: {
+          successful: [],
+          failed: requestBody.issueNumbers
+        }
+      }, { status: 400 });
     }
 
-    if (!fixVersion?.trim()) {
-      logger.warn('Invalid request: missing or empty fixVersion', {
-        fixVersion,
-        issueCount: issueNumbers?.length
-      });
-
-      return NextResponse.json<ErrorResponse>(
-        { error: 'Missing or invalid required field: fixVersion' },
-        { status: 400 }
-      );
-    }
-
+    // Perform the update
     const resultMap = await updateMultipleJiraIssueFixVersions(issueNumbers, fixVersion);
     
-    // Process the result map into successful and failed arrays
-    const successful: string[] = [];
-    const failed: string[] = [];
-    const errors: Record<string, string[]> = {};
+    // Process the result map into successful and failed arrays with the original structure
+    const successful: IssueNumber[] = [];
+    const failed: IssueNumber[] = [];
 
     Object.entries(resultMap).forEach(([issueKey, result]) => {
+      const issueNumber: IssueNumber = { issueNumber: issueKey };
       if (result) {
-        successful.push(issueKey);
+        successful.push(issueNumber);
       } else {
-        failed.push(issueKey);
-        errors[issueKey] = ['Failed to update fix version'];
+        failed.push(issueNumber);
       }
     });
-    
-    if (failed.length === issueNumbers.length) {
-      logger.error('All Jira updates failed', { 
-        fixVersion,
-        failedCount: failed.length,
-        errorCount: Object.keys(errors).length,
-        firstError: Object.entries(errors)[0]
-      });
 
-      return NextResponse.json<ErrorResponse>(
-        { 
-          error: 'All updates failed', 
-          details: errors,
-          failedIssues: failed 
-        },
-        { status: 500 }
-      );
-    }
-
-    logger.info('Jira updates completed', {
-      fixVersion,
-      totalCount: issueNumbers.length,
-      successCount: successful.length,
-      failureCount: failed.length,
-      hasPartialFailures: failed.length > 0
-    });
-
-    return NextResponse.json<SuccessResponse>({ 
-      success: true,
-      result: {
+    return NextResponse.json<UpdateFixVersionResponse>({
+      response: {
         successful,
-        failed,
-        errors
+        failed
       }
     });
+
   } catch (error) {
-    logger.error('Unexpected error during Jira update:', { 
-      error: error instanceof Error ? {
-        message: error.message,
-        name: error.name,
-        stack: error.stack
-      } : String(error)
-    });
+    logger.error('Error updating Jira fix versions', { error });
     
-    return NextResponse.json<ErrorResponse>(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json<UpdateFixVersionResponse>({
+      response: {
+        successful: [],
+        failed: requestBody.issueNumbers
+      }
+    }, { status: 500 });
   }
 }
