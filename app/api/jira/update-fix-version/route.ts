@@ -20,7 +20,7 @@ interface UpdateFixVersionResponse {
   response: {
     successful: IssueNumber[];
     failed: IssueNumber[];
-    versionUrl?: string;
+    versionUrls: { project: string; url: string }[];
   };
 }
 
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         response: {
           successful: [],
           failed: requestBody.issueNumbers,
-          versionUrl: undefined
+          versionUrls: []
         }
       }, { status: 400 });
     }
@@ -67,32 +67,27 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Process the result map into successful and failed arrays with the original structure
     const successful: IssueNumber[] = [];
     const failed: IssueNumber[] = [];
-    let versionUrl: string | undefined;
+    const versionUrls = new Map<string, string>();
 
     Object.entries(resultMap).forEach(([issueKey, result]) => {
       const issueNumber: IssueNumber = { issueNumber: issueKey };
       if (result) {
         successful.push(issueNumber);
-        // Keep the first non-null result as the version URL
-        if (result !== 'skip' && !versionUrl) {
-          versionUrl = result;
+        // Store version URL by project
+        if (result !== 'skip') {
+          const projectKey = issueKey.split('-')[0];
+          versionUrls.set(projectKey, result);
         }
       } else {
         failed.push(issueNumber);
       }
     });
 
-    // If we don't have a direct URL but have successes, construct the version URL
-    if (!versionUrl && successful.length > 0) {
-      const projectKey = successful[0].issueNumber.split('-')[0];
-      versionUrl = `${config.services.jira.baseUrl}/projects/${projectKey}/versions`;
-    }
-
     return NextResponse.json<UpdateFixVersionResponse>({
       response: {
         successful,
         failed,
-        versionUrl
+        versionUrls: Array.from(versionUrls.entries()).map(([project, url]) => ({ project, url }))
       }
     });
 
@@ -103,7 +98,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       response: {
         successful: [],
         failed: requestBody.issueNumbers,
-        versionUrl: undefined
+        versionUrls: []
       }
     }, { status: 500 });
   }

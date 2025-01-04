@@ -197,21 +197,24 @@ export async function updateMultipleJiraIssueFixVersions(
   fixVersion: string
 ): Promise<{ [key: string]: string | null }> {
   const resultMap: { [key: string]: string | null } = {};
-  let versionUrl: string | null = null;
+  const projectVersionUrls = new Map<string, string>();
 
   // Process each issue one by one since Jira's bulk API is limited
   for (const issueKey of issueNumbers) {
     try {
       // Add version to project if it doesn't exist, and ensure it's released
       const projectKey = issueKey.split('-')[0];
-      const versionResult = await addVersionIfNotExists(projectKey, fixVersion, true);
       
-      // Store the version URL for the response
-      if (versionResult && versionResult !== 'skip') {
-        versionUrl = versionResult;
+      // Only create/update version if we haven't done it for this project yet
+      if (!projectVersionUrls.has(projectKey)) {
+        const versionResult = await addVersionIfNotExists(projectKey, fixVersion, true);
+        if (versionResult && versionResult !== 'skip') {
+          projectVersionUrls.set(projectKey, versionResult);
+        }
       }
 
-      if (versionResult === 'skip') {
+      const versionUrl = projectVersionUrls.get(projectKey);
+      if (!versionUrl) {
         resultMap[issueKey] = null;
       } else {
         // Update the issue's fix version
@@ -225,7 +228,7 @@ export async function updateMultipleJiraIssueFixVersions(
               }
             }
           );
-          // Return the version URL instead of the issue URL
+          // Return the version URL for this project
           resultMap[issueKey] = versionUrl;
         } catch (error) {
           // Handle 404 silently - issue doesn't exist
