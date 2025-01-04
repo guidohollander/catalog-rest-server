@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 import { execSync } from 'child_process';
 import path from 'path';
 import { loadConfig } from '@/src/config/loader';
-import logger from '@/src/utils/logger';
+import { logger } from '@/src/utils/logger';
 
 // Load configuration
 const config = loadConfig();

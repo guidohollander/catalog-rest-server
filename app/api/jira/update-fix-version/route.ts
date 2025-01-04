@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateMultipleJiraIssueFixVersions } from '../utils';
-import logger from '@/src/utils/logger';
+import { logger } from '@/src/utils/logger';
 
 // Explicitly set runtime to nodejs
 export const runtime = 'nodejs';

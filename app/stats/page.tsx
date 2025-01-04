@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { logger } from '@/src/utils/logger';
 
 interface RouteStats {
     count: number;
@@ -32,7 +33,7 @@ export default function StatsPage() {
                 setStats(data);
             } catch (error) {
                 setError(error instanceof Error ? error.message : 'Failed to load statistics');
-                console.error('Error fetching stats:', error);
+                logger.error('Error fetching stats:', error);
             } finally {
                 setLoading(false);
             }

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { AppConfig, validateConfig } from './types';
-import logger from '@/src/utils/logger';
+import { logger } from '@/src/utils/logger';
 
 // Load environment variables
 dotenv.config();

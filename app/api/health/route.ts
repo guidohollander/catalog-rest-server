@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import logger from '@/src/utils/logger';
+import { logger } from '@/src/utils/logger';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import http from 'http';
 import { loadConfig } from '@/src/config/loader';
+import { logger } from '@/src/utils/logger';
 
 // Load configuration
 const config = loadConfig();
@@ -29,7 +30,7 @@ export async function GET(): Promise<NextResponse> {
     });
 
     req.on('error', (error) => {
-      console.error('Jenkins health check error:', error);
+      logger.error('Jenkins health check error:', error);
       resolve(NextResponse.json(
         { status: 'error', message: 'Failed to connect to Jenkins' },
         { status: 500 }

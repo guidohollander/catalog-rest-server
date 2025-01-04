@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { loadConfig } from '@/src/config/loader';
-import logger from '@/src/utils/logger';
+import { logger } from '@/src/utils/logger';
 
 // Load configuration
 const config = loadConfig();

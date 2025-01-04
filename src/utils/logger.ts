@@ -62,7 +62,7 @@ try {
     fs.mkdirSync(LOG_DIR, { recursive: true });
   }
 } catch (error) {
-  console.error('Failed to create logs directory:', error);
+  console.warn('Failed to create logs directory:', error);
 }
 
 // Create the logger instance
@@ -103,4 +103,4 @@ try {
   console.warn('Cannot write to logs directory. File logging disabled:', error);
 }
 
-export default logger;
+export { logger };

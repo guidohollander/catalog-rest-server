@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { basicAuthMiddleware } from './src/middleware/basic-auth';
+import { middlewareLogger as logger } from './src/utils/middleware-logger';
 
 // List of routes to exclude from authentication
 const AUTH_EXCLUDED_ROUTES = new Set([
@@ -46,10 +47,10 @@ export async function middleware(request: NextRequest) {
           route: pathname, 
           method: method 
         })
-      }).catch(error => console.error('Stats tracking error:', error));
+      }).catch(error => logger.error('Stats tracking error:', error));
     } catch (error) {
       // Log error but don't block the request
-      console.error('Stats tracking error:', error);
+      logger.error('Stats tracking error:', error);
     }
   }
 

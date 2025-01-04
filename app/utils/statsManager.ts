@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { logger } from '@/src/utils/logger';
 
 // Explicitly set runtime to nodejs
 export const runtime = 'nodejs';
@@ -63,7 +64,7 @@ export async function loadStats(): Promise<RouteStats> {
         lastCacheUpdate = now;
         return { ...statsCache }; // Return a copy to prevent mutations
     } catch (error) {
-        console.error('Error reading stats file:', error);
+        logger.error('Error reading stats file:', error);
         return {};
     }
 }
@@ -92,7 +93,7 @@ async function saveStats(stats: RouteStats): Promise<void> {
         statsCache = { ...stats }; // Store a copy in cache
         lastCacheUpdate = Date.now();
     } catch (error) {
-        console.error('Error writing stats file:', error);
+        logger.error('Error writing stats file:', error);
         throw error;
     } finally {
         releaseLock();
@@ -121,7 +122,7 @@ export async function updateRouteStats(route: string, method: string): Promise<v
 
         await saveStats(stats);
     } catch (error) {
-        console.error('Error updating route stats:', error);
+        logger.error('Error updating route stats:', error);
         throw error;
     }
 }
