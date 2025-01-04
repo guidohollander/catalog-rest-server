@@ -26,12 +26,12 @@
             "password": "${SVN_PASSWORD}"
         },
         "jenkins": {
-            "baseUrl": "http://192.168.10.159",
+            "baseUrl": "${JENKINS_BASE_URL}",
             "username": "${JENKINS_USERNAME}",
             "apiToken": "${JENKINS_API_TOKEN}"
         },
         "jira": {
-            "baseUrl": "https://blyce.atlassian.net",
+            "baseUrl": "${JIRA_BASE_URL}",
             "apiPath": "/rest/api/latest",
             "username": "${JIRA_USERNAME}",
             "password": "${JIRA_PASSWORD}"
