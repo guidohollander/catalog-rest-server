@@ -53,19 +53,12 @@ const logFormat = printf(({ level, message, timestamp }) => {
   }`;
 });
 
-// Get the log directory path
-const LOG_DIR = path.join(process.cwd(), 'logs');
+// Get the log directory path - ensure it works in both development and Docker
+const LOG_DIR = process.env.NODE_ENV === 'production' 
+  ? '/app/logs'  // Docker container path
+  : path.join(process.cwd(), 'logs');  // Development path
 
-// Ensure log directory exists
-try {
-  if (!fs.existsSync(LOG_DIR)) {
-    fs.mkdirSync(LOG_DIR, { recursive: true });
-  }
-} catch (error) {
-  console.warn('Failed to create logs directory:', error);
-}
-
-// Create the logger instance
+// Create the logger instance first with console transport
 const logger = winston.createLogger({
   format: combine(
     timestamp(),
@@ -74,18 +67,21 @@ const logger = winston.createLogger({
     logFormat
   ),
   transports: [
-    // Console transport for development
+    // Console transport for all environments
     new winston.transports.Console({
-      level: process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
+      level: process.env.LOG_LEVEL || 'info', // Default to info for all environments
     })
   ],
 });
 
-// Only add file transports if we can write to the logs directory
+// Try to set up file logging if possible
 try {
-  fs.accessSync(LOG_DIR, fs.constants.W_OK);
-  
-  // File transport for errors
+  // Create logs directory if it doesn't exist
+  if (!fs.existsSync(LOG_DIR)) {
+    fs.mkdirSync(LOG_DIR, { recursive: true });
+  }
+
+  // Add file transports
   logger.add(new winston.transports.File({
     filename: path.join(LOG_DIR, 'error.log'),
     level: 'error',
@@ -93,14 +89,17 @@ try {
     maxFiles: 5,
   }));
 
-  // File transport for all logs
   logger.add(new winston.transports.File({
     filename: path.join(LOG_DIR, 'combined.log'),
+    level: process.env.LOG_LEVEL || 'info',
     maxsize: 5242880, // 5MB
     maxFiles: 5,
   }));
+
+  logger.info('File logging initialized successfully');
 } catch (error) {
-  console.warn('Cannot write to logs directory. File logging disabled:', error);
+  logger.warn('Failed to initialize file logging:', error);
+  logger.warn('Continuing with console logging only');
 }
 
 export { logger };
