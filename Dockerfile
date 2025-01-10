@@ -49,6 +49,17 @@ RUN npm prune --production
 # Final stage
 FROM node:20-alpine
 
+# Install system dependencies
+RUN apk add --no-cache subversion ca-certificates && \
+    mkdir -p ~/.subversion && \
+    echo '[global]' > ~/.subversion/servers && \
+    echo 'ssl-trust-default-ca = yes' >> ~/.subversion/servers && \
+    echo '[groups]' >> ~/.subversion/servers && \
+    echo 'hollanderconsulting = svn.hollanderconsulting.nl' >> ~/.subversion/servers && \
+    echo '[hollanderconsulting]' >> ~/.subversion/servers && \
+    echo 'ssl-trust-default-ca = yes' >> ~/.subversion/servers && \
+    echo 'ssl-verify-server-cert = no' >> ~/.subversion/servers
+
 # Set working directory
 WORKDIR /app
 
