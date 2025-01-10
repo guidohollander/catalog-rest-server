@@ -35,13 +35,9 @@ ENV NEXT_PUBLIC_APP_VERSION=${VERSION}
 RUN echo "Building with version: ${NEXT_PUBLIC_APP_VERSION}"
 RUN npm run build
 
-# Create logs directory and stats files in builder stage
+# Create logs directory in builder stage
 RUN mkdir -p .next/standalone/logs && \
-    touch .next/standalone/route-stats.json && \
-    touch .next/standalone/route-stats.backup.json && \
-    chmod -R 777 .next/standalone/logs && \
-    chmod 777 .next/standalone/route-stats.json && \
-    chmod 777 .next/standalone/route-stats.backup.json
+    chmod -R 777 .next/standalone/logs
 
 # Copy files for standalone server
 RUN cp -r .next/static .next/standalone/.next/ && \
@@ -61,15 +57,11 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
-# Create logs directory and stats files
+# Create logs directory
 RUN mkdir -p logs && \
     mkdir -p .next/standalone/logs && \
-    touch .next/standalone/route-stats.json && \
-    touch .next/standalone/route-stats.backup.json && \
     chown -R node:node /app && \
-    chmod -R 777 /app && \
-    chmod 777 .next/standalone/route-stats.json && \
-    chmod 777 .next/standalone/route-stats.backup.json
+    chmod -R 777 /app
 
 # Switch to non-root user
 USER node

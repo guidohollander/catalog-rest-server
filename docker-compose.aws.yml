@@ -11,6 +11,8 @@ services:
       - HOST=0.0.0.0
     ports:
       - "3000:3000"
+    volumes:
+      - /var/log/catalog-rest-server:/app/logs
     restart: unless-stopped
 
   nginx:
