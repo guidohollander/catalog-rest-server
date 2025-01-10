@@ -48,9 +48,8 @@ const obfuscateSensitiveData = format((info: winston.Logform.TransformableInfo) 
 
 // Custom log format
 const logFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} [${level}]: ${
-    typeof message === 'object' ? JSON.stringify(message, null, 2) : message
-  }`;
+  const formattedMessage = typeof message === 'object' ? JSON.stringify(message) : message;
+  return `${timestamp} ${level}: ${formattedMessage}`;
 });
 
 // Get the log directory path - ensure it works in both development and Docker
@@ -69,7 +68,11 @@ const logger = winston.createLogger({
   transports: [
     // Console transport for all environments
     new winston.transports.Console({
-      level: process.env.LOG_LEVEL || 'info', // Default to info for all environments
+      level: process.env.LOG_LEVEL || 'info',
+      stderrLevels: ['error', 'warn'],
+      consoleWarnLevels: ['warn'],
+      handleExceptions: true,
+      handleRejections: true,
     })
   ],
 });
