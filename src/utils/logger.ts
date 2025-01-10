@@ -83,7 +83,7 @@ const logger = winston.createLogger({
 if (process.env.NODE_ENV === 'production') {
   try {
     // Match the path with docker-compose volume mount
-    const LOG_DIR = path.join(process.cwd(), '.next', 'standalone', 'logs');
+    const LOG_DIR = path.join(process.cwd(), 'logs');
     
     // Create logs directory if it doesn't exist
     if (!fs.existsSync(LOG_DIR)) {

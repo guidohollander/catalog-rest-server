@@ -10,9 +10,9 @@ services:
       - HOST=0.0.0.0
       - NEXT_PUBLIC_APP_VERSION=${VERSION:-0.1.23}
       - NEXT_PUBLIC_DEFAULT_THEME=dark
-      - LOG_LEVEL=info
+      - LOG_LEVEL=debug
     ports:
       - "3000:3000"
     volumes:
-      - ./logs:/app/.next/standalone/logs
+      - ./logs:/app/logs
     restart: unless-stopped
