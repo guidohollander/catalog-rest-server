@@ -46,16 +46,22 @@ const obfuscateSensitiveData = format((info: winston.Logform.TransformableInfo) 
   return masked;
 })();
 
-// Custom log format
+// Custom log format with brackets
 const logFormat = printf(({ level, message, timestamp }) => {
-  // Ensure message is a string
+  // Ensure message is a string and add brackets to level
   const formattedMessage = typeof message === 'object' ? JSON.stringify(message) : message;
-  return `${timestamp} ${level}: ${formattedMessage}`;
+  return `${timestamp} [${level}]: ${formattedMessage}`;
 });
 
-// Create the logger instance with console transport only first
+// Override console.log to use Winston
+const originalConsoleLog = console.log;
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+const originalConsoleDebug = console.debug;
+
+// Create the logger instance
 const logger = winston.createLogger({
-  level: 'debug', // Force debug level
+  level: 'debug',
   format: combine(
     timestamp(),
     obfuscateSensitiveData,
@@ -72,7 +78,24 @@ const logger = winston.createLogger({
   ]
 });
 
-// Add file transports if possible
+// Override console methods to use Winston
+console.log = (...args) => {
+  logger.info(args.length === 1 ? args[0] : args);
+};
+
+console.error = (...args) => {
+  logger.error(args.length === 1 ? args[0] : args);
+};
+
+console.warn = (...args) => {
+  logger.warn(args.length === 1 ? args[0] : args);
+};
+
+console.debug = (...args) => {
+  logger.debug(args.length === 1 ? args[0] : args);
+};
+
+// Add file transports if in production
 if (process.env.NODE_ENV === 'production') {
   try {
     // Match the path with docker-compose volume mount
@@ -86,16 +109,26 @@ if (process.env.NODE_ENV === 'production') {
     // Add file transports
     logger.add(new winston.transports.File({
       filename: path.join(LOG_DIR, 'error.log'),
-      level: 'error'
+      level: 'error',
+      format: combine(
+        timestamp(),
+        obfuscateSensitiveData,
+        logFormat
+      )
     }));
 
     logger.add(new winston.transports.File({
-      filename: path.join(LOG_DIR, 'combined.log')
+      filename: path.join(LOG_DIR, 'combined.log'),
+      format: combine(
+        timestamp(),
+        obfuscateSensitiveData,
+        logFormat
+      )
     }));
 
     logger.info('File logging initialized successfully');
   } catch (error) {
-    console.error('Failed to initialize file logging:', error);
+    logger.error('Failed to initialize file logging:', error);
   }
 }
 
@@ -104,4 +137,11 @@ logger.on('finish', () => {
   process.stdout.write('');
 });
 
-export { logger };
+// Export both the logger and original console methods
+export { 
+  logger,
+  originalConsoleLog as consoleLog,
+  originalConsoleError as consoleError,
+  originalConsoleWarn as consoleWarn,
+  originalConsoleDebug as consoleDebug
+};

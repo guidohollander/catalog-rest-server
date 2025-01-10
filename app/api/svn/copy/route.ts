@@ -36,12 +36,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           commitMessage: !body.request?.commitmessage
         }
       });
-      return NextResponse.json({ 
+      const response = NextResponse.json({ 
         response: { 
           success: "0", 
           error: "Missing required parameters" 
         } 
       }, { status: 400 });
+      console.log(`[DEBUG] Sending error response`, {
+        requestId,
+        response: {
+          success: "0",
+          error: "Missing required parameters"
+        }
+      });
+      return response;
     }
 
     const svnCommand = `svn copy "${body.request.from_url}" "${body.request.to_url}" -m "${body.request.commitmessage}" --username ${svn_username} --password ${svn_password}`;
@@ -66,12 +74,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             signal: error.signal
           });
           
-          resolve(NextResponse.json({ 
+          const response = NextResponse.json({ 
             response: { 
               success: "0", 
               error: "SVN copy failed" 
             } 
-          }, { status: 500 }));
+          }, { status: 500 });
+          console.log(`[DEBUG] Sending error response`, {
+            requestId,
+            response: {
+              success: "0",
+              error: "SVN copy failed"
+            }
+          });
+          resolve(response);
           return;
         }
         
@@ -95,12 +111,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           output: maskedStdout
         });
         
-        resolve(NextResponse.json({ 
+        const response = NextResponse.json({ 
           response: { 
             success: "1", 
             output: "copy successful" 
           } 
-        }));
+        });
+
+        console.log(`[DEBUG] Sending success response`, {
+          requestId,
+          response: {
+            success: "1",
+            output: "copy successful"
+          }
+        });
+
+        resolve(response);
       });
     });
   } catch (error) {
@@ -110,11 +136,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       stack: error instanceof Error ? error.stack : undefined
     });
     
-    return NextResponse.json({ 
+    const response = NextResponse.json({ 
       response: { 
         success: "0", 
         error: "Internal server error" 
       } 
     }, { status: 500 });
+    console.log(`[DEBUG] Sending error response`, {
+      requestId,
+      response: {
+        success: "0",
+        error: "Internal server error"
+      }
+    });
+    return response;
   }
 }
