@@ -40,7 +40,6 @@ export default function DocsPage() {
             <li>All health check endpoints (/api/*/health)</li>
             <li>Home page (/)</li>
             <li>Documentation (/docs)</li>
-            <li>Statistics (/stats)</li>
           </ul>
         </section>
 

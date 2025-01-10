@@ -7,23 +7,10 @@ import { middlewareLogger as logger } from './src/utils/middleware-logger';
 const AUTH_EXCLUDED_ROUTES = new Set([
   '/',  // Root path (home page)
   '/docs',  // Documentation page
-  '/stats',  // Stats page
   '/api/health',
   '/api/svn/health',
   '/api/jira/health',
-  '/api/jenkins/health',
-  '/api/stats',
-  '/api/stats/data',
-  '/api/stats/authenticated'
-]);
-
-// List of routes to exclude from stats tracking
-const STATS_EXCLUDED_ROUTES = new Set([
-  '/api/stats',  // Prevent recursive stats tracking
-  '/api/stats/data',
-  '/api/stats/authenticated',
-  '/_next',  // Next.js internal routes
-  '/favicon.ico'
+  '/api/jenkins/health'
 ]);
 
 // Cache for auth responses
@@ -34,27 +21,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
 
-  // Track route usage via API call for all routes except stats endpoints
-  if (!STATS_EXCLUDED_ROUTES.has(pathname) && !pathname.startsWith('/_next')) {
-    try {
-      // Make API call to track stats
-      fetch(`${request.nextUrl.origin}/api/stats/data`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          route: pathname, 
-          method: method 
-        })
-      }).catch(error => logger.error('Stats tracking error:', error));
-    } catch (error) {
-      // Log error but don't block the request
-      logger.error('Stats tracking error:', error);
-    }
-  }
-
-  // Only apply Basic Authentication to API routes (excluding health and stats)
+  // Only apply Basic Authentication to API routes (excluding health)
   if (pathname.startsWith('/api/') && !AUTH_EXCLUDED_ROUTES.has(pathname)) {
     // Check auth cache first
     const cacheKey = `${request.headers.get('authorization') || ''}-${pathname}`;
