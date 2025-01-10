@@ -13,21 +13,29 @@ const svn_username = config.services.svn.username;
 const svn_password = config.services.svn.password;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const requestId = crypto.randomUUID();
+  console.log(`[DEBUG] Starting SVN copy operation ${requestId}`);
+  
   try {
     const body = await request.json();
-    logger.info("SVN Copy Request", { 
-      body: { 
-        ...body, 
-        request: { 
-          ...body.request, 
-          from_url: body.request?.from_url,
-          to_url: body.request?.to_url 
-        } 
-      } 
+    console.log(`[INFO] SVN Copy Request received`, { 
+      requestId,
+      fromUrl: body.request?.from_url,
+      toUrl: body.request?.to_url,
+      hasCommitMessage: !!body.request?.commitmessage
     });
 
     // Validate request body
     if (!body.request || !body.request.from_url || !body.request.to_url || !body.request.commitmessage) {
+      console.warn(`[WARN] Invalid SVN copy request`, { 
+        requestId,
+        missingFields: {
+          request: !body.request,
+          fromUrl: !body.request?.from_url,
+          toUrl: !body.request?.to_url,
+          commitMessage: !body.request?.commitmessage
+        }
+      });
       return NextResponse.json({ 
         response: { 
           success: "0", 
@@ -42,15 +50,22 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const maskedCommand = svnCommand
       .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
       .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
-    logger.debug(`Executing SVN copy command: ${maskedCommand}`);
+    console.log(`[DEBUG] Executing SVN copy command`, { requestId, command: maskedCommand });
 
     return new Promise<NextResponse>((resolve, reject) => {
       exec(svnCommand, (error, stdout, stderr) => {
         if (error) {
-          logger.error(`Error executing svn copy:`, { 
-            error: error.message.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-              .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+          const maskedError = error.message
+            .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+            .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
+          
+          console.error(`[ERROR] SVN copy operation failed`, { 
+            requestId,
+            error: maskedError,
+            code: error.code,
+            signal: error.signal
           });
+          
           resolve(NextResponse.json({ 
             response: { 
               success: "0", 
@@ -61,15 +76,23 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
         
         if (stderr) {
-          logger.warn(`SVN copy warning`, { 
-            stderr: stderr.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-              .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+          const maskedStderr = stderr
+            .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+            .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
+          
+          console.warn(`[WARN] SVN copy warning`, { 
+            requestId,
+            stderr: maskedStderr
           });
         }
         
-        logger.info(`SVN copy completed successfully`, { 
-          output: stdout.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-            .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+        const maskedStdout = stdout
+          .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+          .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
+        
+        console.log(`[INFO] SVN copy operation completed successfully`, { 
+          requestId,
+          output: maskedStdout
         });
         
         resolve(NextResponse.json({ 
@@ -81,7 +104,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       });
     });
   } catch (error) {
-    logger.error("Error in SVN copy route:", { error });
+    console.error(`[ERROR] Error in SVN copy route`, { 
+      requestId,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    
     return NextResponse.json({ 
       response: { 
         success: "0", 
