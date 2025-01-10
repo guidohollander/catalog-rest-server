@@ -61,7 +61,9 @@ RUN apk add --no-cache subversion ca-certificates && \
     echo 'ssl-verify-server-cert = no' >> /root/.subversion/servers && \
     mkdir -p /home/node/.subversion && \
     cp /root/.subversion/servers /home/node/.subversion/ && \
-    chown -R node:node /home/node/.subversion
+    chown -R node:node /home/node/.subversion && \
+    chmod -R 755 /home/node/.subversion && \
+    chmod 755 $(which svn)
 
 # Set working directory
 WORKDIR /app
