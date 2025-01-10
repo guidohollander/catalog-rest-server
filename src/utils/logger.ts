@@ -59,6 +59,7 @@ const LOG_DIR = process.env.NODE_ENV === 'production'
 
 // Create the logger instance first with console transport
 const logger = winston.createLogger({
+  level: process.env.LOG_LEVEL || 'info',
   format: combine(
     timestamp(),
     obfuscateSensitiveData,
@@ -68,7 +69,6 @@ const logger = winston.createLogger({
   transports: [
     // Console transport for all environments
     new winston.transports.Console({
-      level: process.env.LOG_LEVEL || 'info',
       stderrLevels: ['error', 'warn'],
       consoleWarnLevels: ['warn'],
       handleExceptions: true,
@@ -94,7 +94,6 @@ try {
 
   logger.add(new winston.transports.File({
     filename: path.join(LOG_DIR, 'combined.log'),
-    level: process.env.LOG_LEVEL || 'info',
     maxsize: 5242880, // 5MB
     maxFiles: 5,
   }));
@@ -104,5 +103,10 @@ try {
   logger.warn('Failed to initialize file logging:', error);
   logger.warn('Continuing with console logging only');
 }
+
+// Force Winston to flush logs on exit
+process.on('exit', () => {
+  logger.end();
+});
 
 export { logger };
