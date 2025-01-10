@@ -49,16 +49,19 @@ RUN npm prune --production
 # Final stage
 FROM node:20-alpine
 
-# Install system dependencies
+# Install system dependencies and configure SVN
 RUN apk add --no-cache subversion ca-certificates && \
-    mkdir -p ~/.subversion && \
-    echo '[global]' > ~/.subversion/servers && \
-    echo 'ssl-trust-default-ca = yes' >> ~/.subversion/servers && \
-    echo '[groups]' >> ~/.subversion/servers && \
-    echo 'hollanderconsulting = svn.hollanderconsulting.nl' >> ~/.subversion/servers && \
-    echo '[hollanderconsulting]' >> ~/.subversion/servers && \
-    echo 'ssl-trust-default-ca = yes' >> ~/.subversion/servers && \
-    echo 'ssl-verify-server-cert = no' >> ~/.subversion/servers
+    mkdir -p /root/.subversion && \
+    echo '[global]' > /root/.subversion/servers && \
+    echo 'ssl-trust-default-ca = yes' >> /root/.subversion/servers && \
+    echo '[groups]' >> /root/.subversion/servers && \
+    echo 'hollanderconsulting = svn.hollanderconsulting.nl' >> /root/.subversion/servers && \
+    echo '[hollanderconsulting]' >> /root/.subversion/servers && \
+    echo 'ssl-trust-default-ca = yes' >> /root/.subversion/servers && \
+    echo 'ssl-verify-server-cert = no' >> /root/.subversion/servers && \
+    mkdir -p /home/node/.subversion && \
+    cp /root/.subversion/servers /home/node/.subversion/ && \
+    chown -R node:node /home/node/.subversion
 
 # Set working directory
 WORKDIR /app
