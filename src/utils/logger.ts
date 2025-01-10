@@ -48,65 +48,59 @@ const obfuscateSensitiveData = format((info: winston.Logform.TransformableInfo) 
 
 // Custom log format
 const logFormat = printf(({ level, message, timestamp }) => {
+  // Ensure message is a string
   const formattedMessage = typeof message === 'object' ? JSON.stringify(message) : message;
   return `${timestamp} ${level}: ${formattedMessage}`;
 });
 
-// Get the log directory path - ensure it works in both development and Docker
-const LOG_DIR = process.env.NODE_ENV === 'production' 
-  ? '/app/logs'  // Docker container path
-  : path.join(process.cwd(), 'logs');  // Development path
-
-// Create the logger instance first with console transport
+// Create the logger instance with console transport only first
 const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
+  level: 'debug', // Force debug level
   format: combine(
     timestamp(),
     obfuscateSensitiveData,
-    colorize(),
     logFormat
   ),
   transports: [
-    // Console transport for all environments
     new winston.transports.Console({
-      stderrLevels: ['error', 'warn'],
-      consoleWarnLevels: ['warn'],
-      handleExceptions: true,
-      handleRejections: true,
+      format: combine(
+        timestamp(),
+        obfuscateSensitiveData,
+        logFormat
+      )
     })
-  ],
+  ]
 });
 
-// Try to set up file logging if possible
-try {
-  // Create logs directory if it doesn't exist
-  if (!fs.existsSync(LOG_DIR)) {
-    fs.mkdirSync(LOG_DIR, { recursive: true });
+// Add file transports if possible
+if (process.env.NODE_ENV === 'production') {
+  try {
+    const LOG_DIR = '/app/logs';
+    
+    // Create logs directory if it doesn't exist
+    if (!fs.existsSync(LOG_DIR)) {
+      fs.mkdirSync(LOG_DIR, { recursive: true });
+    }
+
+    // Add file transports
+    logger.add(new winston.transports.File({
+      filename: path.join(LOG_DIR, 'error.log'),
+      level: 'error'
+    }));
+
+    logger.add(new winston.transports.File({
+      filename: path.join(LOG_DIR, 'combined.log')
+    }));
+
+    logger.info('File logging initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize file logging:', error);
   }
-
-  // Add file transports
-  logger.add(new winston.transports.File({
-    filename: path.join(LOG_DIR, 'error.log'),
-    level: 'error',
-    maxsize: 5242880, // 5MB
-    maxFiles: 5,
-  }));
-
-  logger.add(new winston.transports.File({
-    filename: path.join(LOG_DIR, 'combined.log'),
-    maxsize: 5242880, // 5MB
-    maxFiles: 5,
-  }));
-
-  logger.info('File logging initialized successfully');
-} catch (error) {
-  logger.warn('Failed to initialize file logging:', error);
-  logger.warn('Continuing with console logging only');
 }
 
-// Force Winston to flush logs on exit
-process.on('exit', () => {
-  logger.end();
+// Ensure logs are written immediately
+logger.on('finish', () => {
+  process.stdout.write('');
 });
 
 export { logger };
