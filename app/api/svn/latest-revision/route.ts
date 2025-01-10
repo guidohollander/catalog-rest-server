@@ -33,7 +33,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const maskedCommand = svnInfoCommand
       .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
       .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
-    logger.debug(`Executing SVN info command: ${maskedCommand}`);
+    logger.info(`Executing SVN info command: ${maskedCommand}`);
 
     return new Promise<NextResponse>((resolve, reject) => {
       exec(svnInfoCommand, (error, stdout, stderr) => {

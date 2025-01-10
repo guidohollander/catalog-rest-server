@@ -37,7 +37,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const maskedCommand = svnCommand
         .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
         .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
-      logger.debug(`Executing SVN reset command: ${maskedCommand}`);
+      logger.info(`Executing SVN reset command: ${maskedCommand}`);
 
       // Execute the SVN command asynchronously
       exec(svnCommand, (error, stdout, stderr) => {
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
 
         // Handle successful stdout (optional)
-        logger.debug("SVN command completed", { 
+        logger.info("SVN command completed", { 
           output: stdout.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
             .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
         });

@@ -74,7 +74,7 @@ export async function jiraGet(url: string): Promise<any> {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  logger.debug(`JIRA debug: ${response.status === 204 ? '' : 'GET'} ${url}`);
+  logger.info(`JIRA request: ${response.status === 204 ? '' : 'GET'} ${url}`);
   
   const text = await response.text();
   return text ? JSON.parse(text) : null;

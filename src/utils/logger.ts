@@ -46,9 +46,9 @@ const obfuscateSensitiveData = format((info: winston.Logform.TransformableInfo) 
   return masked;
 })();
 
-// Custom log format with brackets
+// Custom log format
 const logFormat = printf(({ level, message, timestamp }) => {
-  // Ensure message is a string and add brackets to level
+  // Ensure message is a string
   const formattedMessage = typeof message === 'object' ? JSON.stringify(message) : message;
   return `${timestamp} [${level}]: ${formattedMessage}`;
 });
@@ -61,7 +61,7 @@ const originalConsoleDebug = console.debug;
 
 // Create the logger instance
 const logger = winston.createLogger({
-  level: 'debug',
+  level: 'info',
   format: combine(
     timestamp(),
     obfuscateSensitiveData,
@@ -72,28 +72,12 @@ const logger = winston.createLogger({
       format: combine(
         timestamp(),
         obfuscateSensitiveData,
+        colorize({ all: true }), // Add colors to all parts of the log
         logFormat
       )
     })
   ]
 });
-
-// Override console methods to use Winston
-console.log = (...args) => {
-  logger.info(args.length === 1 ? args[0] : args);
-};
-
-console.error = (...args) => {
-  logger.error(args.length === 1 ? args[0] : args);
-};
-
-console.warn = (...args) => {
-  logger.warn(args.length === 1 ? args[0] : args);
-};
-
-console.debug = (...args) => {
-  logger.debug(args.length === 1 ? args[0] : args);
-};
 
 // Add file transports if in production
 if (process.env.NODE_ENV === 'production') {
@@ -113,6 +97,7 @@ if (process.env.NODE_ENV === 'production') {
       format: combine(
         timestamp(),
         obfuscateSensitiveData,
+        colorize({ all: true }), // Add colors to error log file
         logFormat
       )
     }));
@@ -122,6 +107,7 @@ if (process.env.NODE_ENV === 'production') {
       format: combine(
         timestamp(),
         obfuscateSensitiveData,
+        colorize({ all: true }), // Add colors to combined log file
         logFormat
       )
     }));
@@ -131,6 +117,23 @@ if (process.env.NODE_ENV === 'production') {
     logger.error('Failed to initialize file logging:', error);
   }
 }
+
+// Override console methods to use Winston
+console.log = (...args) => {
+  logger.info(args.length === 1 ? args[0] : args);
+};
+
+console.error = (...args) => {
+  logger.error(args.length === 1 ? args[0] : args);
+};
+
+console.warn = (...args) => {
+  logger.warn(args.length === 1 ? args[0] : args);
+};
+
+console.debug = (...args) => {
+  logger.debug(args.length === 1 ? args[0] : args);
+};
 
 // Ensure logs are written immediately
 logger.on('finish', () => {

@@ -5,7 +5,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 
 export async function POST(request: NextRequest) {
-  logger.debug('Health check request details:', {
+  logger.info('Health check request details:', {
     method: request.method,
     url: request.url,
     headers: Object.fromEntries(request.headers.entries())
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     status: true 
   };
 
-  logger.debug('Health check response:', response);
+  logger.info('Health check response:', response);
 
   return NextResponse.json({ 
     response 
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  logger.debug('Health check request details:', {
+  logger.info('Health check request details:', {
     method: request.method,
     url: request.url,
     headers: Object.fromEntries(request.headers.entries())
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     missingEnvVars: missingEnvVars
   };
 
-  logger.debug('Health check response:', response);
+  logger.info('Health check response:', response);
 
   return NextResponse.json(response, { 
     status: isHealthy ? 200 : 503 

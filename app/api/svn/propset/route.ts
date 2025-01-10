@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       const maskedCommand = svnCommand
         .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
         .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
-      logger.debug(`Executing SVN propset command: ${maskedCommand}`);
+      logger.info(`Executing SVN propset command: ${maskedCommand}`);
 
       // Execute the SVN command synchronously
       const stdout = execSync(svnCommand);

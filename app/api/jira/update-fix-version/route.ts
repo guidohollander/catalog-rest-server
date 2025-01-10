@@ -39,7 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const fixVersion = requestBody.request.fixVersion;
     const issueNumbers = requestBody.issueNumbers.map(issue => issue.issueNumber);
 
-    logger.debug('Received fix version update request', { 
+    logger.info('Received fix version update request', { 
       issueCount: issueNumbers?.length,
       fixVersion,
       method: request.method,

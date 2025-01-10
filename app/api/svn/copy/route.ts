@@ -14,11 +14,11 @@ const svn_password = config.services.svn.password;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const requestId = crypto.randomUUID();
-  console.log(`[DEBUG] Starting SVN copy operation ${requestId}`);
+  logger.info(`Starting SVN copy operation ${requestId}`);
   
   try {
     const body = await request.json();
-    console.log(`[INFO] SVN Copy Request received`, { 
+    logger.info('SVN Copy Request received', { 
       requestId,
       fromUrl: body.request?.from_url,
       toUrl: body.request?.to_url,
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // Validate request body
     if (!body.request || !body.request.from_url || !body.request.to_url || !body.request.commitmessage) {
-      console.warn(`[WARN] Invalid SVN copy request`, { 
+      logger.warn('Invalid SVN copy request', { 
         requestId,
         missingFields: {
           request: !body.request,
@@ -36,20 +36,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           commitMessage: !body.request?.commitmessage
         }
       });
-      const response = NextResponse.json({ 
+      return NextResponse.json({ 
         response: { 
           success: "0", 
           error: "Missing required parameters" 
         } 
       }, { status: 400 });
-      console.log(`[DEBUG] Sending error response`, {
-        requestId,
-        response: {
-          success: "0",
-          error: "Missing required parameters"
-        }
-      });
-      return response;
     }
 
     const svnCommand = `svn copy "${body.request.from_url}" "${body.request.to_url}" -m "${body.request.commitmessage}" --username ${svn_username} --password ${svn_password}`;
@@ -58,7 +50,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const maskedCommand = svnCommand
       .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
       .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
-    console.log(`[DEBUG] Executing SVN copy command`, { requestId, command: maskedCommand });
+    logger.info('Executing SVN copy command', { requestId, command: maskedCommand });
 
     return new Promise<NextResponse>((resolve, reject) => {
       exec(svnCommand, (error, stdout, stderr) => {
@@ -67,27 +59,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
             .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
           
-          console.error(`[ERROR] SVN copy operation failed`, { 
+          logger.error('SVN copy operation failed', { 
             requestId,
             error: maskedError,
             code: error.code,
             signal: error.signal
           });
           
-          const response = NextResponse.json({ 
+          resolve(NextResponse.json({ 
             response: { 
               success: "0", 
               error: "SVN copy failed" 
             } 
-          }, { status: 500 });
-          console.log(`[DEBUG] Sending error response`, {
-            requestId,
-            response: {
-              success: "0",
-              error: "SVN copy failed"
-            }
-          });
-          resolve(response);
+          }, { status: 500 }));
           return;
         }
         
@@ -96,7 +80,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
             .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
           
-          console.warn(`[WARN] SVN copy warning`, { 
+          logger.warn('SVN copy warning', { 
             requestId,
             stderr: maskedStderr
           });
@@ -106,49 +90,33 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
           .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
         
-        console.log(`[INFO] SVN copy operation completed successfully`, { 
+        logger.info('SVN copy operation completed successfully', { 
           requestId,
-          output: maskedStdout
+          output: maskedStdout,
+          fromUrl: body.request.from_url,
+          toUrl: body.request.to_url
         });
         
-        const response = NextResponse.json({ 
+        resolve(NextResponse.json({ 
           response: { 
             success: "1", 
             output: "copy successful" 
           } 
-        });
-
-        console.log(`[DEBUG] Sending success response`, {
-          requestId,
-          response: {
-            success: "1",
-            output: "copy successful"
-          }
-        });
-
-        resolve(response);
+        }));
       });
     });
   } catch (error) {
-    console.error(`[ERROR] Error in SVN copy route`, { 
+    logger.error('Error in SVN copy route', { 
       requestId,
       error: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined
     });
     
-    const response = NextResponse.json({ 
+    return NextResponse.json({ 
       response: { 
         success: "0", 
         error: "Internal server error" 
       } 
     }, { status: 500 });
-    console.log(`[DEBUG] Sending error response`, {
-      requestId,
-      response: {
-        success: "0",
-        error: "Internal server error"
-      }
-    });
-    return response;
   }
 }
