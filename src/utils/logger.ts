@@ -61,10 +61,11 @@ const originalConsoleDebug = console.debug;
 
 // Create the logger instance
 const logger = winston.createLogger({
-  level: process.env.LOG_LEVEL || 'info',
+  level: process.env.LOG_LEVEL || 'debug', // Set default to debug
   format: combine(
     timestamp(),
     obfuscateSensitiveData,
+    colorize({ all: true }),
     logFormat
   ),
   transports: [
@@ -72,50 +73,48 @@ const logger = winston.createLogger({
       format: combine(
         timestamp(),
         obfuscateSensitiveData,
-        colorize({ all: true }), // Add colors to all parts of the log
+        colorize({ all: true }),
         logFormat
       )
     })
   ]
 });
 
-// Add file transports if in production
-if (process.env.NODE_ENV === 'production') {
-  try {
-    // Match the path with docker-compose volume mount
-    const LOG_DIR = path.join(process.cwd(), 'logs');
-    
-    // Create logs directory if it doesn't exist
-    if (!fs.existsSync(LOG_DIR)) {
-      fs.mkdirSync(LOG_DIR, { recursive: true });
-    }
-
-    // Add file transports
-    logger.add(new winston.transports.File({
-      filename: path.join(LOG_DIR, 'error.log'),
-      level: 'error',
-      format: combine(
-        timestamp(),
-        obfuscateSensitiveData,
-        colorize({ all: true }), // Add colors to error log file
-        logFormat
-      )
-    }));
-
-    logger.add(new winston.transports.File({
-      filename: path.join(LOG_DIR, 'combined.log'),
-      format: combine(
-        timestamp(),
-        obfuscateSensitiveData,
-        colorize({ all: true }), // Add colors to combined log file
-        logFormat
-      )
-    }));
-
-    logger.info('File logging initialized successfully');
-  } catch (error) {
-    logger.error('Failed to initialize file logging:', error);
+// Always add file transports
+try {
+  // Match the path with docker-compose volume mount
+  const LOG_DIR = '/app/logs';
+  
+  // Create logs directory if it doesn't exist
+  if (!fs.existsSync(LOG_DIR)) {
+    fs.mkdirSync(LOG_DIR, { recursive: true });
   }
+
+  // Add file transports
+  logger.add(new winston.transports.File({
+    filename: path.join(LOG_DIR, 'error.log'),
+    level: 'error',
+    format: combine(
+      timestamp(),
+      obfuscateSensitiveData,
+      colorize({ all: true }),
+      logFormat
+    )
+  }));
+
+  logger.add(new winston.transports.File({
+    filename: path.join(LOG_DIR, 'combined.log'),
+    format: combine(
+      timestamp(),
+      obfuscateSensitiveData,
+      colorize({ all: true }),
+      logFormat
+    )
+  }));
+
+  logger.info('Logger initialized with file transports');
+} catch (error) {
+  console.error('Failed to initialize file logging:', error);
 }
 
 // Override console methods to use Winston

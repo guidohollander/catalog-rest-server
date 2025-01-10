@@ -14,6 +14,13 @@ const svn_password = config.services.svn.password;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const requestId = crypto.randomUUID();
+  
+  // Test logging
+  logger.debug('TEST: Debug log from SVN copy endpoint');
+  logger.info('TEST: Info log from SVN copy endpoint');
+  logger.warn('TEST: Warning log from SVN copy endpoint');
+  logger.error('TEST: Error log from SVN copy endpoint');
+  
   logger.info(`Starting SVN copy operation ${requestId}`);
   
   try {
@@ -69,7 +76,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           resolve(NextResponse.json({ 
             response: { 
               success: "0", 
-              error: "SVN copy failed" 
+              error: `SVN copy failed: ${maskedError}` 
             } 
           }, { status: 500 }));
           return;
