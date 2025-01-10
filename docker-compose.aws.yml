@@ -10,6 +10,7 @@ services:
       - NEXT_TELEMETRY_DISABLED=1
       - HOST=0.0.0.0
       - LOG_LEVEL=debug
+      - JIRA_BASE_URL=https://blyce.atlassian.net
     ports:
       - "3000:3000"
     volumes:

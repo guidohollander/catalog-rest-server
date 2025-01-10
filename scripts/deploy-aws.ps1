@@ -19,6 +19,7 @@ Write-Host "`nCopying docker-compose file..." -ForegroundColor Cyan
 Write-Host "`nDeploying to AWS..." -ForegroundColor Cyan
 & ssh -i $SSHKeyPath ${AWSHost} @"
     cd /srv/catalog-rest-server && \
+    VERSION=$version docker-compose down && \
     VERSION=$version docker-compose pull --no-parallel && \
     VERSION=$version docker-compose up -d --force-recreate --remove-orphans && \
     docker system prune -af --volumes

@@ -61,7 +61,7 @@ const originalConsoleDebug = console.debug;
 
 // Create the logger instance
 const logger = winston.createLogger({
-  level: 'info',
+  level: process.env.LOG_LEVEL || 'info',
   format: combine(
     timestamp(),
     obfuscateSensitiveData,
