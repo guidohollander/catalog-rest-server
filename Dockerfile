@@ -28,7 +28,7 @@ RUN npm install
 COPY . .
 
 # Set version for build
-ARG VERSION=0.1.68
+ARG VERSION=0.1.96
 ENV NEXT_PUBLIC_APP_VERSION=${VERSION}
 
 # Build the application
@@ -83,10 +83,11 @@ RUN mkdir -p logs && \
 USER node
 
 # Set environment variables
+ARG VERSION=0.1.96
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 ENV NODE_ENV production
-ENV NEXT_PUBLIC_APP_VERSION 0.1.68
+ENV NEXT_PUBLIC_APP_VERSION=${VERSION}
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOST=0.0.0.0
 
