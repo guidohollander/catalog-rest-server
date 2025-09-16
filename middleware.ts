@@ -7,10 +7,12 @@ import { middlewareLogger as logger } from './src/utils/middleware-logger';
 const AUTH_EXCLUDED_ROUTES = new Set([
   '/',  // Root path (home page)
   '/docs',  // Documentation page
+  '/database-diagram',  // Database diagram page
   '/api/health',
   '/api/svn/health',
   '/api/jira/health',
-  '/api/jenkins/health'
+  '/api/jenkins/health',
+  '/api/database-schema'  // Database schema API
 ]);
 
 // Cache for auth responses
