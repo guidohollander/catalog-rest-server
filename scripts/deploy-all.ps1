@@ -86,14 +86,14 @@ function Deploy-ToDockerServer {
     
     # Copy files to Docker server
     Write-Host "Copying files..."
-    ssh -o StrictHostKeyChecking=no $DockerServer "mkdir -p /srv/nginx"
-    scp -o StrictHostKeyChecking=no docker-compose.docker.yml "${DockerServer}:/srv/docker-compose.yml"
-    scp -o StrictHostKeyChecking=no -r nginx/nginx.conf "${DockerServer}:/srv/nginx/"
-    scp -o StrictHostKeyChecking=no .env "${DockerServer}:/srv/.env"
+    ssh -o StrictHostKeyChecking=no guido@$DockerServer "mkdir -p /srv/nginx"
+    scp -o StrictHostKeyChecking=no docker-compose.docker.yml "guido@${DockerServer}:/srv/docker-compose.yml"
+    scp -o StrictHostKeyChecking=no -r nginx/nginx.conf "guido@${DockerServer}:/srv/nginx/"
+    scp -o StrictHostKeyChecking=no .env "guido@${DockerServer}:/srv/.env"
     
     # Deploy services
     Write-Host "Deploying services..."
-    ssh -o StrictHostKeyChecking=no $DockerServer "cd /srv && VERSION=v$newVersion docker compose up -d --force-recreate"
+    ssh -o StrictHostKeyChecking=no guido@$DockerServer "cd /srv && VERSION=v$newVersion docker compose up -d --force-recreate"
 }
 
 # Main deployment logic
@@ -123,7 +123,7 @@ if ($changes) {
 }
 
 Write-Host "`nStep 3: Docker build and push..." -ForegroundColor Cyan
-& ssh ${DockerServer} "cd /srv/catalog-rest-server && git pull && VERSION=$newVersion docker build --build-arg VERSION=$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest . && docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
+& ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull && VERSION=$newVersion docker build --build-arg VERSION=$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest . && docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
 
 Write-Host "`nStep 4: Deployment..." -ForegroundColor Cyan
 
