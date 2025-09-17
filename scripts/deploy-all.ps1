@@ -91,7 +91,7 @@ function Deploy-ToDockerServer {
     
     # Deploy services
     Write-Host "Deploying services..."
-    ssh -o StrictHostKeyChecking=no guido@$DockerServer "cd /srv && docker compose down && docker rmi -f registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion 2>/dev/null || true && VERSION=v$newVersion docker compose up -d"
+    ssh -o StrictHostKeyChecking=no guido@$DockerServer "cd /srv && docker compose down && docker rmi -f registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion registry.hollanderconsulting.nl/catalog-rest-server:latest 2>/dev/null || true && VERSION=v$newVersion docker compose up -d"
 }
 
 # Main deployment logic
@@ -123,9 +123,9 @@ if ($changes) {
 Write-Host "`nStep 3: Docker build and push..." -ForegroundColor Cyan
 if ($Environment -eq 'local' -or $Environment -eq 'both') {
     Write-Host "Building locally with cache clearing..."
-    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull && docker builder prune -af && VERSION=$newVersion docker build --no-cache --build-arg VERSION=$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest ."
+    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull && docker builder prune -af && docker build --no-cache --build-arg VERSION=v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest ."
 } else {
-    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull && VERSION=$newVersion docker build --build-arg VERSION=$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest . && docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
+    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull && docker build --build-arg VERSION=v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest . && docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
 }
 
 Write-Host "`nStep 4: Deployment..." -ForegroundColor Cyan
