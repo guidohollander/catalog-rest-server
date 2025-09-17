@@ -146,6 +146,41 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Database Section */}
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <div className="flex items-center mb-4">
+            <h2 className="text-2xl font-semibold flex items-center">
+              <span className="mr-2">🗄️</span>
+              Database
+            </h2>
+            <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
+              public
+            </span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">GET</span>
+                <Link href="/database-diagram" className="text-blue-400 hover:text-blue-300 transition-colors">
+                  /database-diagram
+                </Link>
+              </div>
+              <span className="text-sm text-gray-400">Schema visualization</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-green-500 mr-2">✓</span>
+              <span className="w-16 text-gray-400">GET</span>
+              <span>/api/database-schema</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-green-500 mr-2">✓</span>
+              <span className="w-16 text-gray-400">GET</span>
+              <span>/api/database-cache</span>
+            </div>
+          </div>
+        </div>
+
         {/* Jenkins Services Section */}
         <div className="bg-gray-800 p-6 rounded-lg">
           <div className="flex items-center mb-4">
