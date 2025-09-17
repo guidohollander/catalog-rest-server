@@ -67,7 +67,7 @@ function Deploy-ToAWS {
     Write-Host "Copying files to AWS..."
     & scp -i $SSHKeyPath docker-compose.aws.yml "${AWSHost}:/srv/catalog-rest-server/docker-compose.yml"
     Test-LastCommand
-    & scp -i $SSHKeyPath .env "${AWSHost}:/srv/catalog-rest-server/.env"
+    & scp -i $SSHKeyPath .env.aws "${AWSHost}:/srv/catalog-rest-server/.env"
     Test-LastCommand
     
     # Copy cache directory if it exists
