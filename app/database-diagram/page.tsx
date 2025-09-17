@@ -23,6 +23,16 @@ interface SchemaMetadata {
   tableCount: number;
   version: string;
   description?: string;
+  source?: 'live' | 'cache' | 'error';
+  generatedAt?: string;
+  cachedAt?: string;
+  cacheStatus?: {
+    exists: boolean;
+    age?: number;
+    isStale?: boolean;
+    lastUpdated?: string;
+    size?: number;
+  };
 }
 
 export default function DatabaseDiagram() {
@@ -37,6 +47,7 @@ export default function DatabaseDiagram() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   const parseTables = (schema: string): Table[] => {
     // Simple parser for DBML schema - in real implementation this would be more robust
@@ -97,7 +108,11 @@ export default function DatabaseDiagram() {
           setSchemaMetadata({
             tableCount: data.metadata.tableCount,
             version: data.metadata.version,
-            description: data.metadata.description
+            description: data.metadata.description,
+            source: data.metadata.source,
+            generatedAt: data.metadata.generatedAt,
+            cachedAt: data.metadata.cachedAt,
+            cacheStatus: data.metadata.cacheStatus
           });
           setLastUpdated(new Date(data.metadata.generatedAt));
         } else {
@@ -114,13 +129,174 @@ export default function DatabaseDiagram() {
     }
   };
 
-  const refreshDiagram = async () => {
+  const refreshDiagram = async (forceRefresh: boolean = false) => {
     setIsLoading(true);
-    await fetchSchema();
+    setError(null);
+    
+    try {
+      const url = forceRefresh ? '/api/database-schema?refresh=true' : '/api/database-schema';
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (data.success && data.schema && data.schema.trim().length > 0) {
+        const parsedTables = parseTables(data.schema);
+        if (parsedTables.length > 0) {
+          setDbmlSchema(data.schema);
+          setTablesData(data.tablesData || []);
+          setSchemaMetadata({
+            tableCount: data.metadata.tableCount,
+            version: data.metadata.version,
+            description: data.metadata.description,
+            source: data.metadata.source,
+            generatedAt: data.metadata.generatedAt,
+            cachedAt: data.metadata.cachedAt,
+            cacheStatus: data.metadata.cacheStatus
+          });
+          setLastUpdated(new Date(data.metadata.generatedAt));
+        } else {
+          setError('No tables found in database - showing default schema');
+        }
+      } else {
+        throw new Error(data.message || 'Failed to fetch schema');
+      }
+    } catch (err) {
+      console.error('Error fetching schema:', err);
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    }
+    
     setIsLoading(false);
   };
 
-  const downloadDiagram = () => {
+  const refreshFromLive = async () => {
+    await refreshDiagram(true);
+  };
+
+  const openInDbDiagram = async () => {
+    try {
+      // Advanced compression with pattern analysis
+      let compressedSchema = dbmlSchema
+        // Remove all comments first
+        .replace(/\/\/.*$/gm, '')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        // Aggressive whitespace normalization
+        .replace(/\s+/g, ' ')
+        .replace(/\n\s*/g, '\n')
+        // Remove ALL spaces around symbols
+        .replace(/\s*{\s*/g, '{')
+        .replace(/\s*}\s*/g, '}')
+        .replace(/\s*\[\s*/g, '[')
+        .replace(/\s*\]\s*/g, ']')
+        .replace(/\s*,\s*/g, ',')
+        .replace(/\s*:\s*/g, ':')
+        .replace(/\s*;\s*/g, ';')
+        .replace(/\s*\(\s*/g, '(')
+        .replace(/\s*\)\s*/g, ')')
+        // Advanced DBML-specific compression
+        .replace(/\bTable\s+/g, 'T ')
+        .replace(/\bRef:\s*/g, 'R:')
+        // Compress data types more aggressively
+        .replace(/\bnvarchar\b/gi, 'nv')
+        .replace(/\bvarchar\b/gi, 'v')
+        .replace(/\binteger\b/gi, 'i')
+        .replace(/\bbigint\b/gi, 'bi')
+        .replace(/\bsmallint\b/gi, 'si')
+        .replace(/\btinyint\b/gi, 'ti')
+        .replace(/\bdatetime2?\b/gi, 'd')
+        .replace(/\btimestamp\b/gi, 't')
+        .replace(/\bboolean\b/gi, 'b')
+        .replace(/\bdecimal\b/gi, 'dec')
+        .replace(/\bfloat\b/gi, 'f')
+        .replace(/\bmoney\b/gi, 'm')
+        .replace(/\btext\b/gi, 'txt')
+        .replace(/\bchar\b/gi, 'c')
+        .replace(/\bbit\b/gi, 'bt')
+        // Compress constraints
+        .replace(/\bnot null\b/gi, 'nn')
+        .replace(/\bprimary key\b/gi, 'pk')
+        .replace(/\bforeign key\b/gi, 'fk')
+        .replace(/\bdefault\b/gi, 'def')
+        .replace(/\bunique\b/gi, 'unq')
+        // Remove newlines completely for maximum compression
+        .replace(/\n/g, '')
+        // Final cleanup
+        .trim();
+
+      // If still too large, try even more aggressive compression
+      if (compressedSchema.length > 5000) {
+        console.log('Applying extreme compression...');
+        compressedSchema = compressedSchema
+          // Remove table/column names that are repetitive
+          .replace(/mvw_/g, 'm_')
+          .replace(/_component/g, '_c')
+          .replace(/_implementation/g, '_i')
+          .replace(/_solution/g, '_s')
+          .replace(/_version/g, '_v')
+          // Compress common column patterns
+          .replace(/\b(\w+)_id\b/g, '$1i')
+          .replace(/\bcreated_/g, 'cr_')
+          .replace(/\bupdated_/g, 'up_')
+          .replace(/\bmodified_/g, 'md_')
+          .replace(/\bdeleted_/g, 'dl_')
+          .replace(/\btimestamp/g, 'ts')
+          .replace(/\bexternal/g, 'ext');
+      }
+
+      console.log(`Original: ${dbmlSchema.length} chars, Compressed: ${compressedSchema.length} chars (${Math.round((1 - compressedSchema.length / dbmlSchema.length) * 100)}% reduction)`);
+
+      // Try different URL approaches with dbdiagram.io
+      const approaches = [
+        // Approach 1: Direct schema parameter (most common)
+        () => `https://dbdiagram.io/d?schema=${encodeURIComponent(compressedSchema)}`,
+        
+        // Approach 2: Using 'code' parameter
+        () => `https://dbdiagram.io/d?code=${encodeURIComponent(compressedSchema)}`,
+        
+        // Approach 3: Base64 encoded
+        () => {
+          const base64 = btoa(compressedSchema);
+          return `https://dbdiagram.io/d?data=${base64}`;
+        },
+        
+        // Approach 4: URL-safe base64
+        () => {
+          const base64 = btoa(compressedSchema)
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=/g, '');
+          return `https://dbdiagram.io/d?schema=${base64}`;
+        }
+      ];
+
+      // Try each approach in order
+      for (let i = 0; i < approaches.length; i++) {
+        try {
+          const url = approaches[i]();
+          console.log(`Approach ${i + 1}: ${url.length} chars`);
+          
+          // Be more aggressive with size limit - try up to 7KB
+          if (url.length < 7000) {
+            console.log(`✅ Using approach ${i + 1}: Direct URL`);
+            window.open(url, '_blank');
+            return;
+          }
+        } catch (approachError) {
+          console.warn(`Approach ${i + 1} failed:`, approachError);
+        }
+      }
+      
+      // If all URL approaches fail, use download fallback
+      console.log('All URL approaches too large, using download fallback');
+      fallbackToDownload();
+      
+    } catch (error) {
+      console.error('All methods failed, using download fallback:', error);
+      fallbackToDownload();
+    }
+  };
+
+
+  const fallbackToDownload = () => {
+    // Create a temporary file download for the user to import
     const blob = new Blob([dbmlSchema], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -130,6 +306,15 @@ export default function DatabaseDiagram() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    
+    // Open dbdiagram.io in a new tab
+    setTimeout(() => {
+      window.open('https://dbdiagram.io/d', '_blank');
+    }, 500);
+    
+    // Show instructions notification
+    setShowInstructions(true);
+    setTimeout(() => setShowInstructions(false), 8000);
   };
 
   useEffect(() => {
@@ -204,7 +389,7 @@ export default function DatabaseDiagram() {
             </div>
             
             <button
-              onClick={refreshDiagram}
+              onClick={() => refreshDiagram(false)}
               disabled={isLoading}
               className="inline-flex items-center px-3 py-2 border border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
@@ -213,10 +398,21 @@ export default function DatabaseDiagram() {
             </button>
             
             <button
-              onClick={downloadDiagram}
-              className="inline-flex items-center px-3 py-2 border border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              onClick={() => refreshDiagram(true)}
+              disabled={isLoading}
+              className="inline-flex items-center px-3 py-2 border border-orange-600 shadow-sm text-sm leading-4 font-medium rounded-md text-orange-300 bg-orange-700 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
             >
-              Download DBML
+              <FiRefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              Force Refresh
+            </button>
+            
+            <button
+              onClick={openInDbDiagram}
+              disabled={!dbmlSchema || dbmlSchema.trim().length === 0}
+              title="Download DBML file and open dbdiagram.io for interactive visualization"
+              className="inline-flex items-center px-3 py-2 border border-blue-600 shadow-sm text-sm leading-4 font-medium rounded-md text-blue-300 bg-blue-700 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              📊 Visualize in dbdiagram.io
             </button>
           </div>
         </div>
@@ -237,11 +433,66 @@ export default function DatabaseDiagram() {
               <div className="flex items-center space-x-4 text-gray-400">
                 <span>Tables: {schemaMetadata.tableCount}</span>
                 <span>Version: {schemaMetadata.version}</span>
+                <span>
+                  Source: 
+                  <span className={`ml-1 ${
+                    schemaMetadata.source === 'live' ? 'text-green-400' : 
+                    schemaMetadata.source === 'cache' ? 'text-yellow-400' : 
+                    'text-red-400'
+                  }`}>
+                    {schemaMetadata.source === 'live' ? '🟢 Live Database' : 
+                     schemaMetadata.source === 'cache' ? '🟡 Cached Data' : 
+                     '🔴 Error'}
+                  </span>
+                </span>
+                {schemaMetadata.cacheStatus?.exists && (
+                  <span>
+                    Cache: 
+                    <span className={`ml-1 ${schemaMetadata.cacheStatus.isStale ? 'text-orange-400' : 'text-green-400'}`}>
+                      {schemaMetadata.cacheStatus.isStale ? 'Stale' : 'Fresh'} 
+                      ({Math.round((schemaMetadata.cacheStatus.age || 0) / (60 * 1000))}m old)
+                    </span>
+                  </span>
+                )}
                 <span>Status: {isLoading ? 'Updating...' : error ? 'Error (using fallback)' : 'Up to date'}</span>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Instructions Notification */}
+        {showInstructions && (
+          <div className="mb-6 px-6">
+            <div className="bg-blue-800 border border-blue-600 rounded-lg p-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <span className="text-2xl">📋</span>
+                </div>
+                <div className="ml-3 flex-1">
+                  <h3 className="text-sm font-medium text-blue-200">
+                    DBML file downloaded!
+                  </h3>
+                  <div className="mt-2 text-sm text-blue-300">
+                    <p>In the new dbdiagram.io tab:</p>
+                    <ol className="list-decimal list-inside mt-1 space-y-1">
+                      <li>Click &quot;Import&quot; or drag &amp; drop the downloaded file</li>
+                      <li>Your database schema will be visualized interactively</li>
+                    </ol>
+                  </div>
+                </div>
+                <div className="ml-4 flex-shrink-0">
+                  <button
+                    onClick={() => setShowInstructions(false)}
+                    className="bg-blue-700 rounded-md p-1.5 text-blue-300 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <span className="sr-only">Dismiss</span>
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Main Content */}
         <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
@@ -439,7 +690,7 @@ export default function DatabaseDiagram() {
                   <h3 className="text-xl font-medium text-gray-300 mb-2">No Database Schema</h3>
                   <p className="text-gray-500 mb-4">Click refresh to load the database schema</p>
                   <button
-                    onClick={refreshDiagram}
+                    onClick={() => refreshDiagram()}
                     disabled={isLoading}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
                   >

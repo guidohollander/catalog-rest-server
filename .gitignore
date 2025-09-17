@@ -76,6 +76,10 @@ keys/
 *.key
 *.crt
 
+# Database cache
+cache/
+*.cache
+
 # vercel
 .vercel
 

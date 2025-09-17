@@ -235,6 +235,42 @@ docker pull registry.hollanderconsulting.nl/catalog-rest-server:latest
 - Navigation anchors for large schemas
 - Filtered views (excludes mvw_svn_% and mvw_jenkins_%)
 - No authentication required (excluded from auth middleware)
+- **dbdiagram.io Integration**: One-click open in online DBML editor
+
+#### Database Caching System
+
+**Hybrid Database Access:**
+- **Local Network**: Connects to live database + caches results
+- **AWS Deployment**: Tries live database first, falls back to cached data
+- **Automatic Fallback**: Uses cached data when database is unreachable
+
+**Cache Management:**
+```bash
+# Check cache status
+curl http://192.168.1.152:3000/api/database-cache
+
+# Force refresh cache from live database
+curl -X POST http://192.168.1.152:3000/api/database-cache \
+  -H "Content-Type: application/json" \
+  -d '{"action": "refresh"}'
+
+# Get schema with force refresh
+curl http://192.168.1.152:3000/api/database-schema?refresh=true
+```
+
+**Cache Features:**
+- **24-hour cache expiry** (configurable)
+- **Automatic cache creation** on successful database queries
+- **Cache status indicators** in UI (🟢 Live, 🟡 Cached, 🔴 Error)
+- **Force refresh button** to update from live database
+- **Cache age display** shows how old cached data is
+- **Persistent storage** in `./cache/database-schema.json`
+
+**UI Controls:**
+- **Refresh**: Uses cached data or live database (smart)
+- **Force Refresh**: Always attempts live database connection
+- **Cache Status**: Shows data source and cache age
+- **Auto-refresh**: Periodic updates (respects cache logic)
 
 ### Docker Configuration
 - **Base Image**: Node.js 20-slim with SVN client
