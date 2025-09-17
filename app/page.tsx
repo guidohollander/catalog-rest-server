@@ -18,18 +18,40 @@ export default function Home() {
     const checkHealth = async () => {
       try {
         // Check all health endpoints in parallel
-        const [healthResponse, svnHealthResponse, jenkinsHealthResponse, jiraHealthResponse, databaseResponse] = await Promise.allSettled([
+        const [healthResponse, svnHealthResponse, jenkinsHealthResponse, jiraHealthResponse] = await Promise.allSettled([
           fetch('/api/health'),
           fetch('/api/svn/health'),
           fetch('/api/jenkins/health', { 
             method: 'GET',
             signal: AbortSignal.timeout(3000) // 3 second timeout
           }),
-          fetch('/api/jira/health'),
-          fetch('/api/database-schema', {
-            signal: AbortSignal.timeout(5000) // 5 second timeout for database
-          })
+          fetch('/api/jira/health')
         ]);
+
+        // Check database health separately with shorter timeout to avoid blocking page load
+        setTimeout(async () => {
+          try {
+            const databaseResponse = await fetch('/api/database-schema', {
+              signal: AbortSignal.timeout(3000) // 3 second timeout for database
+            });
+            if (databaseResponse.ok) {
+              const dbData = await databaseResponse.json();
+              if (dbData.success) {
+                setDatabaseHealth({
+                  source: dbData.metadata.source,
+                  tableCount: dbData.metadata.tableCount
+                });
+              } else {
+                setDatabaseHealth({ source: 'error', tableCount: 0 });
+              }
+            } else {
+              setDatabaseHealth({ source: 'error', tableCount: 0 });
+            }
+          } catch (error) {
+            console.log('Database health check failed:', error);
+            setDatabaseHealth({ source: 'error', tableCount: 0 });
+          }
+        }, 100); // Check database after page loads
 
         // Process main health check
         if (healthResponse.status === 'fulfilled') {
@@ -75,24 +97,6 @@ export default function Home() {
           });
         }
 
-        // Process Database health
-        if (databaseResponse.status === 'fulfilled') {
-          if (databaseResponse.value.ok) {
-            const dbData = await databaseResponse.value.json();
-            if (dbData.success) {
-              setDatabaseHealth({
-                source: dbData.metadata.source,
-                tableCount: dbData.metadata.tableCount
-              });
-            } else {
-              setDatabaseHealth({ source: 'error', tableCount: 0 });
-            }
-          } else {
-            setDatabaseHealth({ source: 'error', tableCount: 0 });
-          }
-        } else {
-          setDatabaseHealth({ source: 'error', tableCount: 0 });
-        }
 
       } catch (error) {
         console.error('Health check error:', error);
