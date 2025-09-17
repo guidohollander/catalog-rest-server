@@ -3,6 +3,7 @@ version: '3.8'
 services:
   catalog-rest-server:
     image: registry.hollanderconsulting.nl/catalog-rest-server:${VERSION:-latest}
+    pull_policy: ${PULL_POLICY:-missing}
     env_file: .env
     environment:
       - NODE_ENV=production

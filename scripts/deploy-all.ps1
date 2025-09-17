@@ -91,7 +91,7 @@ function Deploy-ToDockerServer {
     
     # Deploy services
     Write-Host "Deploying services..."
-    ssh -o StrictHostKeyChecking=no guido@$DockerServer "cd /srv && docker compose down && docker rmi -f registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion registry.hollanderconsulting.nl/catalog-rest-server:latest 2>/dev/null || true && VERSION=v$newVersion docker compose up -d"
+    ssh -o StrictHostKeyChecking=no guido@$DockerServer "cd /srv && docker compose down && VERSION=v$newVersion PULL_POLICY=never docker compose up -d"
 }
 
 # Main deployment logic
