@@ -121,7 +121,7 @@ if ($changes) {
 }
 
 Write-Host "`nStep 3: Docker build and push..." -ForegroundColor Cyan
-if ($Environment -eq 'local' -or $Environment -eq 'both') {
+if ($Environment -eq 'local') {
     Write-Host "Building locally with cache clearing..."
     Write-Host "Step 3a: Updating source code..."
     & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull"
@@ -129,7 +129,18 @@ if ($Environment -eq 'local' -or $Environment -eq 'both') {
     & ssh guido@${DockerServer} "docker builder prune -af"
     Write-Host "Step 3c: Building Docker image..."
     & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && docker build --no-cache --build-arg VERSION=v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest ."
+} elseif ($Environment -eq 'both') {
+    Write-Host "Building for both environments with registry push..."
+    Write-Host "Step 3a: Updating source code..."
+    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull"
+    Write-Host "Step 3b: Clearing Docker build cache..."
+    & ssh guido@${DockerServer} "docker builder prune -af"
+    Write-Host "Step 3c: Building Docker image..."
+    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && docker build --no-cache --build-arg VERSION=v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest ."
+    Write-Host "Step 3d: Pushing to registry..."
+    & ssh guido@${DockerServer} "docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
 } else {
+    Write-Host "Building for AWS with registry push..."
     & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull && docker build --build-arg VERSION=v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest . && docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
 }
 
