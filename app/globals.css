@@ -20,6 +20,10 @@
   background-color: #ef4444;
 }
 
+.status-indicator.warning {
+  background-color: #f59e0b;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

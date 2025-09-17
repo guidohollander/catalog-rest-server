@@ -12,19 +12,21 @@ export default function Home() {
   const [jenkinsHealth, setJenkinsHealth] = useState<{ status: string } | null>(null);
   const [jiraHealth, setJiraHealth] = useState<{ status: string; message: string } | null>(null);
   const [envHealth, setEnvHealth] = useState<{ status: boolean; missingEnvVars: string[] } | null>(null);
+  const [databaseHealth, setDatabaseHealth] = useState<{ source: string; tableCount: number } | null>(null);
 
   useEffect(() => {
     const checkHealth = async () => {
       try {
         // Check all health endpoints in parallel
-        const [healthResponse, svnHealthResponse, jenkinsHealthResponse, jiraHealthResponse] = await Promise.allSettled([
+        const [healthResponse, svnHealthResponse, jenkinsHealthResponse, jiraHealthResponse, databaseResponse] = await Promise.allSettled([
           fetch('/api/health'),
           fetch('/api/svn/health'),
           fetch('/api/jenkins/health', { 
             method: 'GET',
             signal: AbortSignal.timeout(3000) // 3 second timeout
           }),
-          fetch('/api/jira/health')
+          fetch('/api/jira/health'),
+          fetch('/api/database-schema')
         ]);
 
         // Process main health check
@@ -69,6 +71,25 @@ export default function Home() {
             status: 'unhealthy', 
             message: 'Jira health check failed' 
           });
+        }
+
+        // Process Database health
+        if (databaseResponse.status === 'fulfilled') {
+          if (databaseResponse.value.ok) {
+            const dbData = await databaseResponse.value.json();
+            if (dbData.success) {
+              setDatabaseHealth({
+                source: dbData.metadata.source,
+                tableCount: dbData.metadata.tableCount
+              });
+            } else {
+              setDatabaseHealth({ source: 'error', tableCount: 0 });
+            }
+          } else {
+            setDatabaseHealth({ source: 'error', tableCount: 0 });
+          }
+        } else {
+          setDatabaseHealth({ source: 'error', tableCount: 0 });
         }
 
       } catch (error) {
@@ -158,16 +179,6 @@ export default function Home() {
             </span>
           </div>
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="w-16 text-gray-400">GET</span>
-                <Link href="/database-diagram" className="text-blue-400 hover:text-blue-300 transition-colors">
-                  /database-diagram
-                </Link>
-              </div>
-              <span className="text-sm text-gray-400">Schema visualization</span>
-            </div>
             <div className="flex items-center">
               <span className="text-green-500 mr-2">✓</span>
               <span className="w-16 text-gray-400">GET</span>
@@ -177,6 +188,28 @@ export default function Home() {
               <span className="text-green-500 mr-2">✓</span>
               <span className="w-16 text-gray-400">GET</span>
               <span>/api/database-cache</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">GET</span>
+                <Link href="/database-diagram" className="text-blue-400 hover:text-blue-300 transition-colors">
+                  /database-diagram
+                </Link>
+              </div>
+              {databaseHealth && (
+                <div 
+                  className={`status-indicator ${
+                    databaseHealth.source === 'error' ? 'error' : 
+                    databaseHealth.source === 'cache' ? 'warning' : ''
+                  }`}
+                  title={
+                    databaseHealth.source === 'error' ? 'Database unavailable' :
+                    databaseHealth.source === 'cache' ? `Using cached data (${databaseHealth.tableCount} tables)` :
+                    `Live database connection (${databaseHealth.tableCount} tables)`
+                  }
+                />
+              )}
             </div>
           </div>
         </div>
