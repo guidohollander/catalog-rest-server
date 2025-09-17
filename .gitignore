@@ -71,6 +71,11 @@ Desktop.ini
 # misc
 *.pem
 
+# SSH Keys and certificates
+keys/
+*.key
+*.crt
+
 # vercel
 .vercel
 

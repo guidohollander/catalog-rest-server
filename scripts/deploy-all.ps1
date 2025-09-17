@@ -7,7 +7,7 @@ param (
     [Parameter()]
     [string]$DockerServer = '192.168.1.152',
     [Parameter()]
-    [string]$SSHKeyPath = 'C:\Users\guido\.ssh\service-catalog-rest-api.pem'
+    [string]$SSHKeyPath = '.\keys\service-catalog-rest-api.pem'
 )
 
 # Enable BuildKit for faster Docker builds
