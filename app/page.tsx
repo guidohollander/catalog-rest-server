@@ -26,7 +26,9 @@ export default function Home() {
             signal: AbortSignal.timeout(3000) // 3 second timeout
           }),
           fetch('/api/jira/health'),
-          fetch('/api/database-schema')
+          fetch('/api/database-schema', {
+            signal: AbortSignal.timeout(5000) // 5 second timeout for database
+          })
         ]);
 
         // Process main health check

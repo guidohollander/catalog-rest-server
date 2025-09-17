@@ -25,6 +25,8 @@ interface DatabaseConfig {
     encrypt: boolean;
     trustServerCertificate: boolean;
   };
+  connectionTimeout?: number;
+  requestTimeout?: number;
 }
 
 export class DatabaseCacheService {
@@ -149,7 +151,9 @@ export class DatabaseCacheService {
       options: {
         encrypt: false,
         trustServerCertificate: true
-      }
+      },
+      connectionTimeout: 5000, // 5 second connection timeout
+      requestTimeout: 10000    // 10 second request timeout
     };
   }
 
