@@ -3,11 +3,11 @@ param (
     [ValidateSet('aws', 'local', 'both')]
     [string]$Environment = 'both',
     [Parameter()]
-    [string]$AWSHost = 'ec2-user@44.204.81.162',
+    [string]$AWSHost = 'ec2-user@ec2-13-222-238-100.compute-1.amazonaws.com',
     [Parameter()]
     [string]$DockerServer = '192.168.1.152',
     [Parameter()]
-    [string]$SSHKeyPath = '.\keys\service-catalog-rest-api.pem'
+    [string]$SSHKeyPath = '.\aws\keys\service-catalog-rest-api.pem'
 )
 
 # Enable BuildKit for faster Docker builds
