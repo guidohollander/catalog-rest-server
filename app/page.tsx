@@ -12,7 +12,7 @@ export default function Home() {
   const [jenkinsHealth, setJenkinsHealth] = useState<{ status: string } | null>(null);
   const [jiraHealth, setJiraHealth] = useState<{ status: string; message: string } | null>(null);
   const [envHealth, setEnvHealth] = useState<{ status: boolean; missingEnvVars: string[] } | null>(null);
-  const [databaseHealth, setDatabaseHealth] = useState<{ source: string; tableCount: number } | null>(null);
+  const [databaseHealth, setDatabaseHealth] = useState<{ source: string; tableCount: number } | null>({ source: 'loading', tableCount: 0 });
 
   useEffect(() => {
     const checkHealth = async () => {
@@ -207,11 +207,13 @@ export default function Home() {
                 <div 
                   className={`status-indicator ${
                     databaseHealth.source === 'error' ? 'error' : 
-                    databaseHealth.source === 'cache' ? 'warning' : ''
+                    databaseHealth.source === 'cache' ? 'warning' :
+                    databaseHealth.source === 'loading' ? 'warning' : ''
                   }`}
                   title={
                     databaseHealth.source === 'error' ? 'Database unavailable' :
                     databaseHealth.source === 'cache' ? `Using cached data (${databaseHealth.tableCount} tables)` :
+                    databaseHealth.source === 'loading' ? 'Checking database status...' :
                     `Live database connection (${databaseHealth.tableCount} tables)`
                   }
                 />
