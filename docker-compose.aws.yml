@@ -15,6 +15,7 @@ services:
       - "3000:3000"
     volumes:
       - /var/log/catalog-rest-server:/app/logs
+      - /srv/catalog-rest-server/cache:/app/cache
     restart: unless-stopped
 
   nginx:

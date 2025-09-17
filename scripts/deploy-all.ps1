@@ -67,6 +67,23 @@ function Deploy-ToAWS {
     Write-Host "Copying files to AWS..."
     & scp -i $SSHKeyPath docker-compose.aws.yml "${AWSHost}:/srv/catalog-rest-server/docker-compose.yml"
     Test-LastCommand
+    & scp -i $SSHKeyPath .env "${AWSHost}:/srv/catalog-rest-server/.env"
+    Test-LastCommand
+    
+    # Copy cache directory if it exists
+    if (Test-Path "cache") {
+        Write-Host "Copying database cache to AWS..."
+        & ssh -i $SSHKeyPath ${AWSHost} "mkdir -p /srv/catalog-rest-server/cache"
+        Test-LastCommand
+        & scp -i $SSHKeyPath -r cache/* "${AWSHost}:/srv/catalog-rest-server/cache/"
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "✅ Database cache copied successfully"
+        } else {
+            Write-Host "⚠️ No cache files to copy (this is normal for first deployment)"
+        }
+    } else {
+        Write-Host "⚠️ No cache directory found (this is normal for first deployment)"
+    }
 
     Write-Host "Running deployment script..." -ForegroundColor Cyan
     & ssh -i $SSHKeyPath ${AWSHost} @"

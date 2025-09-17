@@ -320,7 +320,7 @@ export default function DatabaseDiagram() {
   useEffect(() => {
     // Initial load
     refreshDiagram();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -336,7 +336,7 @@ export default function DatabaseDiagram() {
         clearInterval(interval);
       }
     };
-  }, [autoRefresh]);
+  }, [autoRefresh]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const getDataTypeColor = (type: string): string => {
     const lowerType = type.toLowerCase();
