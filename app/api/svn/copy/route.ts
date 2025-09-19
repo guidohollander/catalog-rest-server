@@ -15,33 +15,31 @@ const svn_password = config.services.svn.password;
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const requestId = crypto.randomUUID();
   
-  // Test logging
-  logger.debug('TEST: Debug log from SVN copy endpoint');
-  logger.info('TEST: Info log from SVN copy endpoint');
-  logger.warn('TEST: Warning log from SVN copy endpoint');
-  logger.error('TEST: Error log from SVN copy endpoint');
-  
   logger.info(`Starting SVN copy operation ${requestId}`);
   
   try {
     const body = await request.json();
-    logger.info('SVN Copy Request received', { 
-      requestId,
-      fromUrl: body.request?.from_url,
-      toUrl: body.request?.to_url,
-      hasCommitMessage: !!body.request?.commitmessage
+    
+    // Extract copy details for logging
+    const fromUrl = body.request?.from_url;
+    const toUrl = body.request?.to_url;
+    const commitMessage = body.request?.commitmessage;
+    
+    // Log what is being copied with a more descriptive message
+    logger.info(`SVN Copy Request: copying from ${fromUrl} to ${toUrl} with commit message: ${commitMessage}`, { 
+      requestId
     });
 
     // Validate request body
-    if (!body.request || !body.request.from_url || !body.request.to_url || !body.request.commitmessage) {
-      logger.warn('Invalid SVN copy request', { 
-        requestId,
-        missingFields: {
-          request: !body.request,
-          fromUrl: !body.request?.from_url,
-          toUrl: !body.request?.to_url,
-          commitMessage: !body.request?.commitmessage
-        }
+    if (!body.request || !fromUrl || !toUrl || !commitMessage) {
+      const missingParams = [];
+      if (!body.request) missingParams.push('request');
+      if (!fromUrl) missingParams.push('from_url');
+      if (!toUrl) missingParams.push('to_url');
+      if (!commitMessage) missingParams.push('commitmessage');
+      
+      logger.warn(`Invalid SVN copy request - missing required parameters: ${missingParams.join(', ')}`, { 
+        requestId
       });
       return NextResponse.json({ 
         response: { 
@@ -51,13 +49,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }, { status: 400 });
     }
 
-    const svnCommand = `svn copy "${body.request.from_url}" "${body.request.to_url}" -m "${body.request.commitmessage}" --username ${svn_username} --password ${svn_password}`;
+    const svnCommand = `svn copy "${fromUrl}" "${toUrl}" -m "${commitMessage}" --username ${svn_username} --password ${svn_password}`;
     
-    // Log command with sensitive data masked
-    const maskedCommand = svnCommand
-      .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-      .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
-    logger.info('Executing SVN copy command', { requestId, command: maskedCommand });
+    // Log command details without sensitive data
+    logger.info(`Executing SVN copy from ${fromUrl} to ${toUrl}`, { 
+      requestId,
+      command: `svn copy "${fromUrl}" "${toUrl}" -m "${commitMessage}" --username ***REDACTED*** --password ***REDACTED***`
+    });
 
     return new Promise<NextResponse>((resolve, reject) => {
       exec(svnCommand, (error, stdout, stderr) => {
@@ -97,17 +95,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
           .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
         
-        logger.info('SVN copy operation completed successfully', { 
+        // Parse what was copied from the stdout
+        let copiedItems: string[] = [];
+        if (maskedStdout) {
+          // Extract file/directory names from SVN output
+          const lines = maskedStdout.split('\n');
+          copiedItems = lines.filter(line => line.includes('A') && line.includes(fromUrl));
+        }
+        
+        logger.info(`SVN copy operation completed successfully. Copied ${copiedItems.length} items from ${fromUrl} to ${toUrl}`, { 
           requestId,
-          output: maskedStdout,
-          fromUrl: body.request.from_url,
-          toUrl: body.request.to_url
+          output: maskedStdout
         });
         
         resolve(NextResponse.json({ 
           response: { 
             success: "1", 
-            output: "copy successful" 
+            output: "copy successful",
+            copiedItems: copiedItems.length > 0 ? copiedItems : undefined
           } 
         }));
       });
