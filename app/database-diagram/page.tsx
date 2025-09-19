@@ -338,6 +338,27 @@ export default function DatabaseDiagram() {
     };
   }, [autoRefresh]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const getTableDescription = (tableName: string): string => {
+    const descriptions: { [key: string]: string } = {
+      'mvw_implementation_component': 'Links components to solution implementations, tracking versions, dependencies, and deployment status across projects',
+      'mvw_solution_implementation': 'Represents deployed solution instances for specific customers, including version info, release dates, and configuration details',
+      'mvw_component_version': 'Tracks all versions of software components with release information, dependencies, and version hierarchy',
+      'mvw_component': 'Master catalog of all software components in the system with metadata and classification information',
+      'mvw_component_version_dependency': 'Defines dependency relationships between different component versions and their compatibility requirements',
+      'mvw_component_version_project': 'Associates component versions with specific projects, tracking usage and project-specific configurations',
+      'mvw_customer': 'Customer master data including contact information, configuration preferences, and relationship details',
+      'mvw_customer_component': 'Maps which components are deployed or available for specific customers with customization details',
+      'mvw_implementation_component_project': 'Project-specific component implementations with deployment details and project context',
+      'mvw_object_issue': 'Issue tracking and problem management for objects in the system with status and resolution information',
+      'mvw_object_revision': 'Version control information for objects, tracking changes, authors, and revision history',
+      'mvw_object_revision_details': 'Detailed change information for object revisions including file-level modifications and metadata',
+      'mvw_object_revision_extended': 'Extended revision data with additional context, branching information, and merge details',
+      'mvw_solution': 'Master catalog of solutions available in the system with descriptions, categories, and configuration options'
+    };
+    
+    return descriptions[tableName] || 'Database view containing structured information for system operations and reporting';
+  };
+
   const getDataTypeColor = (type: string): string => {
     const lowerType = type.toLowerCase();
     if (lowerType.includes('int') || lowerType.includes('bigint') || lowerType.includes('smallint')) {
@@ -546,8 +567,9 @@ export default function DatabaseDiagram() {
                       <div key={index} id={table.name} className="bg-gray-700 border border-gray-600 rounded-lg shadow-sm overflow-hidden">
                         <div className="bg-blue-600 text-white px-6 py-4">
                           <h3 className="font-semibold text-xl">{table.name}</h3>
+                          <p className="text-blue-100 text-xs mt-1 opacity-80">{getTableDescription(table.name)}</p>
                           {table.note && (
-                            <p className="text-blue-100 text-sm mt-1">{table.note}</p>
+                            <p className="text-blue-100 text-sm mt-2">{table.note}</p>
                           )}
                         </div>
                         
