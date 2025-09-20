@@ -120,6 +120,35 @@ Write-Host "Running build..."
 Run-NpmCommand "run" "build"
 
 Write-Host "`nStep 2: Git operations..." -ForegroundColor Cyan
+
+# Check if local and remote are synchronized
+Write-Host "Checking git synchronization..."
+git fetch origin
+$localCommit = git rev-parse HEAD
+$remoteCommit = git rev-parse origin/master
+$status = git status --porcelain -b
+
+if ($localCommit -ne $remoteCommit) {
+    Write-Host "⚠️  WARNING: Local and remote branches are not synchronized!" -ForegroundColor Yellow
+    Write-Host "Local commit:  $localCommit" -ForegroundColor Yellow
+    Write-Host "Remote commit: $remoteCommit" -ForegroundColor Yellow
+    
+    # Check if we're ahead, behind, or diverged
+    $ahead = git rev-list --count origin/master..HEAD
+    $behind = git rev-list --count HEAD..origin/master
+    
+    if ($ahead -gt 0 -and $behind -gt 0) {
+        Write-Host "❌ ERROR: Branches have diverged! Local is $ahead commits ahead and $behind commits behind." -ForegroundColor Red
+        Write-Host "Please resolve manually with: git pull --rebase origin master" -ForegroundColor Red
+        exit 1
+    } elseif ($behind -gt 0) {
+        Write-Host "❌ ERROR: Local branch is $behind commits behind remote." -ForegroundColor Red
+        Write-Host "Please pull latest changes with: git pull origin master" -ForegroundColor Red
+        exit 1
+    }
+    # If we're only ahead, we'll push after committing changes below
+}
+
 Write-Host "Checking for uncommitted changes..."
 $changes = git status --porcelain
 if ($changes) {
@@ -132,10 +161,38 @@ if ($changes) {
     git commit --no-verify -m "Deployment update $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') - Version $newVersion"
     
     Write-Host "Pushing changes..."
-    git push origin master
+    $pushResult = git push origin master 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "❌ ERROR: Failed to push changes to remote repository!" -ForegroundColor Red
+        Write-Host $pushResult -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "✅ Changes pushed successfully" -ForegroundColor Green
 } else {
     Write-Host "No changes to commit"
+    
+    # Still need to push if we're ahead
+    if ($localCommit -ne $remoteCommit) {
+        Write-Host "Pushing local commits to remote..."
+        $pushResult = git push origin master 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ ERROR: Failed to push to remote repository!" -ForegroundColor Red
+            Write-Host $pushResult -ForegroundColor Red
+            exit 1
+        }
+        Write-Host "✅ Local commits pushed successfully" -ForegroundColor Green
+    }
 }
+
+# Final verification that local and remote are now synchronized
+git fetch origin
+$finalLocalCommit = git rev-parse HEAD
+$finalRemoteCommit = git rev-parse origin/master
+if ($finalLocalCommit -ne $finalRemoteCommit) {
+    Write-Host "❌ ERROR: Git synchronization failed! Local and remote are still not synchronized." -ForegroundColor Red
+    exit 1
+}
+Write-Host "✅ Git repositories are synchronized" -ForegroundColor Green
 
 Write-Host "`nStep 3: Docker build and push..." -ForegroundColor Cyan
 if ($Environment -eq 'local') {

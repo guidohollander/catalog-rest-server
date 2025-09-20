@@ -75,8 +75,40 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           return;
         }
 
-        // Handle successful stdout (optional)
-        logger.info(`SVN reset command completed successfully for URL: ${from_url}`);
+        // Handle successful stdout and look for externals information
+        if (stdout) {
+          const maskedStdout = stdout
+            .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+            .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
+          
+          // Look for externals-related information in the output
+          const lines = maskedStdout.split('\n');
+          const externalsInfo = lines.filter(line => 
+            line.toLowerCase().includes('external') || 
+            line.includes('svn:externals') ||
+            line.includes('Fetching external') ||
+            line.includes('Updated external') ||
+            line.includes('Switched to') ||
+            line.includes('At revision')
+          );
+          
+          if (externalsInfo.length > 0) {
+            logger.info(`SVN reset triggered externals update for URL: ${from_url}`, {
+              externalsChanges: externalsInfo
+            });
+            
+            // Log each external change separately for better visibility
+            externalsInfo.forEach((external, index) => {
+              logger.info(`Reset external change ${index + 1}: ${external}`);
+            });
+          } else {
+            logger.info(`SVN reset command completed successfully for URL: ${from_url}`, {
+              output: maskedStdout
+            });
+          }
+        } else {
+          logger.info(`SVN reset command completed successfully for URL: ${from_url}`);
+        }
       });
     });
   } catch (err) {

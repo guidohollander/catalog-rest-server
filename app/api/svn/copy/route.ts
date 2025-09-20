@@ -97,16 +97,41 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         
         // Parse what was copied from the stdout
         let copiedItems: string[] = [];
+        let externalsInfo: string[] = [];
+        
         if (maskedStdout) {
           // Extract file/directory names from SVN output
           const lines = maskedStdout.split('\n');
           copiedItems = lines.filter(line => line.includes('A') && line.includes(fromUrl));
+          
+          // Look for externals-related information
+          externalsInfo = lines.filter(line => 
+            line.toLowerCase().includes('external') || 
+            line.includes('svn:externals') ||
+            line.includes('Fetching external') ||
+            line.includes('Updated external')
+          );
         }
         
-        logger.info(`SVN copy operation completed successfully. Copied ${copiedItems.length} items from ${fromUrl} to ${toUrl}`, { 
-          requestId,
-          output: maskedStdout
-        });
+        // Enhanced logging for externals changes
+        if (externalsInfo.length > 0) {
+          logger.info(`SVN copy operation completed with externals changes. Source: ${fromUrl} -> Target: ${toUrl}`, { 
+            requestId,
+            externalsChanges: externalsInfo,
+            totalCopiedItems: copiedItems.length,
+            commitMessage: commitMessage
+          });
+          
+          // Log each external change separately for better visibility
+          externalsInfo.forEach((external, index) => {
+            logger.info(`External change ${index + 1}: ${external}`, { requestId });
+          });
+        } else {
+          logger.info(`SVN copy operation completed successfully. Copied ${copiedItems.length} items from ${fromUrl} to ${toUrl}`, { 
+            requestId,
+            output: maskedStdout
+          });
+        }
         
         resolve(NextResponse.json({ 
           response: { 

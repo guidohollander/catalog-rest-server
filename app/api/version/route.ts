@@ -10,7 +10,8 @@ export async function GET(request: NextRequest) {
     
     return NextResponse.json({
       version: packageJson.version,
-      envVersion: process.env.NEXT_PUBLIC_APP_VERSION || 'not set'
+      envVersion: process.env.NEXT_PUBLIC_APP_VERSION || 'not set',
+      buildTime: process.env.BUILD_TIME || 'unknown'
     });
   } catch (error) {
     return NextResponse.json(
