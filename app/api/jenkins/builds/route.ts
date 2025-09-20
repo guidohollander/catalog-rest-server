@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import http from 'http';
 import { loadConfig } from '@/src/config/loader';
+import { logger } from '@/src/utils/logger';
 
 // Load configuration
 const config = loadConfig();
@@ -136,6 +137,8 @@ async function processRepository(repoPath: string): Promise<BuildInfo[]> {
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  logger.info('Jenkins Builds Request received');
+  
   try {
     const repositories: string[] = [
       'AIA_MBS',
@@ -143,11 +146,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       'SOLUTIONCOMPONENTS'
     ];
 
+    logger.info(`Fetching Jenkins builds for ${repositories.length} repositories`);
+    
     const allBuildsPromises: Promise<BuildInfo[]>[] = repositories.map(processRepository);
     const allBuilds: BuildInfo[][] = await Promise.all(allBuildsPromises);
+    
+    const flattenedBuilds = allBuilds.flat();
+    logger.info(`Successfully fetched ${flattenedBuilds.length} Jenkins builds`);
 
-    return NextResponse.json(allBuilds.flat());
-  } catch {
+    return NextResponse.json(flattenedBuilds);
+  } catch (error) {
+    logger.error('Failed to fetch Jenkins builds', { 
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
     return NextResponse.json({ error: 'Failed to fetch Jenkins builds' }, { status: 500 });
   }
 }

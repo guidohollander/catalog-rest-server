@@ -17,7 +17,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const requestBody = await request.json();
     const { from_url } = requestBody.request;
 
+    logger.info(`SVN Reset Request received for URL: ${from_url || 'undefined'}`);
+
     if (!from_url) {
+      logger.warn('SVN Reset request missing required SVN URL parameter');
       return NextResponse.json(
         { error: 'SVN URL is required' }, 
         { status: 400 }
@@ -34,10 +37,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       const svnCommand = `svnmucc put ${fullPath} -m "reset" ${from_url}.no-op --username ${svn_username} --password ${svn_password}`;
       
       // Log command with sensitive data masked
-      const maskedCommand = svnCommand
-        .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-        .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
-      logger.info(`Executing SVN reset command: ${maskedCommand}`);
+      logger.info(`Executing SVN reset command for URL: ${from_url}.no-op`, { 
+        command: `svnmucc put ${fullPath} -m "reset" ${from_url}.no-op --username ***REDACTED*** --password ***REDACTED***`
+      });
 
       // Execute the SVN command asynchronously
       exec(svnCommand, (error, stdout, stderr) => {
@@ -63,9 +65,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
               "Commit rejected: adding or modifying a .no-op file is not allowed."
             )
           ) {
-            logger.info("Commit intentionally rejected by pre-commit hook.");
+            logger.info(`Commit intentionally rejected by pre-commit hook for URL: ${from_url}`);
           } else {
-            logger.error("SVN command error", { 
+            logger.error(`SVN reset command failed for URL: ${from_url}`, { 
               error: stderr.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
                 .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
             });
@@ -74,10 +76,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         }
 
         // Handle successful stdout (optional)
-        logger.info("SVN command completed", { 
-          output: stdout.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-            .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
-        });
+        logger.info(`SVN reset command completed successfully for URL: ${from_url}`);
       });
     });
   } catch (err) {
