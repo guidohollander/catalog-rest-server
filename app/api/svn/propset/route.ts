@@ -15,15 +15,7 @@ const svn_password = config.services.svn.password;
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    logger.info("SVN Propset Request", { 
-      body: { 
-        ...body, 
-        req: { 
-          ...body.req, 
-          url: body.req?.url 
-        } 
-      } 
-    });
+    logger.info("SVN Propset Request");
 
     // Generate a unique file name for the temporary file
     const fMod = `ext_mod_${crypto.randomBytes(8).toString('hex')}`;
@@ -45,12 +37,8 @@ export async function POST(request: NextRequest) {
       // Execute the SVN command synchronously
       const stdout = execSync(svnCommand);
       
-      // Log success with masked output
-      logger.info(`SVN propset completed successfully`, {
-        output: stdout.toString()
-          .replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-          .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
-      });
+      // Log success
+      logger.info(`SVN propset completed successfully`);
 
       // Send a success response
       return NextResponse.json({ 

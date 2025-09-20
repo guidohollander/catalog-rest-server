@@ -366,6 +366,9 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <a href="/logs" className="text-gray-400 hover:text-white transition-colors" title="Live Logs Console">
+                <span className="text-xl">📊</span>
+              </a>
               <a href="/docs" className="text-gray-400 hover:text-white transition-colors" title="Documentation">
                 <span className="text-xl">📚</span>
               </a>

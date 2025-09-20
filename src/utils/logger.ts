@@ -82,12 +82,20 @@ const logger = winston.createLogger({
 
 // Always add file transports
 try {
-  // Match the path with docker-compose volume mount
-  const LOG_DIR = '/app/logs';
+  // Use different log directory based on environment
+  const LOG_DIR = process.env.NODE_ENV === 'production' 
+    ? '/app/logs'  // Docker container path
+    : path.join(process.cwd(), 'logs');  // Local development path
   
   // Create logs directory if it doesn't exist
   if (!fs.existsSync(LOG_DIR)) {
     fs.mkdirSync(LOG_DIR, { recursive: true });
+  }
+
+  // Clear the log file on startup in development mode
+  const logFile = path.join(LOG_DIR, 'combined.log');
+  if (process.env.NODE_ENV !== 'production' && fs.existsSync(logFile)) {
+    fs.writeFileSync(logFile, ''); // Clear the file
   }
 
   // Add file transports
@@ -107,8 +115,8 @@ try {
     format: combine(
       timestamp(),
       obfuscateSensitiveData,
-      colorize({ all: true }),
-      logFormat
+      winston.format.uncolorize(), // Remove any colors
+      winston.format.json()
     )
   }));
 

@@ -5,19 +5,11 @@ import path from 'path';
 import dotenv from 'dotenv';
 
 export async function POST(request: NextRequest) {
-  logger.info('Health check request details:', {
-    method: request.method,
-    url: request.url,
-    headers: Object.fromEntries(request.headers.entries())
-  });
-
-  logger.info('Health check received');
+  logger.info('Health check received (POST)');
 
   const response = { 
     status: true 
   };
-
-  logger.info('Health check response:', response);
 
   return NextResponse.json({ 
     response 
@@ -27,12 +19,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  logger.info('Health check request details:', {
-    method: request.method,
-    url: request.url,
-    headers: Object.fromEntries(request.headers.entries())
-  });
-
   // Read .env.example to get required variables
   const envExamplePath = path.join(process.cwd(), '.env.example');
   const envExampleContent = fs.readFileSync(envExamplePath, 'utf8');
@@ -48,8 +34,6 @@ export async function GET(request: NextRequest) {
     status: isHealthy,
     missingEnvVars: missingEnvVars
   };
-
-  logger.info('Health check response:', response);
 
   return NextResponse.json(response, { 
     status: isHealthy ? 200 : 503 
