@@ -88,8 +88,8 @@ function Deploy-ToAWS {
     Write-Host "Running deployment script..." -ForegroundColor Cyan
     & ssh -i $SSHKeyPath ${AWSHost} @"
         cd /srv/catalog-rest-server && \
-        VERSION=v$newVersion docker-compose pull --no-parallel && \
-        VERSION=v$newVersion docker-compose up -d --force-recreate --remove-orphans && \
+        VERSION=$newVersion docker-compose pull --no-parallel && \
+        VERSION=$newVersion docker-compose up -d --force-recreate --remove-orphans && \
         docker system prune -af --volumes
 "@
     Test-LastCommand
