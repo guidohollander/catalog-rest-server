@@ -108,7 +108,7 @@ function Deploy-ToDockerServer {
     
     # Deploy services
     Write-Host "Deploying services..."
-    ssh -o StrictHostKeyChecking=no guido@$DockerServer "cd /srv && docker compose down && VERSION=v$newVersion PULL_POLICY=never docker compose up -d"
+    ssh -o StrictHostKeyChecking=no guido@$DockerServer "cd /srv && docker compose down && VERSION=$newVersion PULL_POLICY=never docker compose up -d"
 }
 
 # Main deployment logic
@@ -145,7 +145,7 @@ if ($Environment -eq 'local') {
     Write-Host "Step 3b: Clearing Docker build cache..."
     & ssh guido@${DockerServer} "docker builder prune -af"
     Write-Host "Step 3c: Building Docker image..."
-    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && docker build --no-cache --build-arg VERSION=v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest ."
+    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && docker build --no-cache --build-arg VERSION=$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest ."
 } elseif ($Environment -eq 'both') {
     Write-Host "Building for both environments with registry push..."
     Write-Host "Step 3a: Updating source code..."
@@ -153,12 +153,12 @@ if ($Environment -eq 'local') {
     Write-Host "Step 3b: Clearing Docker build cache..."
     & ssh guido@${DockerServer} "docker builder prune -af"
     Write-Host "Step 3c: Building Docker image..."
-    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && docker build --no-cache --build-arg VERSION=v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest ."
+    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && docker build --no-cache --build-arg VERSION=$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest ."
     Write-Host "Step 3d: Pushing to registry..."
-    & ssh guido@${DockerServer} "docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
+    & ssh guido@${DockerServer} "docker push registry.hollanderconsulting.nl/catalog-rest-server:$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
 } else {
     Write-Host "Building for AWS with registry push..."
-    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull && docker build --build-arg VERSION=v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest . && docker push registry.hollanderconsulting.nl/catalog-rest-server:v$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
+    & ssh guido@${DockerServer} "cd /srv/catalog-rest-server && git pull && docker build --build-arg VERSION=$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:$newVersion -t registry.hollanderconsulting.nl/catalog-rest-server:latest . && docker push registry.hollanderconsulting.nl/catalog-rest-server:$newVersion && docker push registry.hollanderconsulting.nl/catalog-rest-server:latest"
 }
 
 Write-Host "`nStep 4: Deployment..." -ForegroundColor Cyan
