@@ -14,9 +14,8 @@ const svn_password = config.services.svn.password;
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
-    logger.info("latest-revision - SVN Request", { body: { ...body, request: { ...body.request, url: body.request?.url } } });
-
     const url = body.request?.url;
+    console.log(`SVN latest-revision API called for URL: ${url}`);
 
     if (!url) {
       return NextResponse.json({ 

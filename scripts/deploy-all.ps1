@@ -85,6 +85,14 @@ function Deploy-ToAWS {
         Write-Host "⚠️ No cache directory found (this is normal for first deployment)"
     }
 
+    Write-Host "Setting up log directory permissions..." -ForegroundColor Cyan
+    & ssh -i $SSHKeyPath ${AWSHost} @"
+        sudo mkdir -p /var/log/catalog-rest-server && \
+        sudo chown -R 1000:1000 /var/log/catalog-rest-server && \
+        sudo chmod -R 755 /var/log/catalog-rest-server
+"@
+    Test-LastCommand
+
     Write-Host "Running deployment script..." -ForegroundColor Cyan
     & ssh -i $SSHKeyPath ${AWSHost} @"
         cd /srv/catalog-rest-server && \

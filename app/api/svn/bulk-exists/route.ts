@@ -35,6 +35,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const body = await request.json();
     const urls = body.request?.urls;
+    console.log(`SVN bulk-exists API called for ${urls?.length || 0} URLs: ${urls?.slice(0, 3).join(', ')}${urls?.length > 3 ? '...' : ''}`);
 
     if (!urls || !Array.isArray(urls) || urls.length === 0) {
       return NextResponse.json({ 

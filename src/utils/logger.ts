@@ -87,14 +87,9 @@ try {
     ? '/app/logs'  // Docker container path
     : path.join(process.cwd(), 'logs');  // Local development path
   
-  console.log(`Winston: Attempting to use log directory: ${LOG_DIR}`);
-  
   // Create logs directory if it doesn't exist
   if (!fs.existsSync(LOG_DIR)) {
-    console.log(`Winston: Creating log directory: ${LOG_DIR}`);
     fs.mkdirSync(LOG_DIR, { recursive: true });
-  } else {
-    console.log(`Winston: Log directory exists: ${LOG_DIR}`);
   }
 
   // Clear the log file on startup in development mode
@@ -125,11 +120,9 @@ try {
     )
   }));
 
-  console.log('Winston: File transports added successfully');
   logger.info('Logger initialized with file transports');
 } catch (error) {
   console.error('Failed to initialize file logging:', error);
-  console.error('Error details:', error);
 }
 
 // Override console methods to use Winston

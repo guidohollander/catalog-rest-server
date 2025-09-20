@@ -14,6 +14,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     const requestBody = await request.json();
     const url = requestBody.request?.url;
+    console.log(`SVN exists API called for URL: ${url}`);
 
     // Input validation
     if (!url) {

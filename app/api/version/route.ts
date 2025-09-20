@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 export async function GET(request: NextRequest) {
+  console.log('Version API called');
   try {
     // Read package.json to get the current version
     const packageJsonPath = join(process.cwd(), 'package.json');

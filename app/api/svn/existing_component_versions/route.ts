@@ -146,6 +146,7 @@ function fetchAllVersions(
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  console.log(`SVN existing component versions API called for URLs: ${svnUrls.join(', ')}`);
   try {
     let allComponents: any[] = [];
 

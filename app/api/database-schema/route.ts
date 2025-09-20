@@ -17,10 +17,28 @@ interface TableSchema {
 }
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const forceRefresh = searchParams.get('refresh') === 'true';
+  console.log('Database schema API called');
+  try {
+    const { searchParams } = new URL(request.url);
+    const forceRefresh = searchParams.get('refresh') === 'true';
   
-  return await getDatabaseSchema(forceRefresh);
+    return await getDatabaseSchema(forceRefresh);
+  } catch (error) {
+    console.error('Database schema error:', error);
+    return NextResponse.json({
+      success: false,
+      message: error instanceof Error ? error.message : 'Unknown error occurred',
+      schema: '',
+      tablesData: [],
+      metadata: {
+        tableCount: 0,
+        version: new Date().toISOString(),
+        generatedAt: new Date().toISOString(),
+        source: 'error' as const,
+        cacheStatus: { exists: false }
+      }
+    }, { status: 500 });
+  }
 }
 
 async function getDatabaseSchema(forceRefresh: boolean = false): Promise<NextResponse> {
