@@ -12,7 +12,8 @@ const AUTH_EXCLUDED_ROUTES = new Set([
   '/api/svn/health',
   '/api/jira/health',
   '/api/jenkins/health',
-  '/api/database-schema'  // Database schema API
+  '/api/database-schema',  // Database schema API
+  '/api/version'  // Version API
 ]);
 
 // Cache for auth responses
