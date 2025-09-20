@@ -31,9 +31,10 @@ jspm_packages/
 # Output of 'npm pack'
 *.tgz
 
-# Logs (but allow app/logs/ directory for the logs page)
+# Logs (but allow app/logs/ and app/api/logs/ directories)
 logs
 !app/logs/
+!app/api/logs/
 *.log
 yarn-debug.log*
 yarn-error.log*
