@@ -1,6 +1,6 @@
 {
   "name": "catalog-rest",
-  "version": "0.1.146",
+  "version": "0.1.147",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_NO_WARNINGS=1 NEXT_PUBLIC_APP_VERSION=$npm_package_version next dev",

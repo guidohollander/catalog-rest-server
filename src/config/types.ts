@@ -31,6 +31,12 @@ export interface AppConfig {
             username: string;
             password: string;
         };
+        externalLogs?: {
+            baseUri: string;
+            username: string;
+            password: string;
+            timezoneOffset?: string;
+        };
     };
 }
 

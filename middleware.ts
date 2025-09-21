@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
   const method = request.method;
 
   // Apply Basic Authentication to protected routes (API routes and specific pages)
-  const needsAuth = (pathname.startsWith('/api/') || pathname === '/logs') && !AUTH_EXCLUDED_ROUTES.has(pathname);
+  const needsAuth = (pathname.startsWith('/api/') || pathname === '/logs' || pathname === '/external-logs' || pathname === '/combined-logs') && !AUTH_EXCLUDED_ROUTES.has(pathname);
   
   if (needsAuth) {
     // Check auth cache first

@@ -192,6 +192,9 @@ export default function LogsPage() {
               return (
                 <div key={index} className="mb-0">
                   <div className={`flex items-start ${logColor}`}>
+                    <span className="text-gray-800 w-12 flex-shrink-0 text-right mr-2 whitespace-nowrap bg-blue-300 bg-opacity-80 px-1 rounded">
+                      {index + 1}
+                    </span>
                     <span className="whitespace-nowrap mr-2">
                       {log.timestamp.replace('T', ' ').replace('Z', '').substring(0, 19)}
                     </span>
@@ -203,7 +206,7 @@ export default function LogsPage() {
                     </span>
                   </div>
                   {log.metadata && Object.keys(log.metadata).length > 0 && (
-                    <div className={`ml-24 ${metadataColor}`}>
+                    <div className={`ml-16 ${metadataColor}`}>
                       {Object.entries(log.metadata).map(([key, value]) => (
                         <div key={key} className="break-all">
                           <span className="opacity-75">{key}:</span> <span>{

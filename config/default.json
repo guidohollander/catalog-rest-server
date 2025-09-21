@@ -35,6 +35,12 @@
             "apiPath": "/rest/api/latest",
             "username": "${JIRA_USERNAME}",
             "password": "${JIRA_PASSWORD}"
+        },
+        "externalLogs": {
+            "baseUri": "${EXTERNAL_LOGS_BASE_URI}",
+            "username": "${EXTERNAL_LOGS_USERNAME}",
+            "password": "${EXTERNAL_LOGS_PASSWORD}",
+            "timezoneOffset": "${EXTERNAL_LOGS_TIMEZONE_OFFSET}"
         }
     }
 }

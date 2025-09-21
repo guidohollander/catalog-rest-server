@@ -369,6 +369,12 @@ export default function Home() {
               <a href="/logs" className="text-gray-400 hover:text-white transition-colors" title="Live Logs Console (Authentication Required)">
                 <span className="text-xl">📊🔒</span>
               </a>
+              <a href="/external-logs" className="text-gray-400 hover:text-white transition-colors" title="External Application Logs (Authentication Required)">
+                <span className="text-xl">📋🔒</span>
+              </a>
+              <a href="/combined-logs" className="text-gray-400 hover:text-white transition-colors" title="Combined Logs Console (Authentication Required)">
+                <span className="text-xl">🔗🔒</span>
+              </a>
               <a href="/docs" className="text-gray-400 hover:text-white transition-colors" title="Documentation">
                 <span className="text-xl">📚</span>
               </a>

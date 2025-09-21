@@ -63,7 +63,7 @@ const originalConsoleDebug = console.debug;
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'debug', // Set default to debug
   format: combine(
-    timestamp(),
+    timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }),
     obfuscateSensitiveData,
     colorize({ all: true }),
     logFormat
@@ -71,7 +71,7 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console({
       format: combine(
-        timestamp(),
+        timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }),
         obfuscateSensitiveData,
         colorize({ all: true }),
         logFormat
@@ -103,7 +103,7 @@ try {
     filename: path.join(LOG_DIR, 'error.log'),
     level: 'error',
     format: combine(
-      timestamp(),
+      timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }),
       obfuscateSensitiveData,
       colorize({ all: true }),
       logFormat
@@ -113,7 +113,7 @@ try {
   logger.add(new winston.transports.File({
     filename: path.join(LOG_DIR, 'combined.log'),
     format: combine(
-      timestamp(),
+      timestamp({ format: 'YYYY-MM-DDTHH:mm:ss.SSSZ' }),
       obfuscateSensitiveData,
       winston.format.uncolorize(), // Remove any colors
       winston.format.json()

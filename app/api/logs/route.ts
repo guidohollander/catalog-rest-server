@@ -41,10 +41,8 @@ export async function GET(request: NextRequest) {
         // Parse Winston JSON format
         const logEntry = JSON.parse(line);
         
-        // Format timestamp to be more readable
-        const timestamp = logEntry.timestamp 
-          ? new Date(logEntry.timestamp).toLocaleString('sv-SE').replace('T', ' ')
-          : new Date().toLocaleString('sv-SE').replace('T', ' ');
+        // Keep original timestamp with milliseconds
+        const timestamp = logEntry.timestamp || new Date().toISOString();
         
         // Clean message from any remaining formatting
         let message = logEntry.message || '';
