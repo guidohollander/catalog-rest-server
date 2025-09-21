@@ -71,9 +71,6 @@ function fetchFolderContents(path: string): Promise<string[]> {
               !result.svn.index ||
               !result.svn.index.dir
             ) {
-              console.warn(
-                `Unexpected XML structure for ${path}, assuming no directories found.`
-              );
               return resolve([]);
             }
 

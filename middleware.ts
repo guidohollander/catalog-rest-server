@@ -8,14 +8,12 @@ const AUTH_EXCLUDED_ROUTES = new Set([
   '/',  // Root path (home page)
   '/docs',  // Documentation page
   '/database-diagram',  // Database diagram page
-  '/logs',  // Live logs console page
   '/api/health',
   '/api/svn/health',
   '/api/jira/health',
   '/api/jenkins/health',
   '/api/database-schema',  // Database schema API
-  '/api/version',  // Version API
-  '/api/logs'  // Logs API
+  '/api/version'  // Version API
 ]);
 
 // Cache for auth responses
@@ -26,8 +24,10 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
 
-  // Only apply Basic Authentication to API routes (excluding health)
-  if (pathname.startsWith('/api/') && !AUTH_EXCLUDED_ROUTES.has(pathname)) {
+  // Apply Basic Authentication to protected routes (API routes and specific pages)
+  const needsAuth = (pathname.startsWith('/api/') || pathname === '/logs') && !AUTH_EXCLUDED_ROUTES.has(pathname);
+  
+  if (needsAuth) {
     // Check auth cache first
     const cacheKey = `${request.headers.get('authorization') || ''}-${pathname}`;
     const cachedAuth = AUTH_CACHE.get(cacheKey);

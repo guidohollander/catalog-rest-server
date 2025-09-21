@@ -12,10 +12,11 @@ interface LogEntry {
 
 export default function LogsPage() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
-  const [autoScroll, setAutoScroll] = useState(true);
   const [filter, setFilter] = useState('');
   const [levelFilter, setLevelFilter] = useState('all');
+  const [autoScroll, setAutoScroll] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
+  const [lastClearedTime, setLastClearedTime] = useState<string | null>(null);
   const logsEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -34,8 +35,21 @@ export default function LogsPage() {
           }
           
           setLogs(prevLogs => {
-            // For simplicity, just replace all logs with the new ones
-            return Array.isArray(newLogs) ? newLogs : [];
+            if (!Array.isArray(newLogs)) return [];
+            
+            // If logs were cleared, only show logs newer than the clear time
+            if (lastClearedTime) {
+              const filteredLogs = newLogs.filter(log => {
+                // Convert both timestamps to Date objects for proper comparison
+                const logTime = new Date(log.timestamp);
+                const clearTime = new Date(lastClearedTime);
+                return logTime > clearTime;
+              });
+              console.log(`Filtered ${newLogs.length} logs to ${filteredLogs.length} after clear time ${lastClearedTime}`);
+              return filteredLogs;
+            }
+            
+            return newLogs;
           });
           setIsConnected(true);
         } else {
@@ -55,7 +69,7 @@ export default function LogsPage() {
     const interval = setInterval(pollLogs, 2000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [lastClearedTime]);
 
   useEffect(() => {
     if (autoScroll && logsEndRef.current) {
@@ -65,6 +79,7 @@ export default function LogsPage() {
 
   const clearLogs = () => {
     setLogs([]);
+    setLastClearedTime(new Date().toISOString());
   };
 
   const filteredLogs = logs.filter(log => {
