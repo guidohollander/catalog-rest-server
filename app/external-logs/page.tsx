@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 
 interface ExternalLogEntry {
@@ -111,7 +111,7 @@ export default function ExternalLogsPage() {
     return adjustedLine;
   };
 
-  const fetchLogs = async (showNewOnly = false) => {
+  const fetchLogs = useCallback(async (showNewOnly = false) => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/external-logs?date=${selectedDate}`);
@@ -166,7 +166,7 @@ export default function ExternalLogsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedDate]);
 
   // Auto-refresh effect
   useEffect(() => {
@@ -186,7 +186,7 @@ export default function ExternalLogsPage() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [autoRefresh, refreshInterval, selectedDate]);
+  }, [autoRefresh, refreshInterval, selectedDate, fetchLogs]);
 
   // Date change effect
   useEffect(() => {
@@ -195,7 +195,7 @@ export default function ExternalLogsPage() {
     if (autoRefresh) {
       fetchLogs(false); // Full refresh for new date
     }
-  }, [selectedDate]);
+  }, [selectedDate, autoRefresh, fetchLogs]);
 
   const clearLogs = () => {
     setLogs([]);

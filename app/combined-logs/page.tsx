@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 
 interface InternalLogEntry {
@@ -108,7 +108,7 @@ export default function CombinedLogsPage() {
     });
   };
 
-  const fetchCombinedLogs = async () => {
+  const fetchCombinedLogs = useCallback(async () => {
     setIsLoading(true);
     try {
       // Fetch both internal and external logs in parallel
@@ -181,7 +181,7 @@ export default function CombinedLogsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedDate]);
 
   // Auto-refresh effect
   useEffect(() => {
@@ -199,7 +199,7 @@ export default function CombinedLogsPage() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [autoRefresh, refreshInterval, selectedDate]);
+  }, [autoRefresh, refreshInterval, selectedDate, fetchCombinedLogs]);
 
   // Date change effect
   useEffect(() => {
@@ -207,7 +207,7 @@ export default function CombinedLogsPage() {
     if (autoRefresh) {
       fetchCombinedLogs();
     }
-  }, [selectedDate]);
+  }, [selectedDate, autoRefresh, fetchCombinedLogs]);
 
   const clearLogs = () => {
     setLogs([]);

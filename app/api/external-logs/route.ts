@@ -12,12 +12,29 @@ interface ExternalLogEntry {
 }
 
 export async function GET(request: NextRequest) {
-  console.log('External logs API called');
-  
   try {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get('date') || new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-    
+
+    console.log('External logs API called');
+
+    // Check if external logs are configured
+    if (!config.services.externalLogs?.baseUri || 
+        !config.services.externalLogs?.username || 
+        !config.services.externalLogs?.password) {
+      console.error('External logs not configured');
+      return NextResponse.json({
+        error: 'External logs not configured',
+        logs: [],
+        metadata: {
+          url: 'not-configured',
+          date,
+          lineCount: 0,
+          downloadedAt: new Date().toISOString()
+        }
+      }, { status: 500 });
+    }
+
     // Build the URL for today's log file
     const baseUri = config.services.externalLogs?.baseUri || 'https://belog.proxy01.dcsc.com:8443/DCSCSRV26-TC1/SERVICECATALOG-D/MAIN/application_log';
     const logUrl = `${baseUri}/server.log.${date}.0.log`;
@@ -28,18 +45,6 @@ export async function GET(request: NextRequest) {
     const username = config.services.externalLogs?.username;
     const password = config.services.externalLogs?.password;
     
-    if (!username || !password) {
-      return NextResponse.json({
-        error: 'External logs credentials not configured',
-        logs: [],
-        metadata: {
-          url: logUrl,
-          date,
-          lineCount: 0,
-          downloadedAt: new Date().toISOString()
-        }
-      }, { status: 500 });
-    }
     
     // Create Basic Auth header
     const auth = Buffer.from(`${username}:${password}`).toString('base64');
