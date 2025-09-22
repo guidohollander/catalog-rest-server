@@ -15,6 +15,7 @@ const AUTH_EXCLUDED_ROUTES = new Set([
   '/api/jenkins/health',
   '/api/database-schema',  // Database schema API
   '/api/external-logs',  // External logs API
+  '/api/environment',  // Environment API
   '/api/version'  // Version API
 ]);
 
@@ -25,6 +26,18 @@ const AUTH_CACHE_TTL = 60000; // 1 minute cache TTL
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  // Block external and combined logs on AWS (production environment)
+  if (isProduction && (pathname === '/external-logs' || pathname === '/combined-logs' || pathname === '/api/external-logs')) {
+    return NextResponse.json(
+      { 
+        error: 'External and combined logs are not available in production environment',
+        message: 'These features require VPN access and are disabled on AWS'
+      },
+      { status: 404 }
+    );
+  }
 
   // Apply Basic Authentication to protected routes (API routes and specific pages)
   const needsAuth = (pathname.startsWith('/api/') || pathname === '/logs' || pathname === '/external-logs' || pathname === '/combined-logs') && !AUTH_EXCLUDED_ROUTES.has(pathname);

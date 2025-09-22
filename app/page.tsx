@@ -8,6 +8,7 @@ import ServiceIcon from './components/ServiceIcon';
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isProduction, setIsProduction] = useState(false);
   const [svnHealth, setSvnHealth] = useState<{ status: string; message: string; host: string } | null>(null);
   const [jenkinsHealth, setJenkinsHealth] = useState<{ status: string } | null>(null);
   const [jiraHealth, setJiraHealth] = useState<{ status: string; message: string } | null>(null);
@@ -18,14 +19,15 @@ export default function Home() {
     const checkHealth = async () => {
       try {
         // Check all health endpoints in parallel
-        const [healthResponse, svnHealthResponse, jenkinsHealthResponse, jiraHealthResponse] = await Promise.allSettled([
+        const [healthResponse, svnHealthResponse, jenkinsHealthResponse, jiraHealthResponse, environmentResponse] = await Promise.allSettled([
           fetch('/api/health'),
           fetch('/api/svn/health'),
           fetch('/api/jenkins/health', { 
             method: 'GET',
             signal: AbortSignal.timeout(3000) // 3 second timeout
           }),
-          fetch('/api/jira/health')
+          fetch('/api/jira/health'),
+          fetch('/api/environment')
         ]);
 
         // Check database health separately with shorter timeout to avoid blocking page load
@@ -97,6 +99,11 @@ export default function Home() {
           });
         }
 
+        // Process Environment check
+        if (environmentResponse.status === 'fulfilled') {
+          const envData = await environmentResponse.value.json();
+          setIsProduction(envData.isProduction);
+        }
 
       } catch (error) {
         console.error('Health check error:', error);
@@ -369,12 +376,16 @@ export default function Home() {
               <a href="/logs" className="text-gray-400 hover:text-white transition-colors" title="Live Logs Console (Authentication Required)">
                 <span className="text-xl">📊🔒</span>
               </a>
-              <a href="/external-logs" className="text-gray-400 hover:text-white transition-colors" title="External Application Logs (Authentication Required)">
-                <span className="text-xl">📋🔒</span>
-              </a>
-              <a href="/combined-logs" className="text-gray-400 hover:text-white transition-colors" title="Combined Logs Console (Authentication Required)">
-                <span className="text-xl">🔗🔒</span>
-              </a>
+              {!isProduction && (
+                <>
+                  <a href="/external-logs" className="text-gray-400 hover:text-white transition-colors" title="External Application Logs (Authentication Required)">
+                    <span className="text-xl">📋🔒</span>
+                  </a>
+                  <a href="/combined-logs" className="text-gray-400 hover:text-white transition-colors" title="Combined Logs Console (Authentication Required)">
+                    <span className="text-xl">🔗🔒</span>
+                  </a>
+                </>
+              )}
               <a href="/docs" className="text-gray-400 hover:text-white transition-colors" title="Documentation">
                 <span className="text-xl">📚</span>
               </a>

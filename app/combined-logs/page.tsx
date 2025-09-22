@@ -37,8 +37,9 @@ export default function CombinedLogsPage() {
   const [sourceFilter, setSourceFilter] = useState('all');
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [refreshInterval, setRefreshInterval] = useState(5); // seconds
+  const [isProduction, setIsProduction] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isConnected, setIsConnected] = useState({ internal: false, external: false });
+  const [isConnected, setIsConnected] = useState<{ internal: boolean; external: boolean | null }>({ internal: false, external: false });
   const [externalMetadata, setExternalMetadata] = useState<ExternalLogMetadata | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const logsEndRef = useRef<HTMLDivElement>(null);
@@ -111,11 +112,14 @@ export default function CombinedLogsPage() {
   const fetchCombinedLogs = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Fetch both internal and external logs in parallel
-      const [internalResponse, externalResponse] = await Promise.all([
-        fetch('/api/logs'),
-        fetch(`/api/external-logs?date=${selectedDate}`)
-      ]);
+      // In production, only fetch internal logs (external logs are disabled)
+      const promises = [fetch('/api/logs')];
+      if (!isProduction) {
+        promises.push(fetch(`/api/external-logs?date=${selectedDate}`));
+      }
+      
+      const responses = await Promise.all(promises);
+      const [internalResponse, externalResponse] = responses;
 
       let internalLogs: InternalLogEntry[] = [];
       let externalLogs: ExternalLogEntry[] = [];
@@ -137,23 +141,28 @@ export default function CombinedLogsPage() {
         setIsConnected(prev => ({ ...prev, internal: false }));
       }
 
-      // Process external logs
-      if (externalResponse.ok) {
-        const externalData = await externalResponse.json();
-        if (!externalData.error && Array.isArray(externalData.logs)) {
-          externalLogs = externalData.logs.map((log: any) => ({
-            ...log,
-            source: 'external' as const,
-            adjustedLine: adjustTimestamp(log.line, externalData.metadata?.timezoneOffset),
-            timestamp: extractTimestamp(log.line, selectedDate, externalData.metadata?.timezoneOffset)?.toISOString()
-          }));
-          setExternalMetadata(externalData.metadata);
-          setIsConnected(prev => ({ ...prev, external: true }));
+      // Process external logs (only if not in production)
+      if (!isProduction && externalResponse) {
+        if (externalResponse.ok) {
+          const externalData = await externalResponse.json();
+          if (!externalData.error && Array.isArray(externalData.logs)) {
+            externalLogs = externalData.logs.map((log: any) => ({
+              ...log,
+              source: 'external' as const,
+              adjustedLine: adjustTimestamp(log.line, externalData.metadata?.timezoneOffset),
+              timestamp: extractTimestamp(log.line, selectedDate, externalData.metadata?.timezoneOffset)?.toISOString()
+            }));
+            setExternalMetadata(externalData.metadata);
+            setIsConnected(prev => ({ ...prev, external: true }));
+          } else {
+            setIsConnected(prev => ({ ...prev, external: false }));
+          }
         } else {
           setIsConnected(prev => ({ ...prev, external: false }));
         }
       } else {
-        setIsConnected(prev => ({ ...prev, external: false }));
+        // In production, external logs are disabled
+        setIsConnected(prev => ({ ...prev, external: isProduction ? null : false }));
       }
 
       // Combine and sort logs by timestamp
@@ -181,7 +190,7 @@ export default function CombinedLogsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedDate]);
+  }, [selectedDate, isProduction]);
 
   // Auto-refresh effect
   useEffect(() => {
@@ -208,6 +217,23 @@ export default function CombinedLogsPage() {
       fetchCombinedLogs();
     }
   }, [selectedDate, autoRefresh, fetchCombinedLogs]);
+
+  // Environment detection effect
+  useEffect(() => {
+    const checkEnvironment = async () => {
+      try {
+        const response = await fetch('/api/environment');
+        if (response.ok) {
+          const data = await response.json();
+          setIsProduction(data.isProduction);
+        }
+      } catch (error) {
+        console.error('Failed to check environment:', error);
+      }
+    };
+    
+    checkEnvironment();
+  }, []);
 
   const clearLogs = () => {
     setLogs([]);
