@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiRefreshCw } from 'react-icons/fi';
+import { FiRefreshCw, FiHome } from 'react-icons/fi';
+import Link from 'next/link';
 
 interface Column {
   name: string;
@@ -395,6 +396,16 @@ export default function DatabaseDiagram() {
               <p className="text-sm text-gray-400">
                 Always up-to-date database schema visualization
               </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/" 
+                className="flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors duration-200"
+                title="Back to Home"
+              >
+                <FiHome className="mr-2" />
+                Home
+              </Link>
             </div>
           </div>
           

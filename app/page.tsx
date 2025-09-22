@@ -13,7 +13,6 @@ export default function Home() {
   const [jenkinsHealth, setJenkinsHealth] = useState<{ status: string } | null>(null);
   const [jiraHealth, setJiraHealth] = useState<{ status: string; message: string } | null>(null);
   const [envHealth, setEnvHealth] = useState<{ status: boolean; missingEnvVars: string[] } | null>(null);
-  const [databaseHealth, setDatabaseHealth] = useState<{ source: string; tableCount: number } | null>({ source: 'loading', tableCount: 0 });
 
   useEffect(() => {
     const checkHealth = async () => {
@@ -30,30 +29,6 @@ export default function Home() {
           fetch('/api/environment')
         ]);
 
-        // Check database health separately with shorter timeout to avoid blocking page load
-        setTimeout(async () => {
-          try {
-            const databaseResponse = await fetch('/api/database-schema', {
-              signal: AbortSignal.timeout(3000) // 3 second timeout for database
-            });
-            if (databaseResponse.ok) {
-              const dbData = await databaseResponse.json();
-              if (dbData.success) {
-                setDatabaseHealth({
-                  source: dbData.metadata.source,
-                  tableCount: dbData.metadata.tableCount
-                });
-              } else {
-                setDatabaseHealth({ source: 'error', tableCount: 0 });
-              }
-            } else {
-              setDatabaseHealth({ source: 'error', tableCount: 0 });
-            }
-          } catch (error) {
-            console.log('Database health check failed:', error);
-            setDatabaseHealth({ source: 'error', tableCount: 0 });
-          }
-        }, 100); // Check database after page loads
 
         // Process main health check
         if (healthResponse.status === 'fulfilled') {
@@ -180,54 +155,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Database Section */}
-        <div className="bg-gray-800 p-6 rounded-lg">
-          <div className="flex items-center mb-4">
-            <h2 className="text-2xl font-semibold flex items-center">
-              <span className="mr-2">🗄️</span>
-              Database
-            </h2>
-            <span className="ml-2 text-xs px-2 py-0.5 rounded border border-gray-500 text-gray-400">
-              public
-            </span>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center">
-              <span className="text-green-500 mr-2">✓</span>
-              <span className="w-16 text-gray-400">GET</span>
-              <span>/api/database-schema</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-green-500 mr-2">✓</span>
-              <span className="w-16 text-gray-400">GET</span>
-              <span>/api/database-cache</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <span className="text-green-500 mr-2">✓</span>
-                <span className="w-16 text-gray-400">GET</span>
-                <Link href="/database-diagram" className="text-blue-400 hover:text-blue-300 transition-colors">
-                  /database-diagram
-                </Link>
-              </div>
-              {databaseHealth && (
-                <div 
-                  className={`status-indicator ${
-                    databaseHealth.source === 'error' ? 'error' : 
-                    databaseHealth.source === 'cache' ? 'warning' :
-                    databaseHealth.source === 'loading' ? 'warning' : ''
-                  }`}
-                  title={
-                    databaseHealth.source === 'error' ? 'Database unavailable' :
-                    databaseHealth.source === 'cache' ? `Using cached data (${databaseHealth.tableCount} tables)` :
-                    databaseHealth.source === 'loading' ? 'Checking database status...' :
-                    `Live database connection (${databaseHealth.tableCount} tables)`
-                  }
-                />
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* Jenkins Services Section */}
         <div className="bg-gray-800 p-6 rounded-lg">
@@ -388,6 +315,9 @@ export default function Home() {
               )}
               <a href="/docs" className="text-gray-400 hover:text-white transition-colors" title="Documentation">
                 <span className="text-xl">📚</span>
+              </a>
+              <a href="/database-diagram" className="text-gray-400 hover:text-white transition-colors" title="Database Schema Diagram">
+                <span className="text-xl">🗄️</span>
               </a>
             </div>
           </div>
