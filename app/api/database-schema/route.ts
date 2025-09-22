@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { DatabaseCacheService } from '../../../src/services/database-cache';
+import { logger } from '@/src/utils/logger';
 
 interface TableSchema {
   name: string;
@@ -17,7 +18,6 @@ interface TableSchema {
 }
 
 export async function GET(request: NextRequest) {
-  console.log('Database schema API called');
   try {
     const { searchParams } = new URL(request.url);
     const forceRefresh = searchParams.get('refresh') === 'true';
@@ -47,7 +47,6 @@ async function getDatabaseSchema(forceRefresh: boolean = false): Promise<NextRes
     
     let result;
     if (forceRefresh) {
-      console.log('🔄 Force refresh requested');
       result = await cacheService.refreshCache();
     } else {
       result = await cacheService.getDatabaseSchema();

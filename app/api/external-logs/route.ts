@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loadConfig } from '@/src/config/loader';
+import { logger } from '@/src/utils/logger';
 import https from 'https';
 import { URL } from 'url';
 
@@ -16,13 +17,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const date = searchParams.get('date') || new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
 
-    console.log('External logs API called');
 
     // Check if external logs are configured
     if (!config.services.externalLogs?.baseUri || 
         !config.services.externalLogs?.username || 
         !config.services.externalLogs?.password) {
-      console.error('External logs not configured');
+      logger.error('External logs not configured');
       return NextResponse.json({
         error: 'External logs not configured',
         logs: [],
@@ -39,7 +39,6 @@ export async function GET(request: NextRequest) {
     const baseUri = config.services.externalLogs?.baseUri || 'https://belog.proxy01.dcsc.com:8443/DCSCSRV26-TC1/SERVICECATALOG-D/MAIN/application_log';
     const logUrl = `${baseUri}/server.log.${date}.0.log`;
     
-    console.log(`Downloading external log from: ${logUrl}`);
     
     // Get credentials from config
     const username = config.services.externalLogs?.username;
@@ -95,7 +94,7 @@ export async function GET(request: NextRequest) {
       lineNumber: index + 1
     }));
     
-    console.log(`Downloaded ${logs.length} log lines from external source`);
+    logger.info(`✅ Downloaded ${logs.length} external log lines for ${date}`);
     
     return NextResponse.json({
       logs,
@@ -109,7 +108,8 @@ export async function GET(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('External logs download error:', error);
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+    logger.error(`❌ External logs download failed: ${errorMsg}`);
     return NextResponse.json({
       error: error instanceof Error ? error.message : 'Unknown error occurred',
       logs: [],

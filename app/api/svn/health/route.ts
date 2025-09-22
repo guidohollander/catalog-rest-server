@@ -34,8 +34,6 @@ async function checkSvnConnection() {
     const url = `${baseUrl}${SVN_REPOSITORY_PATH}`;
     const authString = Buffer.from(`${svnUsername}:${svnPassword}`).toString('base64');
     
-    logger.info('Checking SVN connection', { url: baseUrl + SVN_REPOSITORY_PATH });
-    
     // nosecret - This is just the standard Authorization header name, not a secret
     const response = await fetch(url, {
       headers: {
@@ -57,7 +55,7 @@ async function checkSvnConnection() {
       throw new Error(`SVN connection failed with status: ${response.status}`);
     }
 
-    logger.info('SVN connection successful', { status: response.status });
+    logger.info(`SVN connection successful, status: ${response.status}`);
     return { url, status: response.status };
   } catch (error) {
     if (error instanceof Error) {

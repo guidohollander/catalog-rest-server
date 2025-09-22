@@ -30,7 +30,8 @@ export async function GET(): Promise<NextResponse> {
     });
 
     req.on('error', (error) => {
-      logger.error('Jenkins health check error:', error);
+      const errorCode = (error as any).code || 'unknown';
+      logger.error(`Jenkins health check error: ${error.message}, code: ${errorCode}`);
       resolve(NextResponse.json(
         { status: 'error', message: 'Failed to connect to Jenkins' },
         { status: 500 }

@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import sql from 'mssql';
+import { logger } from '@/src/utils/logger';
 
 interface CachedDatabaseSchema {
   success: boolean;
@@ -54,12 +55,11 @@ export class DatabaseCacheService {
     const config = this.getDatabaseConfig();
     
     try {
-      console.log('🔄 Attempting to connect to live database...');
       const liveData = await this.fetchLiveData(config);
       
       // Cache the successful result
       await this.cacheData(liveData);
-      console.log('✅ Successfully fetched from live database and cached');
+      logger.info('✅ Database schema fetched from live database and cached');
       
       return {
         ...liveData,
@@ -71,12 +71,10 @@ export class DatabaseCacheService {
       };
       
     } catch (error) {
-      console.warn('⚠️ Live database connection failed:', error instanceof Error ? error.message : 'Unknown error');
-      console.log('🔄 Attempting to use cached data...');
+      logger.warn(`⚠️ Live database connection failed: ${error instanceof Error ? error.message : 'Unknown error'}, using cached data`);
       
       try {
         const cachedData = await this.getCachedData();
-        console.log('✅ Using cached database schema');
         
         return {
           ...cachedData,
@@ -87,7 +85,7 @@ export class DatabaseCacheService {
         };
         
       } catch (cacheError) {
-        console.error('❌ Both live database and cache failed');
+        logger.error('❌ Both live database and cache failed');
         throw new Error(`Database unavailable: ${error instanceof Error ? error.message : 'Unknown error'}. Cache error: ${cacheError instanceof Error ? cacheError.message : 'Unknown cache error'}`);
       }
     }
@@ -99,10 +97,9 @@ export class DatabaseCacheService {
   async refreshCache(): Promise<CachedDatabaseSchema> {
     const config = this.getDatabaseConfig();
     
-    console.log('🔄 Force refreshing cache from live database...');
     const liveData = await this.fetchLiveData(config);
     await this.cacheData(liveData);
-    console.log('✅ Cache refreshed successfully');
+    logger.info('✅ Database cache refreshed successfully');
     
     return {
       ...liveData,
@@ -158,12 +155,6 @@ export class DatabaseCacheService {
   }
 
   private async fetchLiveData(config: DatabaseConfig): Promise<Omit<CachedDatabaseSchema, 'metadata'> & { metadata: Omit<CachedDatabaseSchema['metadata'], 'source' | 'cachedAt'> }> {
-    console.log('Connecting to database:', {
-      server: config.server,
-      port: config.port,
-      database: config.database,
-      user: config.user
-    });
 
     const pool = await sql.connect(config);
     
@@ -193,7 +184,6 @@ export class DatabaseCacheService {
         ...allTables.filter(table => !priorityTables.includes(table))
       ];
 
-      console.log('Found tables:', tablesResult.recordset.map(t => t.TABLE_NAME));
 
       const tables: any[] = [];
       
@@ -235,7 +225,7 @@ export class DatabaseCacheService {
             .query(`SELECT TOP 5 * FROM [${tableName}] ORDER BY 1 DESC`);
           sampleData = sampleDataResult.recordset;
         } catch (sampleError) {
-          console.warn(`Could not fetch sample data for ${tableName}:`, sampleError);
+          logger.warn(`Could not fetch sample data for ${tableName}: ${sampleError instanceof Error ? sampleError.message : 'Unknown error'}`);
           sampleData = [];
         }
 
@@ -328,9 +318,8 @@ export class DatabaseCacheService {
       };
       
       await fs.writeFile(this.cacheFile, JSON.stringify(cacheData, null, 2));
-      console.log(`📁 Data cached to ${this.cacheFile}`);
     } catch (error) {
-      console.warn('⚠️ Failed to cache data:', error);
+      logger.warn(`⚠️ Failed to cache data: ${error instanceof Error ? error.message : 'Unknown error'}`);
       // Don't throw - caching failure shouldn't break the response
     }
   }
@@ -345,7 +334,7 @@ export class DatabaseCacheService {
       const isStale = cacheAge > this.maxCacheAge;
       
       if (isStale) {
-        console.warn(`⚠️ Cache is stale (${Math.round(cacheAge / (60 * 60 * 1000))} hours old), but using anyway`);
+        logger.warn(`⚠️ Cache is stale (${Math.round(cacheAge / (60 * 60 * 1000))} hours old), but using anyway`);
       }
       
       return cachedData;
