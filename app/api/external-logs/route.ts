@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
       lineNumber: index + 1
     }));
     
-    logger.info(`✅ Downloaded ${logs.length} external log lines for ${date}`);
+    logger.info(`Downloaded ${logs.length} external log lines for ${date}`);
     
     return NextResponse.json({
       logs,
@@ -109,7 +109,7 @@ export async function GET(request: NextRequest) {
     
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-    logger.error(`❌ External logs download failed: ${errorMsg}`);
+    logger.error(`External logs download failed: ${errorMsg}`);
     return NextResponse.json({
       error: error instanceof Error ? error.message : 'Unknown error occurred',
       logs: [],

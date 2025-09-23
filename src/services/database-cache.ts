@@ -59,7 +59,7 @@ export class DatabaseCacheService {
       
       // Cache the successful result
       await this.cacheData(liveData);
-      logger.info('✅ Database schema fetched from live database and cached');
+      logger.info('Database schema fetched from live database and cached');
       
       return {
         ...liveData,
@@ -71,7 +71,7 @@ export class DatabaseCacheService {
       };
       
     } catch (error) {
-      logger.warn(`⚠️ Live database connection failed: ${error instanceof Error ? error.message : 'Unknown error'}, using cached data`);
+      logger.warn(`Live database connection failed: ${error instanceof Error ? error.message : 'Unknown error'}, using cached data`);
       
       try {
         const cachedData = await this.getCachedData();
@@ -85,7 +85,7 @@ export class DatabaseCacheService {
         };
         
       } catch (cacheError) {
-        logger.error('❌ Both live database and cache failed');
+        logger.error('Both live database and cache failed');
         throw new Error(`Database unavailable: ${error instanceof Error ? error.message : 'Unknown error'}. Cache error: ${cacheError instanceof Error ? cacheError.message : 'Unknown cache error'}`);
       }
     }
@@ -99,7 +99,7 @@ export class DatabaseCacheService {
     
     const liveData = await this.fetchLiveData(config);
     await this.cacheData(liveData);
-    logger.info('✅ Database cache refreshed successfully');
+    logger.info('Database cache refreshed successfully');
     
     return {
       ...liveData,
@@ -319,7 +319,7 @@ export class DatabaseCacheService {
       
       await fs.writeFile(this.cacheFile, JSON.stringify(cacheData, null, 2));
     } catch (error) {
-      logger.warn(`⚠️ Failed to cache data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      logger.warn(`Failed to cache data: ${error instanceof Error ? error.message : 'Unknown error'}`);
       // Don't throw - caching failure shouldn't break the response
     }
   }
@@ -334,7 +334,7 @@ export class DatabaseCacheService {
       const isStale = cacheAge > this.maxCacheAge;
       
       if (isStale) {
-        logger.warn(`⚠️ Cache is stale (${Math.round(cacheAge / (60 * 60 * 1000))} hours old), but using anyway`);
+        logger.warn(`Cache is stale (${Math.round(cacheAge / (60 * 60 * 1000))} hours old), but using anyway`);
       }
       
       return cachedData;

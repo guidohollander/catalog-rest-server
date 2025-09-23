@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     const cacheService = DatabaseCacheService.getInstance();
     
     if (action === 'refresh') {
-      console.log('🔄 Manual cache refresh requested');
+      console.log('Manual cache refresh requested');
       const result = await cacheService.refreshCache();
       
       return NextResponse.json({
