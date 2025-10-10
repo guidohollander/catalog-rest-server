@@ -29,8 +29,7 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json({ 
         response: { 
-          success: "0", 
-          error: "replacements must be a non-empty array" 
+          success: "0"
         } 
       }, { 
         status: 400 
@@ -109,11 +108,7 @@ export async function POST(request: NextRequest) {
       // Send a success response
       return NextResponse.json({ 
         response: { 
-          success: "1", 
-          output: "propset_ex successful",
-          replacementsApplied: appliedReplacements.filter(r => r.found).length,
-          totalReplacements: appliedReplacements.length,
-          details: appliedReplacements
+          success: "1"
         } 
       }, { 
         status: 200 
@@ -126,17 +121,19 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     // Log error with sensitive data masked
+    const errorMessage = error instanceof Error 
+      ? error.message.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+          .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+      : String(error).replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+          .replace(new RegExp(svn_username, 'g'), '***REDACTED***');
+    
     logger.error("Error executing SVN propset_ex command:", {
-      error: error instanceof Error 
-        ? error.message.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-            .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
-        : String(error).replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-            .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+      error: errorMessage
     });
+    
     return NextResponse.json({ 
       response: { 
-        success: "0", 
-        error: "error" 
+        success: "0"
       } 
     }, { 
       status: 500 
