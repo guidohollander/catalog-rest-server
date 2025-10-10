@@ -74,7 +74,13 @@ export function loadConfig(): AppConfig {
 
         return processedConfig as AppConfig;
     } catch (error) {
-        logger.error('Failed to load configuration:', { error });
+        logger.error('Failed to load configuration:', { 
+            error: error instanceof Error ? error.message : error,
+            stack: error instanceof Error ? error.stack : undefined,
+            defaultConfigPath,
+            envConfigPath,
+            env
+        });
         process.exit(1);
     }
 }

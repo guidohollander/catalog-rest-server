@@ -1,9 +1,10 @@
 {
   "name": "catalog-rest",
-  "version": "0.1.152",
+  "version": "0.1.153",
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_NO_WARNINGS=1 NEXT_PUBLIC_APP_VERSION=$npm_package_version next dev",
+    "dev:debug": "cross-env NEXT_PUBLIC_APP_VERSION=$npm_package_version next dev",
     "build": "cross-env NODE_NO_WARNINGS=1 NEXT_PUBLIC_APP_VERSION=$npm_package_version next build",
     "start": "cross-env NODE_NO_WARNINGS=1 node .next/standalone/server.js",
     "lint": "next lint",

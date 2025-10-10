@@ -37,6 +37,9 @@ export interface AppConfig {
             password: string;
             timezoneOffset?: string;
         };
+        localStudioLogs?: {
+            logPath: string;
+        };
     };
 }
 

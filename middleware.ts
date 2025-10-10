@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { basicAuthMiddleware } from './src/middleware/basic-auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { basicAuthMiddleware } from '@/src/middleware/basic-auth';
+import { trackRouteStats } from '@/src/middleware/stats-tracker';
 import { middlewareLogger as logger } from './src/utils/middleware-logger';
 
 // List of routes to exclude from authentication
@@ -9,14 +9,22 @@ const AUTH_EXCLUDED_ROUTES = new Set([
   '/docs',  // Documentation page
   '/database-diagram',  // Database diagram page
   '/external-logs',  // External logs page
+  '/stats',  // Statistics page
+  '/architecture',  // Architecture framework page
   '/api/health',
   '/api/svn/health',
   '/api/jira/health',
   '/api/jenkins/health',
   '/api/database-schema',  // Database schema API
   '/api/external-logs',  // External logs API
+  '/api/local-studio-logs',  // Local studio logs API
+  '/api/local-studio-logs/clear',  // Clear local studio logs API
+  '/api/local-studio-logs/stream',  // Streaming local studio logs API
+  '/api/logs/stream',  // Streaming internal logs API
   '/api/environment',  // Environment API
-  '/api/version'  // Version API
+  '/api/stats',  // Statistics API
+  '/api/version',  // Version API
+  '/api/test-debug'  // Test endpoint for debugging
 ]);
 
 // Cache for auth responses
@@ -48,7 +56,8 @@ export async function middleware(request: NextRequest) {
     const cachedAuth = AUTH_CACHE.get(cacheKey);
     
     if (cachedAuth && (Date.now() - cachedAuth.timestamp) < AUTH_CACHE_TTL) {
-      return cachedAuth.response;
+      // Track stats for authenticated routes that use cached auth
+      return trackRouteStats(request, cachedAuth.response, true);
     }
 
     const response = await basicAuthMiddleware(request);
@@ -61,10 +70,13 @@ export async function middleware(request: NextRequest) {
       });
     }
     
-    return response;
+    // Track stats for authenticated routes
+    return trackRouteStats(request, response, true);
   }
 
-  return NextResponse.next();
+  // Track stats for public routes (but they won't be recorded due to isAuthenticatedRoute = false)
+  const response = NextResponse.next();
+  return trackRouteStats(request, response, false);
 }
 
 // Match all routes, not just API routes

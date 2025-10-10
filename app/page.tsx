@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import VersionDisplay from './components/VersionDisplay';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { FiFileText, FiExternalLink, FiLink, FiBook, FiDatabase, FiBarChart, FiLayers } from 'react-icons/fi';
+import VersionDisplay from './components/VersionDisplay';
 import ServiceIcon from './components/ServiceIcon';
 
 export default function Home() {
@@ -278,6 +279,13 @@ export default function Home() {
               <div className="flex items-center">
                 <span className="text-green-500 mr-2">✓</span>
                 <span className="w-16 text-gray-400">POST</span>
+                <span>/api/svn/propset_ex</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <span className="text-green-500 mr-2">✓</span>
+                <span className="w-16 text-gray-400">POST</span>
                 <span>/api/svn/reset</span>
               </div>
               {svnHealth && (
@@ -299,25 +307,31 @@ export default function Home() {
                 <VersionDisplay />
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <a href="/logs" className="text-gray-400 hover:text-white transition-colors" title="Live Logs Console (Authentication Required)">
-                <span className="text-xl">📊🔒</span>
+            <div className="flex items-center space-x-3">
+              <a href="/logs" className="text-gray-400 hover:text-white transition-colors p-2 rounded hover:bg-gray-700" title="Internal Logs Console">
+                <FiFileText className="w-5 h-5" />
               </a>
               {!isProduction && (
                 <>
-                  <a href="/external-logs" className="text-gray-400 hover:text-white transition-colors" title="External Application Logs (Authentication Required)">
-                    <span className="text-xl">📋🔒</span>
+                  <a href="/external-logs" className="text-gray-400 hover:text-white transition-colors p-2 rounded hover:bg-gray-700" title="External Application Logs">
+                    <FiExternalLink className="w-5 h-5" />
                   </a>
-                  <a href="/combined-logs" className="text-gray-400 hover:text-white transition-colors" title="Combined Logs Console (Authentication Required)">
-                    <span className="text-xl">🔗🔒</span>
+                  <a href="/combined-logs" className="text-gray-400 hover:text-white transition-colors p-2 rounded hover:bg-gray-700" title="Combined Logs Console">
+                    <FiLink className="w-5 h-5" />
                   </a>
                 </>
               )}
-              <a href="/docs" className="text-gray-400 hover:text-white transition-colors" title="Documentation">
-                <span className="text-xl">📚</span>
+              <a href="/docs" className="text-gray-400 hover:text-white transition-colors p-2 rounded hover:bg-gray-700" title="Documentation">
+                <FiBook className="w-5 h-5" />
               </a>
-              <a href="/database-diagram" className="text-gray-400 hover:text-white transition-colors" title="Database Schema Diagram">
-                <span className="text-xl">🗄️</span>
+              <a href="/database-diagram" className="text-gray-400 hover:text-white transition-colors p-2 rounded hover:bg-gray-700" title="Database Schema Diagram">
+                <FiDatabase className="w-5 h-5" />
+              </a>
+              <a href="/stats" className="text-gray-400 hover:text-white transition-colors p-2 rounded hover:bg-gray-700" title="API Usage Statistics">
+                <FiBarChart className="w-5 h-5" />
+              </a>
+              <a href="/architecture" className="text-gray-400 hover:text-white transition-colors p-2 rounded hover:bg-gray-700" title="Architecture Framework">
+                <FiLayers className="w-5 h-5" />
               </a>
             </div>
           </div>

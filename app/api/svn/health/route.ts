@@ -1,6 +1,15 @@
 import { NextResponse } from 'next/server';
 import { logger } from '@/src/utils/logger';
 
+// Cache for health check results
+interface HealthCache {
+  result: NextResponse;
+  timestamp: number;
+}
+
+let healthCache: HealthCache | null = null;
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+
 async function checkSvnConnection() {
   const svnHost = process.env.SVN_HOST;
   const svnUsername = process.env.SVN_USERNAME;

@@ -31,6 +31,7 @@ const nextConfig = {
   // Strict mode for better development
   reactStrictMode: true,
 
+  // Enable source maps for debugging
   productionBrowserSourceMaps: false,
   
   // Enable CORS for API routes
