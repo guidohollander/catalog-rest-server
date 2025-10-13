@@ -6,6 +6,44 @@ import path from 'path';
 import { loadConfig } from '@/src/config/loader';
 import { logger } from '@/src/utils/logger';
 
+/**
+ * SVN Propset Extended API Route
+ * 
+ * This route modifies svn:externals properties by applying targeted replacements
+ * instead of requiring the complete externals string. This solves payload size
+ * limitations when dealing with large externals.
+ * 
+ * Request Body:
+ * {
+ *   "req": {
+ *     "key": string,           // Commit message for the SVN change
+ *     "url": string,           // SVN repository URL where externals property exists
+ *     "replacement": [         // Array of replacement operations to apply
+ *       {
+ *         "externals_row": string,     // The exact externals line to find (with double quotes)
+ *         "externals_row_to": string   // The replacement externals line (with double quotes)
+ *       }
+ *     ]
+ *   }
+ * }
+ * 
+ * Process:
+ * 1. Retrieves current svn:externals from the specified URL
+ * 2. Normalizes single quotes to double quotes for consistent matching
+ * 3. Applies each replacement sequentially
+ * 4. Converts double quotes back to single quotes (SVN format)
+ * 5. Commits changes back to SVN using svnmucc
+ * 
+ * Response:
+ * {
+ *   "response": {
+ *     "success": "1" | "0"
+ *   }
+ * }
+ * 
+ * Note: The URL does NOT need .no-op suffix (unlike the reset route)
+ */
+
 // Load configuration
 const config = loadConfig();
 
@@ -46,7 +84,10 @@ export async function POST(request: NextRequest) {
     logger.info(`Getting current SVN externals: ${maskedGetCurrentCommand}`);
 
     // Execute the command to get current externals
-    let currentExternals = execSync(getCurrentExternals, { encoding: 'utf-8' }).trim();
+    const rawExternals = execSync(getCurrentExternals, { encoding: 'utf-8' });
+    
+    // Normalize quotes: replace single quotes with double quotes to match replacement format
+    let currentExternals = rawExternals.trim().replace(/'/g, '"');
     
     // If no externals exist yet, start with empty string
     if (!currentExternals || currentExternals === '') {
@@ -62,9 +103,8 @@ export async function POST(request: NextRequest) {
       // Extract the externals row to find and the replacement text
       const { externals_row, externals_row_to } = replacement;
       
-      // Assign to descriptive variables for clarity
-      const currentExternalsRow = externals_row;  // The current externals line to find
-      const newExternalsRow = externals_row_to;   // The new externals line to replace with
+      const currentExternalsRow = externals_row;
+      const newExternalsRow = externals_row_to;
       
       const found = newExternals.includes(currentExternalsRow);
       appliedReplacements.push({
@@ -75,9 +115,6 @@ export async function POST(request: NextRequest) {
       
       if (found) {
         newExternals = newExternals.replace(currentExternalsRow, newExternalsRow);
-        logger.info(`Externals line changed: ${currentExternalsRow.substring(0, 80)}... -> ${newExternalsRow.substring(0, 80)}...`);
-      } else {
-        logger.warn(`Externals line not found: ${currentExternalsRow.substring(0, 80)}...`);
       }
     }
     
@@ -85,8 +122,11 @@ export async function POST(request: NextRequest) {
     const fMod = `ext_mod_${crypto.randomBytes(8).toString('hex')}`;
     const fullPath = path.join('/tmp', fMod);
 
+    // Convert double quotes back to single quotes before writing to SVN
+    const externalsForSvn = newExternals.replace(/"/g, "'");
+
     // Write the new external definitions to a temporary file
-    fs.writeFileSync(fullPath, newExternals);
+    fs.writeFileSync(fullPath, externalsForSvn);
 
     try {
       // Prepare the SVN command
