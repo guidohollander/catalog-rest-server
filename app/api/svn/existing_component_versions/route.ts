@@ -101,6 +101,72 @@ function isValidVersion(version: string): boolean {
   return /^[0-9.]+(_[0-9.]+)?$/.test(version);
 }
 
+function fetchRevisionDate(path: string): Promise<Date | null> {
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: svn_url,
+      port: 443,
+      path: path,
+      method: "PROPFIND",
+      headers: {
+        "User-Agent": "Node.js",
+        Authorization: auth,
+        "Content-Type": "text/xml",
+        Depth: "0",
+      },
+    };
+
+    const propfindBody = `<?xml version="1.0" encoding="utf-8"?>
+<propfind xmlns="DAV:">
+  <prop>
+    <getlastmodified/>
+  </prop>
+</propfind>`;
+
+    const req = https.request(options, (resSvn) => {
+      let data = "";
+
+      resSvn.on("data", (chunk) => {
+        data += chunk;
+      });
+
+      resSvn.on("end", () => {
+        if (resSvn.statusCode !== 207) {
+          return resolve(null);
+        }
+
+        parseString(
+          data,
+          { explicitArray: false },
+          (err, result) => {
+            if (err) {
+              return resolve(null);
+            }
+
+            try {
+              const lastModified = result?.['D:multistatus']?.['D:response']?.['D:propstat']?.['D:prop']?.['D:getlastmodified'];
+              if (lastModified) {
+                resolve(new Date(lastModified));
+              } else {
+                resolve(null);
+              }
+            } catch (e) {
+              resolve(null);
+            }
+          }
+        );
+      });
+    });
+
+    req.on("error", (e) => {
+      resolve(null);
+    });
+
+    req.write(propfindBody);
+    req.end();
+  });
+}
+
 function fetchAllVersions(
   repository: string,
   baseUrl: string
@@ -145,6 +211,9 @@ function fetchAllVersions(
 export async function POST(request: NextRequest): Promise<NextResponse> {
   console.log(`SVN existing component versions API called for URLs: ${svnUrls.join(', ')}`);
   try {
+    const twoYearsAgo = new Date();
+    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+    
     let allComponents: any[] = [];
 
     for (const baseUrl of svnUrls) {
@@ -159,20 +228,42 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       allComponents = allComponents.concat(allVersions.flat());
     }
 
-    const transformedComponents = allComponents
-      .filter((item) => isValidVersion(item.version) || item.branchName === 'trunk')
-      .map((item) => {
+    // Filter valid versions and trunk
+    const validComponents = allComponents.filter(
+      (item) => isValidVersion(item.version) || item.branchName === 'trunk'
+    );
+
+    // Fetch revision dates and filter by two-year threshold
+    const componentsWithDates = await Promise.all(
+      validComponents.map(async (item) => {
         const isTrunk = item.branchName === "trunk";
+        const path = isTrunk
+          ? `${item.baseUrl}/${encodeURIComponent(item.componentName)}/trunk/`
+          : `${item.baseUrl}/${encodeURIComponent(item.componentName)}/${item.branchName}/${item.version}/`;
+        
+        const revisionDate = await fetchRevisionDate(path);
+        
         return {
-          url: isTrunk
-            ? `${svn_protocol}${svn_url}${item.baseUrl}/${encodeURIComponent(
-                item.componentName
-              )}/trunk/`
-            : `${svn_protocol}${svn_url}${item.baseUrl}/${encodeURIComponent(
-                item.componentName
-              )}/${item.branchName}/${item.version}/`,
+          item,
+          path,
+          revisionDate,
+          isTrunk,
         };
-      });
+      })
+    );
+
+    // Filter: keep trunk or versions from last 2 years
+    const recentComponents = componentsWithDates.filter((comp) => {
+      if (comp.isTrunk) return true;
+      if (!comp.revisionDate) return false;
+      return comp.revisionDate >= twoYearsAgo;
+    });
+
+    const transformedComponents = recentComponents.map((comp) => ({
+      url: `${svn_protocol}${svn_url}${comp.path}`,
+    }));
+
+    console.log(`Filtered ${transformedComponents.length} components from last 2 years (out of ${validComponents.length} total)`);
 
     return NextResponse.json({ response: transformedComponents });
   } catch (err) {
