@@ -24,7 +24,6 @@ const AUTH_EXCLUDED_ROUTES = new Set([
   '/api/environment',  // Environment API
   '/api/stats',  // Statistics API
   '/api/version',  // Version API
-  '/api/weather',  // Weather API
   '/api/test-debug'  // Test endpoint for debugging
 ]);
 

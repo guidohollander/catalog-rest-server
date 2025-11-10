@@ -15,6 +15,10 @@ interface HealthCache {
   timestamp: number;
 }
 
+export async function POST(): Promise<NextResponse> {
+  return GET();
+}
+
 let healthCache: HealthCache | null = null;
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 

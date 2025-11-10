@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { FiFileText, FiExternalLink, FiLink, FiBook, FiDatabase, FiBarChart, FiLayers } from 'react-icons/fi';
 import VersionDisplay from './components/VersionDisplay';
 import ServiceIcon from './components/ServiceIcon';
-import WorldClock from './components/WorldClock';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -338,8 +337,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* World Clock & Weather Section */}
-        <WorldClock />
+        
       </div>
     </main>
   );
