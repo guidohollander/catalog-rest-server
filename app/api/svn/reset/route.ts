@@ -3,6 +3,7 @@ import { exec } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
+import os from 'os';
 import { loadConfig } from '@/src/config/loader';
 import { logger } from '@/src/utils/logger';
 
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return new Promise((resolve, reject) => {
       // Generate a temporary file name to use for SVN modification
       const fMod = `ext_mod_${crypto.randomBytes(8).toString("hex")}`;
-      const fullPath = path.join('/tmp', fMod);
+      const fullPath = path.join(os.tmpdir(), fMod);
       fs.writeFileSync(fullPath, "");
 
       // Construct the SVN command to add a .no-op file to the target URL

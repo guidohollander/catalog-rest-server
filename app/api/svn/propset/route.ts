@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as crypto from 'crypto';
 import { execSync } from 'child_process';
 import path from 'path';
+import os from 'os';
 import { loadConfig } from '@/src/config/loader';
 import { logger } from '@/src/utils/logger';
 
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     // Generate a unique file name for the temporary file
     const fMod = `ext_mod_${crypto.randomBytes(8).toString('hex')}`;
-    const fullPath = path.join('/tmp', fMod);
+    const fullPath = path.join(os.tmpdir(), fMod);
 
     // Write the external definitions to a temporary file
     fs.writeFileSync(fullPath, body.req.externals);
