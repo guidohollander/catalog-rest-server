@@ -16,6 +16,26 @@ function isValidVersion(version: string): boolean {
   return version !== 'trunk' && /^[0-9.]+(_[0-9.]+)?$/.test(version);
 }
 
+function toVersionParts(version: string): number[] {
+  const baseVersion = version.split('_')[0] || version;
+  return baseVersion
+    .split('.')
+    .map((p) => Number.parseInt(p, 10))
+    .map((n) => (Number.isFinite(n) ? n : 0));
+}
+
+function compareVersions(a: string, b: string): number {
+  const pa = toVersionParts(a);
+  const pb = toVersionParts(b);
+  const maxLen = Math.max(pa.length, pb.length);
+  for (let i = 0; i < maxLen; i++) {
+    const av = pa[i] ?? 0;
+    const bv = pb[i] ?? 0;
+    if (av !== bv) return av - bv;
+  }
+  return 0;
+}
+
 function fetchFolderContents(path: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const options = {
@@ -127,12 +147,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Wait for all versions of solution implementations to be fetched
     const allVersions = await Promise.all(allVersionsPromises);
 
+    const latestVersionBySolutionBranch = new Map<string, string>();
+    for (const item of allVersions.flat()) {
+      if (!isValidVersion(item.version)) continue;
+      if (item.branchName !== 'tags' && item.branchName !== 'branches') continue;
+      const key = `${item.solutionName}::${item.branchName}`;
+      const currentLatest = latestVersionBySolutionBranch.get(key);
+      if (!currentLatest || compareVersions(item.version, currentLatest) > 0) {
+        latestVersionBySolutionBranch.set(key, item.version);
+      }
+    }
+
     // Flatten the results, filter for valid versions, and transform them into the desired format
     const transformedVersions = allVersions
       .flat()
       .filter((item) => isValidVersion(item.version) || item.branchName === 'trunk') // Filtering for valid versions and trunk
       .map((item) => {
         const isTrunk = item.branchName === 'trunk';
+        const latestVersion = latestVersionBySolutionBranch.get(`${item.solutionName}::${item.branchName}`);
         return {
           url: isTrunk
             ? `${svn_protocol}${svn_url}/svn/${encodeURIComponent(
@@ -141,6 +173,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             : `${svn_protocol}${svn_url}/svn/${encodeURIComponent(
                 item.solutionName
               )}/${item.branchName}/${item.version}/`
+          ,
+          isLatest: !isTrunk && !!latestVersion && compareVersions(item.version, latestVersion) === 0
         };
       });
 

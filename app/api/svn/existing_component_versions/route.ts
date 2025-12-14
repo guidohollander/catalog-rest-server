@@ -101,6 +101,26 @@ function isValidVersion(version: string): boolean {
   return /^[0-9.]+(_[0-9.]+)?$/.test(version);
 }
 
+function toVersionParts(version: string): number[] {
+  const baseVersion = version.split('_')[0] || version;
+  return baseVersion
+    .split('.')
+    .map((p) => Number.parseInt(p, 10))
+    .map((n) => (Number.isFinite(n) ? n : 0));
+}
+
+function compareVersions(a: string, b: string): number {
+  const pa = toVersionParts(a);
+  const pb = toVersionParts(b);
+  const maxLen = Math.max(pa.length, pb.length);
+  for (let i = 0; i < maxLen; i++) {
+    const av = pa[i] ?? 0;
+    const bv = pb[i] ?? 0;
+    if (av !== bv) return av - bv;
+  }
+  return 0;
+}
+
 function fetchRevisionDate(path: string): Promise<Date | null> {
   return new Promise((resolve, reject) => {
     const options = {
@@ -233,6 +253,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       (item) => isValidVersion(item.version) || item.branchName === 'trunk'
     );
 
+    const latestVersionByComponentBranch = new Map<string, string>();
+    for (const item of validComponents) {
+      if (!isValidVersion(item.version)) continue;
+      if (item.branchName !== 'tags' && item.branchName !== 'branches') continue;
+      const key = `${item.baseUrl}::${item.componentName}::${item.branchName}`;
+      const currentLatest = latestVersionByComponentBranch.get(key);
+      if (!currentLatest || compareVersions(item.version, currentLatest) > 0) {
+        latestVersionByComponentBranch.set(key, item.version);
+      }
+    }
+
     // Fetch revision dates and filter by two-year threshold
     const componentsWithDates = await Promise.all(
       validComponents.map(async (item) => {
@@ -261,6 +292,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const transformedComponents = recentComponents.map((comp) => ({
       url: `${svn_protocol}${svn_url}${comp.path}`,
+      isLatest:
+        !comp.isTrunk &&
+        compareVersions(
+          comp.item.version,
+          latestVersionByComponentBranch.get(
+            `${comp.item.baseUrl}::${comp.item.componentName}::${comp.item.branchName}`,
+          ) || '',
+        ) === 0,
     }));
 
     console.log(`Filtered ${transformedComponents.length} components from last 2 years (out of ${validComponents.length} total)`);
