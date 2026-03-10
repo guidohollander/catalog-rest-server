@@ -49,7 +49,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       }, { status: 400 });
     }
 
-    const svnCommand = `svn copy "${fromUrl}" "${toUrl}" -m "${commitMessage}" --username ${svn_username} --password ${svn_password}`;
+    const svnCommand = `svn copy --non-interactive --trust-server-cert "${fromUrl}" "${toUrl}" -m "${commitMessage}" --username ${svn_username} --password ${svn_password}`;
     
     // Log command details without sensitive data
     logger.info(`Executing SVN copy from ${fromUrl} to ${toUrl}`, { 

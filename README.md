@@ -150,7 +150,7 @@ This project supports both local Docker server deployment and AWS cloud deployme
 ./scripts/deploy-all.ps1 -Environment aws
 ```
 - Builds and pushes to `registry.hollanderconsulting.nl`
-- Deploys to AWS EC2: `ec2-13-222-238-100.compute-1.amazonaws.com`
+- Deploys to AWS EC2: `44.197.34.147` (Elastic IP)
 - Uses Cloudflare proxy for SSL and DNS
 - Accessible at `https://catalog-rest.hollanderconsulting.nl`
 

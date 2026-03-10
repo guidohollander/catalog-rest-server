@@ -1,0 +1,1 @@
+ok, now perform deployment all via C:\repo\servicecatalog\Src\nodejs\catalog-rest-server\scripts\deploy-all.ps1

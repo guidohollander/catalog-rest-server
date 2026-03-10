@@ -3,7 +3,7 @@ param (
     [ValidateSet('aws', 'local', 'both')]
     [string]$Environment = 'both',
     [Parameter()]
-    [string]$AWSHost = 'ec2-user@ec2-13-222-238-100.compute-1.amazonaws.com',
+    [string]$AWSHost = 'ec2-user@44.197.34.147',
     [Parameter()]
     [string]$DockerServer = '192.168.1.152',
     [Parameter()]

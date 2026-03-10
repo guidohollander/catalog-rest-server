@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     try {
       // Prepare the SVN command
-      const svnCommand = `svnmucc propsetf svn:externals ${fullPath} -m "${body.req.key}" ${body.req.url} --username ${svn_username} --password ${svn_password}`;
+      const svnCommand = `svnmucc --non-interactive --trust-server-cert propsetf svn:externals ${fullPath} -m "${body.req.key}" ${body.req.url} --username ${svn_username} --password ${svn_password}`;
       
       // Log command with sensitive data masked
       const maskedCommand = svnCommand

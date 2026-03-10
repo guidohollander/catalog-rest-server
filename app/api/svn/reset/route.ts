@@ -35,7 +35,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       fs.writeFileSync(fullPath, "");
 
       // Construct the SVN command to add a .no-op file to the target URL
-      const svnCommand = `svnmucc put ${fullPath} -m "reset" ${from_url}.no-op --username ${svn_username} --password ${svn_password}`;
+      const svnCommand = `svnmucc --non-interactive --trust-server-cert put ${fullPath} -m "reset" ${from_url}.no-op --username ${svn_username} --password ${svn_password}`;
       
       // Log command with sensitive data masked
       logger.info(`Executing SVN reset command for URL: ${from_url}.no-op`, { 
@@ -68,10 +68,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           ) {
             logger.info(`Commit intentionally rejected by pre-commit hook for URL: ${from_url}`);
           } else {
-            logger.error(`SVN reset command failed for URL: ${from_url}`, { 
-              error: stderr.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
-                .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
-            });
+            const maskedStderr = stderr
+              ? stderr.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+                  .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+              : '(empty)';
+            const maskedErrorMsg = error.message
+              ? error.message.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+                  .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+              : '(empty)';
+            const maskedStdout = stdout
+              ? stdout.replace(new RegExp(svn_password, 'g'), '***REDACTED***')
+                  .replace(new RegExp(svn_username, 'g'), '***REDACTED***')
+              : '(empty)';
+            logger.error(`SVN reset command failed for URL: ${from_url} | stderr: ${maskedStderr} | error: ${maskedErrorMsg} | stdout: ${maskedStdout} | code: ${error.code}`);
           }
           return;
         }
