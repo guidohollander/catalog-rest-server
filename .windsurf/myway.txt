@@ -1,3 +1,1 @@
-New request
-
-I see on production that nothing has been deployed and I would like that functionality to work again. Find out in the source how that works and fix it. It uses the rest api component along with a translation table to determine this. In my local be informed application, for example gd mts is deployed for sure, see http://localhost:38088/BeInformed/component/solution_implementation/435
+call the deployed route and check what comes back. I triggered it on production but I don't see changes yet. Analyze and fix.

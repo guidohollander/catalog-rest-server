@@ -121,6 +121,11 @@ function getBranches(repoName: string): Promise<JenkinsJob[]> {
       });
     });
 
+    req.setTimeout(8000, () => {
+      logger.warn(`Jenkins getBranches timeout for /job/${encodedRepoName}/api/json`);
+      req.destroy();
+      resolve([]);
+    });
     req.on('error', (err) => {
       logger.warn(`Jenkins getBranches request error: ${String(err)}`);
       resolve([]);
@@ -266,6 +271,11 @@ async function getInnerBranches(repoName: string, multiJobName: string): Promise
         resolve([]);
       });
     });
+    req.setTimeout(8000, () => {
+      logger.warn(`Jenkins getInnerBranches timeout for ${options.path}`);
+      req.destroy();
+      resolve([]);
+    });
     req.on('error', (err) => {
       logger.warn(`Jenkins getInnerBranches request error: ${String(err)}`);
       resolve([]);
@@ -314,6 +324,10 @@ async function getBranchLastBuildDirect(repoName: string, multiJobName: string, 
         }
       });
       res.on('error', () => resolve(null));
+    });
+    req.setTimeout(8000, () => {
+      req.destroy();
+      resolve(null);
     });
     req.on('error', () => resolve(null));
     req.end();
