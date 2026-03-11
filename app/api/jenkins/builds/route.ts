@@ -362,11 +362,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     logger.info(`Successfully fetched ${flattenedBuilds.length} Jenkins builds`);
 
     // Map to Be Informed schema
+    // repo must be lowercase to match jenkins_mapping.jenkins_value (e.g. aia_mts, gd_mts)
     const envName = config.environment || 'development';
     const mapped: BIJenkinsBuild[] = flattenedBuilds.map(b => {
       const d = new Date(b.timestamp);
       return {
-        repo: b.repository,
+        repo: b.repository.toLowerCase(),
         branch: b.branch,
         lastbuilddate: formatDate(d),
         lastbuildtime: formatTime(d),
