@@ -1,0 +1,634 @@
+
+=== Checking solution_implementation ===
+62 solution implementations found in DB
+  [OK]     https://svn.blyce.com/svn/bes_bbf/trunk
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/branches/3.0.0
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/branches/3.1.0
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/tags/3.1.1
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/tags/3.1.2
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/tags/3.1.3
+  [ORPHAN] https://svn.blyce.com/svn/mbs_anguilla/tags/3.1.4
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/tags/3.1.4_23.2.6
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/tags/3.1.5_23.2.6
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/tags/3.1.6_23.2.6
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/tags/3.1.7_23.2.6
+  [OK]     https://svn.blyce.com/svn/mbs_anguilla/trunk
+  [OK]     https://svn.blyce.com/svn/mbs_grenada/branches/1.1.0
+  [OK]     https://svn.blyce.com/svn/mbs_grenada/tags/1.1.0
+  [OK]     https://svn.blyce.com/svn/mbs_grenada/tags/1.2.0
+  [OK]     https://svn.blyce.com/svn/mbs_grenada/trunk
+  [OK]     https://svn.blyce.com/svn/mts_anguilla/branches/3.1.2
+  [OK]     https://svn.blyce.com/svn/mts_anguilla/trunk
+  [OK]     https://svn.blyce.com/svn/mts_grenada/branches/2.5.0
+  [ORPHAN] https://svn.blyce.com/svn/mts_grenada/branches/2.6.0
+  [OK]     https://svn.blyce.com/svn/mts_grenada/branches/2.6.0_23.2.9
+  [OK]     https://svn.blyce.com/svn/mts_grenada/tags/2.5.0
+  [OK]     https://svn.blyce.com/svn/mts_grenada/tags/2.5.1
+  [OK]     https://svn.blyce.com/svn/mts_grenada/tags/2.5.2
+  [OK]     https://svn.blyce.com/svn/mts_grenada/tags/2.5.3
+  [ORPHAN] https://svn.blyce.com/svn/mts_grenada/tags/2.6.0
+  [OK]     https://svn.blyce.com/svn/mts_grenada/tags/2.6.0_23.2.9
+  [OK]     https://svn.blyce.com/svn/mts_grenada/tags/2.6.1_23.2.9
+  [OK]     https://svn.blyce.com/svn/mts_grenada/tags/2.6.2_23.2.9
+  [OK]     https://svn.blyce.com/svn/mts_grenada/trunk
+  [OK]     https://svn.blyce.com/svn/mts_png/tags/1.0.0
+  [OK]     https://svn.blyce.com/svn/mts_png/tags/1.0.1
+  [OK]     https://svn.blyce.com/svn/mts_png/trunk
+  [OK]     https://svn.blyce.com/svn/mts_skn/branches/0.0.1
+  [OK]     https://svn.blyce.com/svn/mts_skn/branches/0.0.2
+  [OK]     https://svn.blyce.com/svn/mts_skn/branches/2.1.2
+  [OK]     https://svn.blyce.com/svn/mts_skn/branches/2.1.5
+  [OK]     https://svn.blyce.com/svn/mts_skn/tags/2.1.3
+  [OK]     https://svn.blyce.com/svn/mts_skn/tags/2.1.4
+  [OK]     https://svn.blyce.com/svn/mts_skn/tags/2.1.5
+  [OK]     https://svn.blyce.com/svn/mts_skn/tags/2.1.6
+  [OK]     https://svn.blyce.com/svn/mts_skn/tags/2.2.0_23.2.9
+  [OK]     https://svn.blyce.com/svn/mts_skn/trunk
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.1
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.10
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.11
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.12
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.13
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.14
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.15
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.16
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.17
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.2
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.3
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.4
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.5
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.6
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.7
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.8
+  [ORPHAN] https://svn.blyce.com/svn/mts_vct/branches/0.0.9
+  [OK]     https://svn.blyce.com/svn/mts_vct/tags/1.0.2
+  [OK]     https://svn.blyce.com/svn/mts_vct/trunk
+
+=== Checking component_version ===
+510 component versions found in DB
+  [ORPHAN] [^Case_Management] tags/4.2.1 -> https://svn.blyce.com^/solutioncomponents/solutiondevelopment/tags/4.2.1
+  [ORPHAN] [^Generic_Registration] tags/3.3.0 -> https://svn.blyce.com^/solutioncomponents/solutiondevelopment/tags/3.3.0
+  [ORPHAN] [^Workflow] tags/2.1.0 -> https://svn.blyce.com^/solutioncomponents/solutiondevelopment/tags/2.1.0
+  [OK]     [2FA] tags/1.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/2FA/tags/1.0.1
+  [OK]     [Account] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Account/tags/3.4.0
+  [OK]     [Account] tags/3.5.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Account/tags/3.5.0
+  [OK]     [Account] tags/3.6.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Account/tags/3.6.0
+  [OK]     [Account] tags/3.6.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Account/tags/3.6.1
+  [OK]     [Account] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Account/trunk
+  [OK]     [Additional_assessment] tags/3.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Additional_assessment/tags/3.1.0
+  [OK]     [Additional_assessment] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Additional_assessment/tags/3.2.0
+  [OK]     [Additional_assessment] tags/3.2.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Additional_assessment/tags/3.2.1
+  [OK]     [Additional_assessment] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Additional_assessment/tags/3.3.0
+  [OK]     [Additional_assessment] tags/3.3.1_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Additional_assessment/tags/3.3.1_23.2.9
+  [OK]     [Additional_assessment] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Additional_assessment/trunk
+  [OK]     [Address] tags/3.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Address/tags/3.1.0
+  [OK]     [Address] tags/3.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Address/tags/3.1.1
+  [OK]     [Address] tags/3.1.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Address/tags/3.1.2
+  [OK]     [Address] tags/3.1.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Address/tags/3.1.3
+  [OK]     [Address] tags/3.1.4 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Address/tags/3.1.4
+  [OK]     [Address] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Address/trunk
+  [OK]     [Agreement] tags/2.0.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Agreement/tags/2.0.0
+  [OK]     [Agreement] tags/2.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Agreement/tags/2.1.0
+  [OK]     [Agreement] tags/2.1.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Agreement/tags/2.1.2
+  [OK]     [Agreement] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Agreement/trunk
+  [OK]     [Annual_Stamp_Tax] tags/1.3.0 -> https://svn.blyce.com/svn/MTS_ANGLO/Annual_Stamp_Tax/tags/1.3.0
+  [OK]     [Annual_Stamp_Tax] tags/1.3.2 -> https://svn.blyce.com/svn/MTS_ANGLO/Annual_Stamp_Tax/tags/1.3.2
+  [OK]     [Annual_Stamp_Tax] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Annual_Stamp_Tax/trunk
+  [OK]     [Appeal] tags/1.0.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Appeal/tags/1.0.0
+  [OK]     [Appeal] tags/1.0.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Appeal/tags/1.0.2
+  [OK]     [Appeal] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Appeal/trunk
+  [OK]     [Application_Parameters] branches/4.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Application_Parameters/branches/4.3.2
+  [OK]     [Application_Parameters] tags/4.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Application_Parameters/tags/4.2.0
+  [OK]     [Application_Parameters] tags/4.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Application_Parameters/tags/4.3.0
+  [OK]     [Application_Parameters] tags/4.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Application_Parameters/tags/4.3.1
+  [OK]     [Application_Parameters] tags/4.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Application_Parameters/tags/4.4.0
+  [OK]     [Application_Parameters] tags/4.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Application_Parameters/tags/4.4.1
+  [OK]     [Application_Parameters] tags/5.0.0_24.2.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Application_Parameters/tags/5.0.0_24.2.5
+  [OK]     [Application_Parameters] tags/5.1.0_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Application_Parameters/tags/5.1.0_24.2.6
+  [OK]     [Application_Parameters] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Application_Parameters/trunk
+  [OK]     [Audit] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Audit/tags/3.2.0
+  [OK]     [Audit] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Audit/tags/3.3.0
+  [OK]     [Audit] tags/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Audit/tags/3.3.1
+  [OK]     [Audit] tags/3.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Audit/tags/3.3.2
+  [OK]     [Audit] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Audit/trunk
+  [OK]     [Authorisation_Request] branches/0.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Authorisation_Request/branches/0.0.1
+  [OK]     [Authorisation_Request] branches/3.6.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Authorisation_Request/branches/3.6.3
+  [OK]     [Authorisation_Request] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Authorisation_Request/tags/3.3.0
+  [OK]     [Authorisation_Request] tags/3.5.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Authorisation_Request/tags/3.5.0
+  [OK]     [Authorisation_Request] tags/3.6.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Authorisation_Request/tags/3.6.0
+  [OK]     [Authorisation_Request] tags/3.6.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Authorisation_Request/tags/3.6.1
+  [OK]     [Authorisation_Request] tags/3.6.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Authorisation_Request/tags/3.6.2
+  [OK]     [Authorisation_Request] tags/3.6.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Authorisation_Request/tags/3.6.3
+  [OK]     [Authorisation_Request] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Authorisation_Request/trunk
+  [OK]     [Balance_Adjustment] tags/2.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Balance_Adjustment/tags/2.2.0
+  [OK]     [Balance_Adjustment] tags/2.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Balance_Adjustment/tags/2.3.0
+  [OK]     [Balance_Adjustment] tags/2.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Balance_Adjustment/tags/2.3.1
+  [OK]     [Balance_Adjustment] tags/2.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Balance_Adjustment/tags/2.3.2
+  [OK]     [Balance_Adjustment] tags/2.3.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Balance_Adjustment/tags/2.3.3
+  [OK]     [Balance_Adjustment] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Balance_Adjustment/trunk
+  [OK]     [Bank_Receipt_Batch] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Bank_Receipt_Batch/tags/3.2.0
+  [OK]     [Bank_Receipt_Batch] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Bank_Receipt_Batch/tags/3.4.0
+  [OK]     [Bank_Receipt_Batch] tags/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Bank_Receipt_Batch/tags/3.4.1
+  [OK]     [Bank_Receipt_Batch] tags/3.4.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Bank_Receipt_Batch/tags/3.4.2
+  [OK]     [Bank_Receipt_Batch] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Bank_Receipt_Batch/trunk
+  [OK]     [Batch_Printing] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_Printing/tags/3.2.0
+  [OK]     [Batch_Printing] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_Printing/tags/3.3.0
+  [OK]     [Batch_Printing] tags/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_Printing/tags/3.3.1
+  [OK]     [Batch_Printing] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_Printing/trunk
+  [ORPHAN] [Batch_processing] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/branches/24.2.6_hotfix
+  [OK]     [Batch_processing] branches/4.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/branches/4.3.0
+  [OK]     [Batch_processing] tags/4.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/tags/4.2.0
+  [OK]     [Batch_processing] tags/4.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/tags/4.3.0
+  [OK]     [Batch_processing] tags/4.3.1_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/tags/4.3.1_23.2.9
+  [OK]     [Batch_processing] tags/5.0.0_24.2.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/tags/5.0.0_24.2.5
+  [OK]     [Batch_processing] tags/5.1.0_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/tags/5.1.0_24.2.6
+  [OK]     [Batch_processing] tags/5.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/tags/5.1.1
+  [OK]     [Batch_processing] tags/5.2.0_24.2.7 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/tags/5.2.0_24.2.7
+  [OK]     [Batch_processing] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/trunk
+  [OK]     [Benefit] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/Benefit/trunk
+  [OK]     [Benefit_Account] tags/2.2.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Benefit_Account/tags/2.2.0
+  [OK]     [Benefit_Account] tags/2.2.1 -> https://svn.blyce.com/svn/MBS_ANGLO/Benefit_Account/tags/2.2.1
+  [OK]     [Benefit_Account] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/Benefit_Account/trunk
+  [OK]     [Benefit_Types] tags/2.4.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Benefit_Types/tags/2.4.0
+  [OK]     [Benefit_Types] tags/2.4.1 -> https://svn.blyce.com/svn/MBS_ANGLO/Benefit_Types/tags/2.4.1
+  [OK]     [Benefit_Types] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/Benefit_Types/trunk
+  [ORPHAN] [Berichtenbox_Feeder_Wrapper] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Berichtenbox_Feeder_Wrapper/branches/24.2.6_hotfix
+  [OK]     [Berichtenbox_Feeder_Wrapper] tags/2.0.0_24.2.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Berichtenbox_Feeder_Wrapper/tags/2.0.0_24.2.5
+  [OK]     [Berichtenbox_Feeder_Wrapper] tags/2.1.0_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Berichtenbox_Feeder_Wrapper/tags/2.1.0_24.2.6
+  [OK]     [Berichtenbox_Feeder_Wrapper] tags/2.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Berichtenbox_Feeder_Wrapper/tags/2.1.1
+  [OK]     [Berichtenbox_Feeder_Wrapper] tags/2.2.0_24.2.7 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Berichtenbox_Feeder_Wrapper/tags/2.2.0_24.2.7
+  [OK]     [Berichtenbox_Feeder_Wrapper] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Berichtenbox_Feeder_Wrapper/trunk
+  [OK]     [Business_Licence] tags/3.2.0 -> https://svn.blyce.com/svn/MTS_ANGLO/Business_Licence/tags/3.2.0
+  [OK]     [Business_Licence] tags/3.2.1 -> https://svn.blyce.com/svn/MTS_ANGLO/Business_Licence/tags/3.2.1
+  [OK]     [Business_Licence] tags/3.2.2 -> https://svn.blyce.com/svn/MTS_ANGLO/Business_Licence/tags/3.2.2
+  [OK]     [Business_Licence] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Business_Licence/trunk
+  [OK]     [Cash_Register] branches/3.7.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Cash_Register/branches/3.7.0
+  [OK]     [Cash_Register] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Cash_Register/tags/3.4.0
+  [OK]     [Cash_Register] tags/3.6.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Cash_Register/tags/3.6.0
+  [OK]     [Cash_Register] tags/3.7.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Cash_Register/tags/3.7.0
+  [OK]     [Cash_Register] tags/3.7.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Cash_Register/tags/3.7.1
+  [OK]     [Cash_Register] tags/3.7.2_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Cash_Register/tags/3.7.2_23.2.9
+  [OK]     [Cash_Register] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Cash_Register/trunk
+  [OK]     [Central Authentication] tags/2.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Central Authentication/tags/2.4.0
+  [OK]     [Central Authentication] tags/2.5.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Central Authentication/tags/2.5.0
+  [OK]     [Claim] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/Claim/trunk
+  [OK]     [Collections] tags/3.1.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Collections/tags/3.1.2
+  [OK]     [Collections] tags/3.1.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Collections/tags/3.1.5
+  [OK]     [Collections] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Collections/trunk
+  [OK]     [Compliance_Check] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Compliance_Check/tags/3.3.0
+  [OK]     [Compliance_Check] tags/3.5.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Compliance_Check/tags/3.5.0
+  [OK]     [Compliance_Check] tags/3.5.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Compliance_Check/tags/3.5.1
+  [OK]     [Compliance_Check] tags/3.5.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Compliance_Check/tags/3.5.2
+  [OK]     [Compliance_Check] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Compliance_Check/trunk
+  [OK]     [Contributions] branches/2.5.1 -> https://svn.blyce.com/svn/MBS_ANGLO/Contributions/branches/2.5.1
+  [OK]     [Contributions] tags/2.5.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Contributions/tags/2.5.0
+  [OK]     [Contributions] tags/2.5.1 -> https://svn.blyce.com/svn/MBS_ANGLO/Contributions/tags/2.5.1
+  [OK]     [Contributions] tags/2.5.2 -> https://svn.blyce.com/svn/MBS_ANGLO/Contributions/tags/2.5.2
+  [OK]     [Contributions] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/Contributions/trunk
+  [OK]     [Conversion] branches/1.0.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Conversion/branches/1.0.2
+  [OK]     [Conversion] tags/1.0.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Conversion/tags/1.0.3
+  [OK]     [Conversion] tags/1.0.4 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Conversion/tags/1.0.4
+  [OK]     [Corporate_Income_Tax] tags/2.1.0 -> https://svn.blyce.com/svn/MTS_ANGLO/Corporate_Income_Tax/tags/2.1.0
+  [OK]     [Corporate_Income_Tax] tags/2.1.2 -> https://svn.blyce.com/svn/MTS_ANGLO/Corporate_Income_Tax/tags/2.1.2
+  [OK]     [Corporate_Income_Tax] tags/2.1.3 -> https://svn.blyce.com/svn/MTS_ANGLO/Corporate_Income_Tax/tags/2.1.3
+  [OK]     [Corporate_Income_Tax] tags/2.1.4 -> https://svn.blyce.com/svn/MTS_ANGLO/Corporate_Income_Tax/tags/2.1.4
+  [OK]     [Corporate_Income_Tax] tags/2.1.5 -> https://svn.blyce.com/svn/MTS_ANGLO/Corporate_Income_Tax/tags/2.1.5
+  [OK]     [Corporate_Income_Tax] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Corporate_Income_Tax/trunk
+  [OK]     [Correspondence] tags/3.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Correspondence/tags/3.1.1
+  [OK]     [Correspondence] tags/3.1.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Correspondence/tags/3.1.3
+  [OK]     [Correspondence] tags/3.1.4 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Correspondence/tags/3.1.4
+  [OK]     [Correspondence] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Correspondence/trunk
+  [OK]     [Customs] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Customs/tags/3.2.0
+  [OK]     [Customs] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Customs/trunk
+  [OK]     [Data_Maintenance] branches/3.0.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Data_Maintenance/branches/3.0.2
+  [OK]     [Data_Maintenance] tags/3.0.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Data_Maintenance/tags/3.0.3
+  [OK]     [Data_Maintenance] tags/4.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Data_Maintenance/tags/4.1.0
+  [OK]     [Data_Maintenance] tags/4.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Data_Maintenance/tags/4.2.0
+  [OK]     [Data_Maintenance] tags/4.2.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Data_Maintenance/tags/4.2.1
+  [OK]     [Data_Maintenance] tags/5.0.0_24.2.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Data_Maintenance/tags/5.0.0_24.2.5
+  [OK]     [Data_Maintenance] tags/5.0.1_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Data_Maintenance/tags/5.0.1_24.2.6
+  [OK]     [Data_Maintenance] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Data_Maintenance/trunk
+  [OK]     [Discount] tags/3.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Discount/tags/3.1.0
+  [OK]     [Discount] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Discount/tags/3.2.0
+  [OK]     [Discount] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Discount/tags/3.3.0
+  [OK]     [Discount] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Discount/trunk
+  [OK]     [Discretionary contribution] branches/1.0.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Discretionary contribution/branches/1.0.0
+  [OK]     [Discretionary contribution] tags/1.0.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Discretionary contribution/tags/1.0.0
+  [OK]     [Discretionary contribution] tags/1.0.1 -> https://svn.blyce.com/svn/MBS_ANGLO/Discretionary contribution/tags/1.0.1
+  [OK]     [Discretionary contribution] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/Discretionary contribution/trunk
+  [OK]     [DMS_Integration] branches/22.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/DMS_Integration/branches/22.2
+  [OK]     [DMS_Integration] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/DMS_Integration/branches/24.2.6_hotfix
+  [OK]     [DMS_Integration] tags/1.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/DMS_Integration/tags/1.2.0
+  [OK]     [DMS_Integration] tags/2.0.0_24.2.7 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/DMS_Integration/tags/2.0.0_24.2.7
+  [OK]     [Exemption] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Exemption/trunk
+  [OK]     [External_Notifications] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/External_Notifications/tags/3.2.0
+  [OK]     [External_Notifications] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/External_Notifications/tags/3.4.0
+  [OK]     [External_Notifications] tags/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/External_Notifications/tags/3.4.1
+  [OK]     [External_Notifications] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/External_Notifications/trunk
+  [OK]     [External_Party] tags/1.1.0 -> https://svn.blyce.com/svn/MBS_ANGLO/External_Party/tags/1.1.0
+  [OK]     [External_Party] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/External_Party/trunk
+  [ORPHAN] [Financial_Application_Parameters] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/branches/24.2.6_hotfix
+  [OK]     [Financial_Application_Parameters] branches/24.2.x_compatibility -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/branches/24.2.x_compatibility
+  [OK]     [Financial_Application_Parameters] branches/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/branches/3.3.0
+  [OK]     [Financial_Application_Parameters] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/tags/3.2.0
+  [OK]     [Financial_Application_Parameters] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/tags/3.3.0
+  [OK]     [Financial_Application_Parameters] tags/3.3.0.1_23.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/tags/3.3.0.1_23.2.6
+  [OK]     [Financial_Application_Parameters] tags/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/tags/3.3.1
+  [OK]     [Financial_Application_Parameters] tags/compatibility_24.2.7 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/tags/compatibility_24.2.7
+  [OK]     [Financial_Application_Parameters] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/trunk
+  [OK]     [Financial_Balance] branches/0.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/branches/0.0.1
+  [OK]     [Financial_Balance] branches/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/branches/3.3.0
+  [OK]     [Financial_Balance] branches/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/branches/3.3.1
+  [ORPHAN] [Financial_Balance] branches/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/branches/3.4.0
+  [OK]     [Financial_Balance] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/tags/3.2.0
+  [OK]     [Financial_Balance] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/tags/3.3.0
+  [OK]     [Financial_Balance] tags/3.3.0.1_23.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/tags/3.3.0.1_23.2.6
+  [OK]     [Financial_Balance] tags/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/tags/3.3.1
+  [ORPHAN] [Financial_Balance] tags/3.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/tags/3.3.2
+  [OK]     [Financial_Balance] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/tags/3.4.0
+  [OK]     [Financial_Balance] tags/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/tags/3.4.1
+  [OK]     [Financial_Balance] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/trunk
+  [OK]     [Firearm_license] tags/2.0.4 -> https://svn.blyce.com/svn/MTS_ANGLO/Firearm_license/tags/2.0.4
+  [OK]     [Firearm_license] tags/2.0.5 -> https://svn.blyce.com/svn/MTS_ANGLO/Firearm_license/tags/2.0.5
+  [OK]     [Firearm_license] tags/2.0.6 -> https://svn.blyce.com/svn/MTS_ANGLO/Firearm_license/tags/2.0.6
+  [OK]     [Firearm_license] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Firearm_license/trunk
+  [OK]     [Generic_Tax] branches/0.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Generic_Tax/branches/0.0.1
+  [OK]     [Generic_Tax] branches/2.2.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Generic_Tax/branches/2.2.1
+  [OK]     [Generic_Tax] tags/2.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Generic_Tax/tags/2.2.0
+  [OK]     [Generic_Tax] tags/2.2.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Generic_Tax/tags/2.2.1
+  [OK]     [Generic_Tax] tags/2.2.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Generic_Tax/tags/2.2.2
+  [OK]     [Generic_Tax] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Generic_Tax/trunk
+  [OK]     [GenST] tags/1.0.2 -> https://svn.blyce.com/svn/MTS_ANGLO/GenST/tags/1.0.2
+  [OK]     [GenST] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/GenST/trunk
+  [OK]     [GST] tags/3.2.0 -> https://svn.blyce.com/svn/MTS_ANGLO/GST/tags/3.2.0
+  [OK]     [GST] tags/3.3.0 -> https://svn.blyce.com/svn/MTS_ANGLO/GST/tags/3.3.0
+  [OK]     [GST] tags/3.3.1 -> https://svn.blyce.com/svn/MTS_ANGLO/GST/tags/3.3.1
+  [OK]     [GST] tags/3.3.3 -> https://svn.blyce.com/svn/MTS_ANGLO/GST/tags/3.3.3
+  [OK]     [GST] tags/3.3.4 -> https://svn.blyce.com/svn/MTS_ANGLO/GST/tags/3.3.4
+  [OK]     [GST] tags/3.3.5 -> https://svn.blyce.com/svn/MTS_ANGLO/GST/tags/3.3.5
+  [OK]     [GST] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/GST/trunk
+  [OK]     [Inactive_period] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Inactive_period/tags/3.2.0
+  [OK]     [Inactive_period] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Inactive_period/trunk
+  [OK]     [Income_Reference_Data] tags/2.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Income_Reference_Data/tags/2.0.1
+  [OK]     [Income_Reference_Data] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Income_Reference_Data/trunk
+  [OK]     [Income_Register] branches/2.5.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Income_Register/branches/2.5.0
+  [OK]     [Income_Register] tags/2.4.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Income_Register/tags/2.4.0
+  [OK]     [Income_Register] tags/2.5.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Income_Register/tags/2.5.0
+  [OK]     [Income_Register] tags/2.5.1 -> https://svn.blyce.com/svn/MBS_ANGLO/Income_Register/tags/2.5.1
+  [OK]     [Income_Register] tags/2.6.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Income_Register/tags/2.6.0
+  [OK]     [Income_Register] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/Income_Register/trunk
+  [OK]     [Insurance] tags/2.3.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Insurance/tags/2.3.0
+  [OK]     [Insurance] tags/2.3.1 -> https://svn.blyce.com/svn/MBS_ANGLO/Insurance/tags/2.3.1
+  [OK]     [Insurance] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/Insurance/trunk
+  [ORPHAN] [Integration] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/branches/24.2.6_hotfix
+  [OK]     [Integration] branches/5.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/branches/5.1.0
+  [OK]     [Integration] branches/5.5.0_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/branches/5.5.0_23.2.9
+  [OK]     [Integration] branches/5.6.0_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/branches/5.6.0_23.2.9
+  [ORPHAN] [Integration] tags/5.0.2_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/5.0.2_24.2.6
+  [OK]     [Integration] tags/5.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/5.1.1
+  [OK]     [Integration] tags/5.1.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/5.1.2
+  [OK]     [Integration] tags/5.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/5.3.0
+  [OK]     [Integration] tags/5.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/5.4.0
+  [OK]     [Integration] tags/5.5.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/5.5.0
+  [OK]     [Integration] tags/5.6.0_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/5.6.0_23.2.9
+  [OK]     [Integration] tags/5.6.1_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/5.6.1_23.2.9
+  [OK]     [Integration] tags/6.0.0_24.2.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/6.0.0_24.2.5
+  [OK]     [Integration] tags/6.0.1_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/6.0.1_24.2.6
+  [OK]     [Integration] tags/6.0.2_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/6.0.2_24.2.6
+  [OK]     [Integration] tags/6.0.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/6.0.3
+  [OK]     [Integration] tags/6.0.4_24.2.7 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/6.0.4_24.2.7
+  [OK]     [Integration] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/trunk
+  [OK]     [Interim_Stabilization_Levy] tags/3.2.0 -> https://svn.blyce.com/svn/MTS_ANGLO/Interim_Stabilization_Levy/tags/3.2.0
+  [OK]     [Interim_Stabilization_Levy] tags/3.2.1 -> https://svn.blyce.com/svn/MTS_ANGLO/Interim_Stabilization_Levy/tags/3.2.1
+  [OK]     [Interim_Stabilization_Levy] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Interim_Stabilization_Levy/trunk
+  [OK]     [Journal_Entry] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Journal_Entry/tags/3.2.0
+  [OK]     [Journal_Entry] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Journal_Entry/tags/3.3.0
+  [OK]     [Journal_Entry] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Journal_Entry/trunk
+  [ORPHAN] [Library] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/branches/24.2.6_hotfix
+  [OK]     [Library] branches/3.0.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/branches/3.0.3
+  [OK]     [Library] tags/3.0.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/tags/3.0.5
+  [OK]     [Library] tags/4.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/tags/4.3.0
+  [OK]     [Library] tags/4.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/tags/4.4.0
+  [OK]     [Library] tags/5.0.0_24.2.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/tags/5.0.0_24.2.5
+  [OK]     [Library] tags/5.0.1_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/tags/5.0.1_24.2.6
+  [OK]     [Library] tags/5.0.2_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/tags/5.0.2_24.2.6
+  [OK]     [Library] tags/5.0.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/tags/5.0.3
+  [OK]     [Library] tags/5.0.4_24.2.7 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/tags/5.0.4_24.2.7
+  [OK]     [Library] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/trunk
+  [OK]     [Library_Portals] tags/3.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library_Portals/tags/3.0.1
+  [OK]     [Licence_Assessment] branches/3.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Assessment/branches/3.1.0
+  [OK]     [Licence_Assessment] tags/3.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Assessment/tags/3.1.0
+  [OK]     [Licence_Assessment] tags/3.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Assessment/tags/3.1.1
+  [OK]     [Licence_Assessment] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Assessment/tags/3.2.0
+  [OK]     [Licence_Assessment] tags/3.2.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Assessment/tags/3.2.1
+  [OK]     [Licence_Assessment] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Assessment/trunk
+  [OK]     [Licence_Issuance] tags/3.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Issuance/tags/3.1.0
+  [OK]     [Licence_Issuance] tags/3.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Issuance/tags/3.1.1
+  [OK]     [Licence_Issuance] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Issuance/tags/3.2.0
+  [OK]     [Licence_Issuance] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Issuance/tags/3.3.0
+  [OK]     [Licence_Issuance] tags/3.3.1_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Issuance/tags/3.3.1_23.2.9
+  [OK]     [Licence_Issuance] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Licence_Issuance/trunk
+  [OK]     [Liquor_Licence] tags/2.1.0 -> https://svn.blyce.com/svn/MTS_ANGLO/Liquor_Licence/tags/2.1.0
+  [OK]     [Liquor_Licence] tags/2.1.1 -> https://svn.blyce.com/svn/MTS_ANGLO/Liquor_Licence/tags/2.1.1
+  [OK]     [Liquor_Licence] tags/2.1.2 -> https://svn.blyce.com/svn/MTS_ANGLO/Liquor_Licence/tags/2.1.2
+  [OK]     [Liquor_Licence] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Liquor_Licence/trunk
+  [OK]     [MBS_Interaction] tags/1.0.0 -> https://svn.blyce.com/svn/MBS_ANGLO/MBS_Interaction/tags/1.0.0
+  [OK]     [MBS_Interaction] trunk -> https://svn.blyce.com/svn/MBS_ANGLO/MBS_Interaction/trunk
+  [OK]     [Message_Broker] branches/23.x -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/branches/23.x
+  [ORPHAN] [Message_Broker] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/branches/24.2.6_hotfix
+  [OK]     [Message_Broker] branches/24.x -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/branches/24.x
+  [OK]     [Message_Broker] branches/6.2-BDSU_MCS -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/branches/6.2-BDSU_MCS
+  [OK]     [Message_Broker] tags/22.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/22.0.1
+  [OK]     [Message_Broker] tags/23.0.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/23.0.0
+  [OK]     [Message_Broker] tags/23.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/23.0.1
+  [OK]     [Message_Broker] tags/23.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/23.1.0
+  [OK]     [Message_Broker] tags/23.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/23.1.1
+  [OK]     [Message_Broker] tags/23.1.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/23.1.2
+  [ORPHAN] [Message_Broker] tags/3.0.0_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/3.0.0_24.2.6
+  [OK]     [Message_Broker] tags/7.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/7.4.0
+  [OK]     [Message_Broker] tags/8.0.0_24.2.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/8.0.0_24.2.5
+  [OK]     [Message_Broker] tags/8.1.0_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/8.1.0_24.2.6
+  [OK]     [Message_Broker] tags/8.1.1_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/8.1.1_24.2.6
+  [OK]     [Message_Broker] tags/8.1.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/8.1.2
+  [OK]     [Message_Broker] tags/8.1.3_24.2.7 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/8.1.3_24.2.7
+  [ORPHAN] [Message_Broker] tags/https:.blyce.comMessage_Broker -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/https:/svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/SC Message broker "SC Message broker"
+
+  [ORPHAN] [Message_Broker] tags/Message_Broker -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/https:/svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/SC Message broker "SC Message broker"
+
+  [OK]     [Message_Broker] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/trunk
+  [OK]     [MTS_Interaction] tags/1.0.0 -> https://svn.blyce.com/svn/MTS_ANGLO/MTS_Interaction/tags/1.0.0
+  [OK]     [MTS_Interaction] tags/1.0.1 -> https://svn.blyce.com/svn/MTS_ANGLO/MTS_Interaction/tags/1.0.1
+  [OK]     [MTS_Interaction] tags/1.0.2 -> https://svn.blyce.com/svn/MTS_ANGLO/MTS_Interaction/tags/1.0.2
+  [OK]     [MTS_Interaction] tags/1.0.4 -> https://svn.blyce.com/svn/MTS_ANGLO/MTS_Interaction/tags/1.0.4
+  [ORPHAN] [MTS_Interaction] tags/trunk -> https://svn.blyce.com/svn/MTS_ANGLO/MTS_Interaction/tags/trunk
+  [OK]     [MTS_Interaction] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/MTS_Interaction/trunk
+  [OK]     [Notes] tags/3.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Notes/tags/3.1.0
+  [OK]     [Notes] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Notes/tags/3.2.0
+  [OK]     [Notes] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Notes/tags/3.3.0
+  [OK]     [Notes] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Notes/trunk
+  [OK]     [Notifications] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Notifications/tags/3.2.0
+  [OK]     [Notifications] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Notifications/tags/3.3.0
+  [OK]     [Notifications] tags/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Notifications/tags/3.3.1
+  [OK]     [Notifications] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Notifications/trunk
+  [OK]     [Objection] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Objection/tags/3.2.0
+  [OK]     [Objection] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Objection/tags/3.3.0
+  [OK]     [Objection] tags/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Objection/tags/3.3.1
+  [OK]     [Objection] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Objection/trunk
+  [OK]     [Online_Payments] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Online_Payments/tags/3.2.0
+  [OK]     [Online_Payments] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Online_Payments/trunk
+  [OK]     [Online_User_Management] tags/2.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Online_User_Management/tags/2.4.1
+  [OK]     [Online_User_Management] tags/2.4.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Online_User_Management/tags/2.4.2
+  [OK]     [Opening_Balance] branches/2.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Opening_Balance/branches/2.3.0
+  [OK]     [Opening_Balance] tags/2.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Opening_Balance/tags/2.2.0
+  [OK]     [Opening_Balance] tags/2.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Opening_Balance/tags/2.3.0
+  [OK]     [Opening_Balance] tags/2.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Opening_Balance/tags/2.3.1
+  [OK]     [Opening_Balance] tags/2.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Opening_Balance/tags/2.3.2
+  [OK]     [Opening_Balance] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Opening_Balance/trunk
+  [OK]     [Pay_As_You_Earn] tags/2.1.0 -> https://svn.blyce.com/svn/MTS_ANGLO/Pay_As_You_Earn/tags/2.1.0
+  [OK]     [Pay_As_You_Earn] tags/2.1.2 -> https://svn.blyce.com/svn/MTS_ANGLO/Pay_As_You_Earn/tags/2.1.2
+  [OK]     [Pay_As_You_Earn] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Pay_As_You_Earn/trunk
+  [OK]     [Payment_Allocation] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Allocation/tags/3.2.0
+  [OK]     [Payment_Allocation] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Allocation/tags/3.3.0
+  [OK]     [Payment_Allocation] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Allocation/tags/3.4.0
+  [OK]     [Payment_Allocation] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Allocation/trunk
+  [OK]     [Payment_Assessment] branches/2.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Assessment/branches/2.3.0
+  [OK]     [Payment_Assessment] branches/2.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Assessment/branches/2.3.1
+  [OK]     [Payment_Assessment] tags/2.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Assessment/tags/2.2.0
+  [OK]     [Payment_Assessment] tags/2.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Assessment/tags/2.3.0
+  [OK]     [Payment_Assessment] tags/2.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Assessment/tags/2.3.1
+  [OK]     [Payment_Assessment] tags/2.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Assessment/tags/2.3.2
+  [OK]     [Payment_Assessment] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Assessment/trunk
+  [OK]     [Payment_Obligation] branches/2.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Obligation/branches/2.4.0
+  [OK]     [Payment_Obligation] tags/2.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Obligation/tags/2.3.0
+  [OK]     [Payment_Obligation] tags/2.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Obligation/tags/2.4.0
+  [OK]     [Payment_Obligation] tags/2.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Obligation/tags/2.4.1
+  [OK]     [Payment_Obligation] tags/2.4.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Obligation/tags/2.4.2
+  [ORPHAN] [Payment_Obligation] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Obligation/tags/3.4.0
+  [OK]     [Payment_Obligation] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Obligation/trunk
+  [OK]     [Payout] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payout/tags/3.2.0
+  [OK]     [Payout] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payout/tags/3.3.0
+  [OK]     [Payout] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payout/tags/3.4.0
+  [OK]     [Payout] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payout/trunk
+  [OK]     [Period] branches/0.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Period/branches/0.0.1
+  [ORPHAN] [Period] tags/0.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Period/tags/0.0.1
+  [OK]     [Period] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Period/tags/3.2.0
+  [OK]     [Period] tags/3.5.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Period/tags/3.5.0
+  [OK]     [Period] tags/3.6.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Period/tags/3.6.0
+  [OK]     [Period] tags/3.6.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Period/tags/3.6.1
+  [OK]     [Period] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Period/trunk
+  [ORPHAN] [Person_Registration] branches/3.7.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/branches/3.7.2
+  [OK]     [Person_Registration] branches/3.8.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/branches/3.8.1
+  [ORPHAN] [Person_Registration] branches/3.8.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/branches/3.8.2
+  [OK]     [Person_Registration] branches/3.9.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/branches/3.9.0
+  [OK]     [Person_Registration] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.4.0
+  [OK]     [Person_Registration] tags/3.7.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.7.0.1
+  [OK]     [Person_Registration] tags/3.7.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.7.2
+  [OK]     [Person_Registration] tags/3.8.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.8.1
+  [OK]     [Person_Registration] tags/3.8.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.8.2
+  [OK]     [Person_Registration] tags/3.8.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.8.3
+  [OK]     [Person_Registration] tags/3.8.4 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.8.4
+  [OK]     [Person_Registration] tags/3.9.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.9.0
+  [OK]     [Person_Registration] tags/3.9.0.1_23.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.9.0.1_23.2.6
+  [OK]     [Person_Registration] tags/3.9.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/tags/3.9.1
+  [OK]     [Person_Registration] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/trunk
+  [OK]     [Personal_Income_Tax] tags/1.2.0 -> https://svn.blyce.com/svn/MTS_ANGLO/Personal_Income_Tax/tags/1.2.0
+  [OK]     [Personal_Income_Tax] tags/1.2.2 -> https://svn.blyce.com/svn/MTS_ANGLO/Personal_Income_Tax/tags/1.2.2
+  [OK]     [Personal_Income_Tax] tags/1.2.3 -> https://svn.blyce.com/svn/MTS_ANGLO/Personal_Income_Tax/tags/1.2.3
+  [OK]     [Personal_Income_Tax] tags/1.2.4 -> https://svn.blyce.com/svn/MTS_ANGLO/Personal_Income_Tax/tags/1.2.4
+  [OK]     [Personal_Income_Tax] tags/1.2.5 -> https://svn.blyce.com/svn/MTS_ANGLO/Personal_Income_Tax/tags/1.2.5
+  [OK]     [Personal_Income_Tax] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Personal_Income_Tax/trunk
+  [OK]     [Prepayment] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Prepayment/tags/3.2.0
+  [OK]     [Prepayment] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Prepayment/tags/3.3.0
+  [OK]     [Prepayment] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Prepayment/tags/3.4.0
+  [OK]     [Prepayment] tags/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Prepayment/tags/3.4.1
+  [OK]     [Prepayment] tags/3.4.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Prepayment/tags/3.4.2
+  [OK]     [Prepayment] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Prepayment/trunk
+  [OK]     [Property_Registration] tags/3.6.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Property_Registration/tags/3.6.0
+  [OK]     [Property_Registration] tags/3.6.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Property_Registration/tags/3.6.1
+  [OK]     [Property_Registration] tags/3.7.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Property_Registration/tags/3.7.0
+  [OK]     [Property_Registration] tags/3.8.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Property_Registration/tags/3.8.0
+  [OK]     [Property_Registration] tags/3.8.1_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Property_Registration/tags/3.8.1_23.2.9
+  [ORPHAN] [Property_Registration] tags/3.9.0_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Property_Registration/tags/3.9.0_23.2.9
+  [OK]     [Property_Registration] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Property_Registration/trunk
+  [OK]     [Property_Tax] tags/3.3.0 -> https://svn.blyce.com/svn/MTS_ANGLO/Property_Tax/tags/3.3.0
+  [OK]     [Property_Tax] tags/3.3.1 -> https://svn.blyce.com/svn/MTS_ANGLO/Property_Tax/tags/3.3.1
+  [OK]     [Property_Tax] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Property_Tax/trunk
+  [OK]     [Reallocate_Payment] branches/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Reallocate_Payment/branches/3.4.1
+  [OK]     [Reallocate_Payment] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Reallocate_Payment/tags/3.2.0
+  [OK]     [Reallocate_Payment] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Reallocate_Payment/tags/3.3.0
+  [OK]     [Reallocate_Payment] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Reallocate_Payment/tags/3.4.0
+  [OK]     [Reallocate_Payment] tags/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Reallocate_Payment/tags/3.4.1
+  [OK]     [Reallocate_Payment] tags/3.4.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Reallocate_Payment/tags/3.4.2
+  [OK]     [Reallocate_Payment] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Reallocate_Payment/trunk
+  [OK]     [Received_Payment] branches/3.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Received_Payment/branches/3.3.2
+  [OK]     [Received_Payment] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Received_Payment/tags/3.2.0
+  [OK]     [Received_Payment] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Received_Payment/tags/3.3.0
+  [OK]     [Received_Payment] tags/3.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Received_Payment/tags/3.3.2
+  [OK]     [Received_Payment] tags/3.3.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Received_Payment/tags/3.3.3
+  [OK]     [Received_Payment] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Received_Payment/trunk
+  [OK]     [Refund] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Refund/tags/3.3.0
+  [OK]     [Refund] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Refund/tags/3.4.0
+  [OK]     [Refund] tags/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Refund/tags/3.4.1
+  [OK]     [Refund] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Refund/trunk
+  [OK]     [Request] tags/3.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Request/tags/3.1.1
+  [OK]     [Request] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Request/tags/3.3.0
+  [OK]     [Request] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Request/trunk
+  [OK]     [Return_Payment] branches/1.0.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Payment/branches/1.0.0
+  [OK]     [Return_Period] branches/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/branches/3.4.1
+  [OK]     [Return_Period] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.2.0
+  [OK]     [Return_Period] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.3.0
+  [OK]     [Return_Period] tags/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.3.1
+  [OK]     [Return_Period] tags/3.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.3.2
+  [OK]     [Return_Period] tags/3.3.3 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.3.3
+  [OK]     [Return_Period] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.4.0
+  [OK]     [Return_Period] tags/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.4.1
+  [OK]     [Return_Period] tags/3.4.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.4.2
+  [ORPHAN] [Return_Period] tags/3.54.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.54.0
+  [OK]     [Return_Period] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/trunk
+  [OK]     [Revenue_voucher] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Revenue_voucher/tags/3.2.0
+  [OK]     [Revenue_voucher] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Revenue_voucher/tags/3.3.0
+  [OK]     [Revenue_voucher] tags/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Revenue_voucher/tags/3.3.1
+  [OK]     [Revenue_voucher] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Revenue_voucher/trunk
+  [OK]     [Risk] tags/3.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Risk/tags/3.1.1
+  [OK]     [Risk] tags/3.1.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Risk/tags/3.1.2
+  [OK]     [Risk] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Risk/trunk
+  [OK]     [SL_ANGLO] branches/future -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/branches/future
+  [OK]     [SL_ANGLO] branches/next -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/branches/next
+  [OK]     [SL_ANGLO] tags/2.1.23 -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/tags/2.1.23
+  [OK]     [SL_ANGLO] tags/2.1.24 -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/tags/2.1.24
+  [OK]     [SL_ANGLO] tags/2.1.25 -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/tags/2.1.25
+  [OK]     [SL_ANGLO] tags/2.1.26 -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/tags/2.1.26
+  [OK]     [SL_ANGLO] tags/2.1.27 -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/tags/2.1.27
+  [ORPHAN] [SL_ANGLO] tags/23.1.0 -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/tags/23.1.0
+  [OK]     [SL_ANGLO] trunk -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/trunk
+  [OK]     [SL_BCN_OPO] branches/future -> https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_BCN_OPO/branches/future
+  [OK]     [Social_security_Insurance] tags/2.2.0 -> https://svn.blyce.com/svn/MBS_ANGLO/Social_security_Insurance/tags/2.2.0
+  [OK]     [Social_security_Insurance] tags/2.2.1 -> https://svn.blyce.com/svn/MBS_ANGLO/Social_security_Insurance/tags/2.2.1
+  [OK]     [Stamp_Duty] tags/2.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Stamp_Duty/tags/2.2.0
+  [ORPHAN] [Stamp_Duty] tags/2.2.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Stamp_Duty/tags/2.2.1
+  [OK]     [Stamp_Duty] tags/2.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Stamp_Duty/tags/2.3.0
+  [OK]     [Stamp_Duty] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Stamp_Duty/trunk
+  [OK]     [Tax_Account] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Account/tags/3.2.0
+  [OK]     [Tax_Account] tags/3.5.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Account/tags/3.5.0
+  [OK]     [Tax_Account] tags/3.6.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Account/tags/3.6.0
+  [OK]     [Tax_Account] tags/3.6.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Account/tags/3.6.2
+  [OK]     [Tax_Account] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Account/trunk
+  [OK]     [Tax_Assessment] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Assessment/tags/3.2.0
+  [OK]     [Tax_Assessment] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Assessment/tags/3.3.0
+  [OK]     [Tax_Assessment] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Assessment/tags/3.4.0
+  [OK]     [Tax_Assessment] tags/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Assessment/tags/3.4.1
+  [OK]     [Tax_Assessment] tags/3.5.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Assessment/tags/3.5.1
+  [OK]     [Tax_Assessment] tags/3.5.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Assessment/tags/3.5.2
+  [OK]     [Tax_Assessment] tags/3.5.3_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Assessment/tags/3.5.3_23.2.9
+  [OK]     [Tax_Assessment] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Assessment/trunk
+  [OK]     [Tax_Credit] tags/3.0.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Credit/tags/3.0.2
+  [OK]     [Tax_Credit] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Credit/trunk
+  [OK]     [Tax_Filing_Obligation] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Filing_Obligation/tags/3.2.0
+  [OK]     [Tax_Filing_Obligation] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Filing_Obligation/tags/3.4.0
+  [OK]     [Tax_Filing_Obligation] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Filing_Obligation/trunk
+  [OK]     [Tax_Obligation] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Obligation/tags/3.2.0
+  [OK]     [Tax_Obligation] tags/3.4.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Obligation/tags/3.4.1
+  [OK]     [Tax_Obligation] tags/3.4.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Obligation/tags/3.4.2
+  [OK]     [Tax_Obligation] tags/3.4.4 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Obligation/tags/3.4.4
+  [OK]     [Tax_Obligation] tags/3.4.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Obligation/tags/3.4.5
+  [OK]     [Tax_Obligation] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Obligation/trunk
+  [OK]     [Tax_Period] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Period/tags/3.2.0
+  [OK]     [Tax_Period] tags/3.5.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Period/tags/3.5.0
+  [OK]     [Tax_Period] tags/3.5.1_23.2.9 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Period/tags/3.5.1_23.2.9
+  [OK]     [Tax_Period] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Period/trunk
+  [OK]     [Tax_Return] branches/0.0.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Return/branches/0.0.1
+  [OK]     [Tax_Return] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Return/tags/3.2.0
+  [OK]     [Tax_Return] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Return/tags/3.3.0
+  [OK]     [Tax_Return] tags/3.3.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Return/tags/3.3.1
+  [OK]     [Tax_Return] tags/3.3.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Return/tags/3.3.2
+  [OK]     [Tax_Return] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Return/trunk
+  [OK]     [Tax_Settings_Application_Parameters] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Settings_Application_Parameters/tags/3.2.0
+  [OK]     [Tax_Settings_Application_Parameters] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Settings_Application_Parameters/tags/3.3.0
+  [OK]     [Tax_Settings_Application_Parameters] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Settings_Application_Parameters/trunk
+  [OK]     [Tax_Types] tags/3.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Types/tags/3.1.1
+  [OK]     [Tax_Types] tags/3.1.2 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Types/tags/3.1.2
+  [OK]     [Tax_Types] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Tax_Types/trunk
+  [OK]     [Unincorporated_Business_Tax] tags/1.2.1 -> https://svn.blyce.com/svn/MTS_ANGLO/Unincorporated_Business_Tax/tags/1.2.1
+  [OK]     [Unincorporated_Business_Tax] tags/1.2.2 -> https://svn.blyce.com/svn/MTS_ANGLO/Unincorporated_Business_Tax/tags/1.2.2
+  [OK]     [Unincorporated_Business_Tax] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Unincorporated_Business_Tax/trunk
+  [ORPHAN] [User_Assignment] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Assignment/branches/24.2.6_hotfix
+  [OK]     [User_Assignment] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Assignment/trunk
+  [ORPHAN] [User_Management] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/branches/24.2.6_hotfix
+  [OK]     [User_Management] tags/4.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/tags/4.1.0
+  [OK]     [User_Management] tags/4.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/tags/4.2.0
+  [OK]     [User_Management] tags/4.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/tags/4.3.0
+  [OK]     [User_Management] tags/5.0.0_24.2.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/tags/5.0.0_24.2.5
+  [OK]     [User_Management] tags/5.1.0_24.2.6 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/tags/5.1.0_24.2.6
+  [OK]     [User_Management] tags/5.1.1 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/tags/5.1.1
+  [OK]     [User_Management] tags/5.2.0_24.2.7 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/tags/5.2.0_24.2.7
+  [OK]     [User_Management] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/trunk
+  [OK]     [Windward_Wrapper] tags/3.2.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Windward_Wrapper/tags/3.2.0
+  [OK]     [Windward_Wrapper] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Windward_Wrapper/tags/3.3.0
+  [OK]     [Windward_Wrapper] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Windward_Wrapper/trunk
+  [OK]     [Witholding_Tax] tags/2.1.0 -> https://svn.blyce.com/svn/MTS_ANGLO/Witholding_Tax/tags/2.1.0
+  [OK]     [Witholding_Tax] tags/2.1.2 -> https://svn.blyce.com/svn/MTS_ANGLO/Witholding_Tax/tags/2.1.2
+  [OK]     [Witholding_Tax] tags/2.1.3 -> https://svn.blyce.com/svn/MTS_ANGLO/Witholding_Tax/tags/2.1.3
+  [OK]     [Witholding_Tax] trunk -> https://svn.blyce.com/svn/MTS_ANGLO/Witholding_Tax/trunk
+  [ORPHAN] [Work_Items] branches/24.2.6_hotfix -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/branches/24.2.6_hotfix
+  [OK]     [Work_Items] tags/3.3.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/tags/3.3.0
+  [OK]     [Work_Items] tags/3.4.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/tags/3.4.0
+  [OK]     [Work_Items] tags/3.5.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/tags/3.5.0
+  [ORPHAN] [Work_Items] tags/4.0.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/tags/4.0.0
+  [OK]     [Work_Items] tags/4.0.0_24.2.5 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/tags/4.0.0_24.2.5
+  [OK]     [Work_Items] tags/4.1.0 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/tags/4.1.0
+  [OK]     [Work_Items] tags/4.2.0_24.2.7 -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/tags/4.2.0_24.2.7
+  [OK]     [Work_Items] trunk -> https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/trunk
+
+========== SUMMARY ==========
+Solution implementation orphans: 20
+  SI:  mbs anguilla tags/3.1.4  |  https://svn.blyce.com/svn/mbs_anguilla/tags/3.1.4/
+  SI:  mts grenada branches/2.6.0  |  https://svn.blyce.com/svn/mts_grenada/branches/2.6.0/
+  SI:  mts grenada tags/2.6.0  |  https://svn.blyce.com/svn/mts_grenada/tags/2.6.0/
+  SI:  mts vct branches/0.0.1  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.1/
+  SI:  mts vct branches/0.0.10  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.10/
+  SI:  mts vct branches/0.0.11  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.11/
+  SI:  mts vct branches/0.0.12  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.12/
+  SI:  mts vct branches/0.0.13  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.13/
+  SI:  mts vct branches/0.0.14  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.14/
+  SI:  mts vct branches/0.0.15  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.15/
+  SI:  mts vct branches/0.0.16  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.16/
+  SI:  mts vct branches/0.0.17  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.17/
+  SI:  mts vct branches/0.0.2  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.2/
+  SI:  mts vct branches/0.0.3  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.3/
+  SI:  mts vct branches/0.0.4  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.4/
+  SI:  mts vct branches/0.0.5  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.5/
+  SI:  mts vct branches/0.0.6  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.6/
+  SI:  mts vct branches/0.0.7  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.7/
+  SI:  mts vct branches/0.0.8  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.8/
+  SI:  mts vct branches/0.0.9  |  https://svn.blyce.com/svn/mts_vct/branches/0.0.9/
+Component version orphans: 28
+  CV:  [^Case_Management] tags/4.2.1  |  https://svn.blyce.com^/solutioncomponents/solutiondevelopment/tags/4.2.1/
+  CV:  [^Generic_Registration] tags/3.3.0  |  https://svn.blyce.com^/solutioncomponents/solutiondevelopment/tags/3.3.0/
+  CV:  [^Workflow] tags/2.1.0  |  https://svn.blyce.com^/solutioncomponents/solutiondevelopment/tags/2.1.0/
+  CV:  [Batch_processing] branches/24.2.6_hotfix  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Batch_processing/branches/24.2.6_hotfix/
+  CV:  [Berichtenbox_Feeder_Wrapper] branches/24.2.6_hotfix  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Berichtenbox_Feeder_Wrapper/branches/24.2.6_hotfix/
+  CV:  [Financial_Application_Parameters] branches/24.2.6_hotfix  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Application_Parameters/branches/24.2.6_hotfix/
+  CV:  [Financial_Balance] branches/3.4.0  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/branches/3.4.0/
+  CV:  [Financial_Balance] tags/3.3.2  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Financial_Balance/tags/3.3.2/
+  CV:  [Integration] branches/24.2.6_hotfix  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/branches/24.2.6_hotfix/
+  CV:  [Integration] tags/5.0.2_24.2.6  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Integration/tags/5.0.2_24.2.6/
+  CV:  [Library] branches/24.2.6_hotfix  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Library/branches/24.2.6_hotfix/
+  CV:  [Message_Broker] branches/24.2.6_hotfix  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/branches/24.2.6_hotfix/
+  CV:  [Message_Broker] tags/3.0.0_24.2.6  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/3.0.0_24.2.6/
+  CV:  [Message_Broker] tags/https:.blyce.comMessage_Broker  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/tags/https:/svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/SC Message broker "SC Message broker"
+/
+  CV:  [Message_Broker] tags/Message_Broker  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/https:/svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Message_Broker/SC Message broker "SC Message broker"
+/
+  CV:  [MTS_Interaction] tags/trunk  |  https://svn.blyce.com/svn/MTS_ANGLO/MTS_Interaction/tags/trunk/
+  CV:  [Payment_Obligation] tags/3.4.0  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Payment_Obligation/tags/3.4.0/
+  CV:  [Period] tags/0.0.1  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Period/tags/0.0.1/
+  CV:  [Person_Registration] branches/3.7.2  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/branches/3.7.2/
+  CV:  [Person_Registration] branches/3.8.2  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Person_Registration/branches/3.8.2/
+  CV:  [Property_Registration] tags/3.9.0_23.2.9  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Property_Registration/tags/3.9.0_23.2.9/
+  CV:  [Return_Period] tags/3.54.0  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Return_Period/tags/3.54.0/
+  CV:  [SL_ANGLO] tags/23.1.0  |  https://svn.blyce.com/svn/FRONT-END-PUBLIC/SL_ANGLO/tags/23.1.0/
+  CV:  [Stamp_Duty] tags/2.2.1  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Stamp_Duty/tags/2.2.1/
+  CV:  [User_Assignment] branches/24.2.6_hotfix  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Assignment/branches/24.2.6_hotfix/
+  CV:  [User_Management] branches/24.2.6_hotfix  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/User_Management/branches/24.2.6_hotfix/
+  CV:  [Work_Items] branches/24.2.6_hotfix  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/branches/24.2.6_hotfix/
+  CV:  [Work_Items] tags/4.0.0  |  https://svn.blyce.com/svn/SOLUTIONCOMPONENTS/SolutionDevelopment/Work_Items/tags/4.0.0/

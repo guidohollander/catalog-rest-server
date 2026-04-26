@@ -1,35 +1,42 @@
-﻿# Current Request
+﻿# Current Request: Service Catalog vs Jira Compass — Strategic Analysis Document
 
-**Status:** In Progress  
-**Created:** 2026-03-11  
-**Last Updated:** 2026-03-11
+**Status:** Completed
+**Created:** 2026-03-24
 
 ---
 
-## Feature Description
+## Description
 
-Diagnose why triggering the "retrieve last jenkins builds" sync on production did not populate `jenkins_deployment`. Call the `api/jenkins/builds` REST endpoint directly and inspect the response. Identify root cause of missing data and fix.
+Analyze whether Blyce should adopt Jira Compass, expand the Service Catalog to support non-BeInformed components, or pursue a hybrid approach. The output is a professional Markdown document suitable for sharing with management.
 
 ---
 
 ## Functional Requirements
 
-- FR-1: Call `api/jenkins/builds` on production and inspect the JSON response
-- FR-2: If response is empty or wrong, trace the root cause (env vars, Jenkins connectivity, mapping mismatch)
-- FR-3: Verify `jenkins_deployment_temp` and `jenkins_deployment` table state on production after a sync
-- FR-4: Fix whatever prevents deployment data from flowing through end-to-end
-- FR-5: Verify `isDeployed` is correctly set on at least one known deployed implementation
+- FR-1: Document the current Service Catalog capabilities (SVN-driven, BeInformed-specific, Jira/Jenkins integration)
+- FR-2: Document Jira Compass capabilities and limitations (Git-only, scorecards, ownership)
+- FR-3: Explain why Compass was not viable for SVN-based components
+- FR-4: Provide a side-by-side feature comparison table
+- FR-5: Analyze the expansion scenario for non-BeInformed components (OutSystems etc.)
+- FR-6: Provide a clear recommendation and roadmap
+
+---
+
+## Non-Functional Requirements
+
+- Document must be professional and suitable for management review
+- No code changes — documentation only
 
 ---
 
 ## Acceptance Criteria
 
-- `api/jenkins/builds` returns at least one build record with correct lowercase `repo` and `branch`
-- After triggering the sync in BeInformed, `jenkins_deployment` contains rows on production
-- `isDeployed = 1` for known deployed solution implementations
+- File `service-catalog-vs-compass.md` created in `.windsurf/`
+- All sections from the plan are covered
+- Recommendation is clear and actionable
 
 ---
 
 ## Tests Skipped
 
-No automated tests applicable — purely backend/database diagnostic and fix.
+Documentation task — no UI/API/database changes involved.

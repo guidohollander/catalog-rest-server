@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../../../Service catalog/app"
+		},
+		{
+			"path": "../../../../_CONTINUOUS_DELIVERY/_GENERAL"
+		},
+		{
+			"path": "../../../scripts/powershell/svn server"
+		}
+	],
+	"settings": {}
+}

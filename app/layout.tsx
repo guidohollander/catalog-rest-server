@@ -12,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50" suppressHydrationWarning>{children}</body>
     </html>
   )
 }

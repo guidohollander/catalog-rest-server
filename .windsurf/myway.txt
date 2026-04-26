@@ -1,1 +1,1 @@
-call the deployed route and check what comes back. I triggered it on production but I don't see changes yet. Analyze and fix.
+update the aws environment with the new values in env.aws and restart
